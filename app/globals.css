@@ -127,4 +127,8 @@
   html {
     @apply font-sans;
   }
+
+  .glass {
+    @apply bg-background/60 backdrop-blur-md border-border/50;
+  }
 }
