@@ -28,3 +28,25 @@ export async function deductCredits(userId: string, amount: number) {
     });
   });
 }
+
+export async function refundCredits(userId: string, amount: number) {
+  return await prisma.$transaction(async (tx) => {
+    await tx.credit.update({
+      where: { userId },
+      data: {
+        balance: {
+          increment: amount,
+        },
+      },
+    });
+
+    await tx.creditTransaction.create({
+      data: {
+        userId,
+        amount: amount,
+        reason: "REFUND",
+      },
+    });
+  });
+}
+

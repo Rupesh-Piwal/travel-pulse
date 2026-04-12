@@ -113,7 +113,9 @@ export default function NewItineraryPage() {
 
         <section className="space-y-4">
           <Label className="text-sm font-medium ml-1">Vibe</Label>
+          <input type="hidden" name="vibe" value={selectedVibes[0] || ""} />
           <div className="flex flex-wrap gap-3">
+
             {vibes.map((v) => (
               <button
                 key={v}

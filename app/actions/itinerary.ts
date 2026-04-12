@@ -5,6 +5,9 @@ import { prisma } from "@/lib/prisma";
 import { deductCredits } from "@/lib/credits";
 import { redirect } from "next/navigation";
 
+import { generateItinerary as runGenerator } from "@/lib/itinerary/generateItinerary";
+import { Vibe, Budget, ItineraryStatus } from "../../generated/prisma/client";
+
 export async function generateItinerary(formData: FormData) {
   const session = await auth();
   const userId = session?.user?.id;
@@ -15,23 +18,59 @@ export async function generateItinerary(formData: FormData) {
 
   const destination = formData.get("destination") as string;
   const days = parseInt(formData.get("duration") as string);
-  const budget = formData.get("budget") as string;
-  // Vibes are handled separately in real app, simplified here
-  
+  const budgetStr = formData.get("budget") as string;
+  const vibeStr = formData.get("vibe") as string;
+
+  // Simple mapping
+  const budgetMap: Record<string, Budget> = {
+    "Budget": Budget.BUDGET,
+    "Mid-Range": Budget.MID,
+    "Luxury": Budget.LUXURY
+  };
+
+  const vibeMap: Record<string, Vibe> = {
+    "Adventure": Vibe.ADVENTURE,
+    "Foodie": Vibe.FOODIE,
+    "Cultural": Vibe.CULTURAL,
+    "Relaxation": Vibe.RELAXED,
+    // Fallbacks for others
+    "Romantic": Vibe.RELAXED,
+    "Photography": Vibe.CULTURAL
+  };
+
+  const budget = budgetMap[budgetStr] || Budget.MID;
+  const vibe = vibeMap[vibeStr] || Vibe.ADVENTURE;
+
   // STEP 7: Protect usage
   await deductCredits(userId, 1);
 
-  // Simulate generation and DB creation
-  const itinerary = await prisma.itinerary.create({
-    data: {
-      userId,
-      destination,
+  try {
+    // Generate data
+    const generatedData = await runGenerator({
+      destinationName: destination,
       days,
-      budget: budget.toUpperCase() as "BUDGET" | "MID" | "LUXURY", // Map string to enum
-      vibe: "ADVENTURE", // Placeholder
-      status: "QUEUED",
-    },
-  });
+      vibe,
+      budget,
+    });
 
-  redirect(`/dashboard/itinerary/${itinerary.id}`);
+    // Create record with status DONE
+    const itinerary = await prisma.itinerary.create({
+      data: {
+        userId,
+        destination,
+        days,
+        vibe,
+        budget,
+        status: ItineraryStatus.DONE,
+        data: generatedData as any,
+      },
+    });
+
+    redirect(`/dashboard/itinerary/${itinerary.id}`);
+  } catch (error) {
+    // Basic error handling - in a real app we'd refund credits here too
+    console.error("Generation failed:", error);
+    throw error;
+  }
 }
+
