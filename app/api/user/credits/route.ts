@@ -11,6 +11,15 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  // Check if user actually exists in the DB (prevents foreign key errors after DB reset)
+  const userExists = await prisma.user.findUnique({
+    where: { id: session.user.id },
+  });
+
+  if (!userExists) {
+    return NextResponse.json({ error: "USER_NOT_FOUND" }, { status: 401 });
+  }
+
   // 🔥 SELF-HEALING FIX: Use a transaction to ensure atomic creation
   const credit = await prisma.$transaction(async (tx) => {
     let record = await tx.credit.findUnique({
