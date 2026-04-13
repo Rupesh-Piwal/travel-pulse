@@ -15,6 +15,7 @@ const destinations = [
     description: "A vibrant mix of ultramodern neon and traditional temples.",
     lat: 35.6762,
     lng: 139.6503,
+    image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=2094",
     tags: ["city", "food", "culture", "tech"],
     activities: [
       { title: "TeamLab Borderless", description: "Digital art museum with immersive displays.", vibe: Vibe.CULTURAL, lat: 35.6264, lng: 139.7758, duration: 180 },
@@ -32,6 +33,7 @@ const destinations = [
     description: "The city of light, famous for art, fashion, and gastronomy.",
     lat: 48.8566,
     lng: 2.3522,
+    image: "https://images.unsplash.com/photo-1502602898657-3e917247a184?q=80&w=2070",
     tags: ["romantic", "art", "food", "history"],
     activities: [
       { title: "Eiffel Tower", description: "Iconic iron tower with panoramic views.", vibe: Vibe.CULTURAL, lat: 48.8584, lng: 2.2945, duration: 120 },
@@ -49,6 +51,7 @@ const destinations = [
     description: "The city that never sleeps, known for skyscrapers and culture.",
     lat: 40.7128,
     lng: -74.006,
+    image: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?q=80&w=2070",
     tags: ["city", "shopping", "entertainment"],
     activities: [
       { title: "Central Park", description: "Expansive urban park in Manhattan.", vibe: Vibe.RELAXED, lat: 40.7851, lng: -73.9683, duration: 180 },
@@ -66,6 +69,7 @@ const destinations = [
     description: "A global city where history meets contemporary lifestyle.",
     lat: 51.5074,
     lng: -0.1278,
+    image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=2070",
     tags: ["history", "royal", "museums"],
     activities: [
       { title: "British Museum", description: "Dedicated to human history, art, and culture.", vibe: Vibe.CULTURAL, lat: 51.5194, lng: -0.127, duration: 180 },
@@ -83,6 +87,7 @@ const destinations = [
     description: "The Eternal City, treasure trove of ancient history.",
     lat: 41.9028,
     lng: 12.4964,
+    image: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?q=80&w=1996",
     tags: ["history", "ancient", "food"],
     activities: [
       { title: "Colosseum", description: "The largest ancient amphitheater ever built.", vibe: Vibe.CULTURAL, lat: 41.8902, lng: 12.4922, duration: 120 },
@@ -100,6 +105,7 @@ const destinations = [
     description: "Famous for Gaudí architecture and beautiful beaches.",
     lat: 41.3851,
     lng: 2.1734,
+    image: "https://images.unsplash.com/photo-1583422409516-2895a77efded?q=80&w=2070",
     tags: ["beach", "art", "architecture"],
     activities: [
       { title: "Sagrada Família", description: "Architectural masterpiece by Antoni Gaudí.", vibe: Vibe.CULTURAL, lat: 41.4036, lng: 2.1744, duration: 120 },
@@ -117,6 +123,7 @@ const destinations = [
     description: "Indonesian island known for forested volcanic mountains and beaches.",
     lat: -8.3405,
     lng: 115.092,
+    image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=2138",
     tags: ["beach", "spiritual", "nature"],
     activities: [
       { title: "Ubud Monkey Forest", description: "Sacred sanctuary for long-tailed macaques.", vibe: Vibe.ADVENTURE, lat: -8.519, lng: 115.2606, duration: 120 },
@@ -134,6 +141,7 @@ const destinations = [
     description: "Former imperial capital of Japan, famous for temples and gardens.",
     lat: 35.0116,
     lng: 135.7556,
+    image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=2070",
     tags: ["zen", "culture", "tradition"],
     activities: [
       { title: "Fushimi Inari-taisha", description: "Iconic shrine with thousands of vermilion torii gates.", vibe: Vibe.CULTURAL, lat: 34.9671, lng: 135.7727, duration: 180 },
@@ -151,6 +159,7 @@ const destinations = [
     description: "Greek island known for its whitewashed villages and blue domes.",
     lat: 36.3932,
     lng: 25.4615,
+    image: "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?q=80&w=1946",
     tags: ["island", "romantic", "view"],
     activities: [
       { title: "Oia Sunset View", description: "Watch the sun dip below the horizon from Oia.", vibe: Vibe.RELAXED, lat: 36.4618, lng: 25.3753, duration: 120 },
@@ -168,6 +177,7 @@ const destinations = [
     description: "Luxury shopping, ultramodern architecture, and lively nightlife.",
     lat: 25.2048,
     lng: 55.2708,
+    image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=2070",
     tags: ["luxury", "desert", "modern"],
     activities: [
       { title: "Burj Khalifa At the Top", description: "World's tallest building with observation deck.", vibe: Vibe.CULTURAL, lat: 25.1972, lng: 55.2744, duration: 90 },
@@ -185,6 +195,7 @@ const destinations = [
     description: "A city-state known for its cleanliness, food, and modern technology.",
     lat: 1.3521,
     lng: 103.8198,
+    image: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?q=80&w=1952",
     tags: ["city", "food", "tech"],
     activities: [
       { title: "Gardens by the Bay", description: "Futuristic park featuring Supertree Grove.", vibe: Vibe.CULTURAL, lat: 1.2816, lng: 103.8636, duration: 180 },
@@ -202,6 +213,7 @@ const destinations = [
     description: "Vibrant city with a spectacular harbor and surf beaches.",
     lat: -33.8688,
     lng: 151.2093,
+    image: "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?q=80&w=2070",
     tags: ["harbor", "beach", "city"],
     activities: [
       { title: "Sydney Opera House Tour", description: "Go behind the scenes of the world-famous venue.", vibe: Vibe.CULTURAL, lat: -33.8568, lng: 151.2153, duration: 60 },
@@ -219,6 +231,7 @@ const destinations = [
     description: "Breathtaking city where the mountains meet the ocean.",
     lat: -33.9249,
     lng: 18.4241,
+    image: "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?q=80&w=2071",
     tags: ["nature", "ocean", "adventure"],
     activities: [
       { title: "Table Mountain Cableway", description: "Aerial ride to the flat-topped mountain peak.", vibe: Vibe.ADVENTURE, lat: -33.9533, lng: 18.4032, duration: 120 },
@@ -236,6 +249,7 @@ const destinations = [
     description: "Enchanting city famous for Carnival, samba, and iconic landmarks.",
     lat: -22.9068,
     lng: -43.1729,
+    image: "https://images.unsplash.com/photo-1483729558449-99ef09a8c325?q=80&w=2070",
     tags: ["beach", "party", "landscape"],
     activities: [
       { title: "Christ the Redeemer", description: "Giant statue atop Mount Corcovado.", vibe: Vibe.CULTURAL, lat: -22.9519, lng: -43.2105, duration: 120 },
@@ -253,6 +267,7 @@ const destinations = [
     description: "Artistic heritage, elaborate canal system, and narrow houses.",
     lat: 52.3676,
     lng: 4.9041,
+    image: "https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?q=80&w=2070",
     tags: ["canal", "art", "cycling"],
     activities: [
       { title: "Rijksmuseum", description: "Dutch national museum dedicated to arts and history.", vibe: Vibe.CULTURAL, lat: 52.3599, lng: 4.8852, duration: 180 },
@@ -270,6 +285,7 @@ const destinations = [
     description: "City built on more than 100 small islands in a lagoon.",
     lat: 45.4408,
     lng: 12.3155,
+    image: "https://images.unsplash.com/photo-1514890547357-a9ee2887ad8e?q=80&w=2070",
     tags: ["canal", "romantic", "history"],
     activities: [
       { title: "St. Mark's Basilica", description: "The most famous of the city's churches.", vibe: Vibe.CULTURAL, lat: 45.4345, lng: 12.3397, duration: 90 },
@@ -287,6 +303,7 @@ const destinations = [
     description: "The city of a hundred spires, known for its Old Town Square.",
     lat: 50.0755,
     lng: 14.4378,
+    image: "https://images.unsplash.com/photo-1519677100203-ad0382d62959?q=80&w=2070",
     tags: ["history", "architecture", "beer"],
     activities: [
       { title: "Prague Castle", description: "Largest ancient castle complex in the world.", vibe: Vibe.CULTURAL, lat: 50.0911, lng: 14.4016, duration: 180 },
@@ -304,6 +321,7 @@ const destinations = [
     description: "Hilly, coastal capital city known for its fado music.",
     lat: 38.7223,
     lng: -9.1393,
+    image: "https://images.unsplash.com/photo-1585208798174-6cedd862099b?q=80&w=2070",
     tags: ["hilly", "tiles", "food"],
     activities: [
       { title: "Belem Tower", description: "Fortified tower and icon of Portuguese discovery.", vibe: Vibe.CULTURAL, lat: 38.6916, lng: -9.216, duration: 90 },
@@ -321,6 +339,7 @@ const destinations = [
     description: "Thailand's capital, known for ornate shrines and vibrant street life.",
     lat: 13.7563,
     lng: 100.5018,
+    image: "https://images.unsplash.com/photo-1504214208698-ea191f03f956?q=80&w=2070",
     tags: ["streetfood", "temple", "energy"],
     activities: [
       { title: "The Grand Palace", description: "Official residence of the Kings of Siam.", vibe: Vibe.CULTURAL, lat: 13.75, lng: 100.4913, duration: 180 },
@@ -338,6 +357,7 @@ const destinations = [
     description: "Transcontinental city straddling Europe and Asia across the Bosphorus Strait.",
     lat: 41.0082,
     lng: 28.9784,
+    image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80&w=2071",
     tags: ["history", "culture", "spices"],
     activities: [
       { title: "Hagia Sophia", description: "Masterpiece of Byzantine architecture.", vibe: Vibe.CULTURAL, lat: 41.0085, lng: 28.9799, duration: 120 },

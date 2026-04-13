@@ -13,6 +13,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import MapWrapper from "@/app/components/itinerary/map-wrapper";
+
 
 interface Activity {
   title: string;
@@ -20,6 +22,7 @@ interface Activity {
   image: string | null;
   lat: number;
   lng: number;
+  timeOfDay: "Morning" | "Afternoon" | "Evening";
 }
 
 interface Day {
@@ -43,7 +46,12 @@ export default async function ItineraryViewPage({ params }: { params: Promise<{ 
     notFound();
   }
 
+  const destination = await prisma.destination.findUnique({
+    where: { name: itinerary.destination }
+  });
+
   const data = itinerary.data as unknown as ItineraryData;
+  const heroImage = destination?.image || "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop";
 
   return (
     <div className="max-w-6xl mx-auto pb-20">
@@ -70,7 +78,10 @@ export default async function ItineraryViewPage({ params }: { params: Promise<{ 
       {/* Hero Section */}
       <section className="relative h-64 md:h-80 rounded-3xl overflow-hidden mb-12 border border-border/50 shadow-2xl">
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent z-10" />
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop')] bg-cover bg-center" />
+        <div 
+          className="absolute inset-0 bg-cover bg-center" 
+          style={{ backgroundImage: `url('${heroImage}')` }}
+        />
         
         <div className="absolute bottom-8 left-8 z-20 space-y-2">
           <Badge className="bg-orange-600/90 text-white border-0 hover:bg-orange-600 px-3 py-1 text-xs font-semibold uppercase tracking-wider">
@@ -90,6 +101,11 @@ export default async function ItineraryViewPage({ params }: { params: Promise<{ 
             </div>
           </div>
         </div>
+      </section>
+
+      {/* Interactive Map Section */}
+      <section id="interactive-map" className="mb-12 h-[450px] md:h-[550px] w-full rounded-3xl overflow-hidden scroll-mt-24 shadow-2xl border border-border/50 relative z-0">
+        <MapWrapper days={data.days} />
       </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr,300px] gap-12">
@@ -131,7 +147,7 @@ export default async function ItineraryViewPage({ params }: { params: Promise<{ 
                             </h3>
                             <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground bg-accent/30 px-2 py-1 rounded-md">
                               <Clock className="w-3 h-3" />
-                              Morning
+                              {activity.timeOfDay}
                             </div>
                           </div>
                           <p className="text-muted-foreground leading-relaxed text-sm">
@@ -175,10 +191,12 @@ export default async function ItineraryViewPage({ params }: { params: Promise<{ 
               </div>
 
               <div className="pt-4 border-t border-border/50">
-                <Button className="w-full bg-accent hover:bg-accent/80 text-foreground gap-2 rounded-xl border border-border/50 h-12">
-                  <MapIcon className="w-4 h-4" />
-                  View Interactive Map
-                </Button>
+                <a href="#interactive-map" className="block w-full">
+                  <Button className="w-full bg-accent hover:bg-accent/80 text-foreground gap-2 rounded-xl border border-border/50 h-12">
+                    <MapIcon className="w-4 h-4" />
+                    View Interactive Map
+                  </Button>
+                </a>
               </div>
             </div>
 

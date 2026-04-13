@@ -272,6 +272,7 @@ model Destination {
   tags        String[]
   lat         Float
   lng         Float
+  image       String?
 
   activities  Activity[]
 

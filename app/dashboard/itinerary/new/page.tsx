@@ -23,9 +23,14 @@ const vibes = [
   "Photography"
 ];
 
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
+import { toast } from "sonner";
 import { generateItinerary } from "@/app/actions/itinerary";
 
 export default function NewItineraryPage() {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const [budget, setBudget] = useState("Mid-Range");
   const [selectedVibes, setSelectedVibes] = useState<string[]>([]);
 
@@ -35,6 +40,33 @@ export default function NewItineraryPage() {
         ? prev.filter(v => v !== vibe) 
         : [...prev, vibe]
     );
+  };
+
+  const handleSubmit = async (formData: FormData) => {
+    startTransition(async () => {
+      const result = await generateItinerary(formData);
+      
+      if (result.success) {
+        toast.success("Itinerary generated successfully!");
+        router.push(`/dashboard/itinerary/${result.id}`);
+      } else {
+        if (result.error === "INSUFFICIENT_CREDITS") {
+          toast.error("Insufficient Credits", {
+            description: "You've used all your credits for today. Credits reset every 24 hours.",
+            duration: 5000,
+          });
+        } else if (result.error === "RATE_LIMIT") {
+          toast.error("AI is Busy", {
+            description: "Our travel guides are currently busy. Please wait about 30 seconds and try again.",
+            duration: 5000,
+          });
+        } else {
+          toast.error("Generation Failed", {
+            description: "Something went wrong while crafting your trip. Please try again.",
+          });
+        }
+      }
+    });
   };
 
   return (
@@ -57,7 +89,7 @@ export default function NewItineraryPage() {
         </motion.p>
       </header>
 
-      <form action={generateItinerary} className="space-y-10">
+      <form action={handleSubmit} className="space-y-10">
         <section className="space-y-6">
           <div className="space-y-3">
             <Label htmlFor="destination" className="text-sm font-medium ml-1">Destination</Label>
@@ -69,6 +101,7 @@ export default function NewItineraryPage() {
                 placeholder="Santorini, Greece" 
                 className="pl-12 h-14 bg-accent/20 border-border/50 focus:bg-accent/40 transition-all rounded-2xl"
                 required
+                disabled={isPending}
               />
             </div>
           </div>
@@ -84,6 +117,7 @@ export default function NewItineraryPage() {
                 placeholder="5" 
                 className="pl-12 h-14 bg-accent/20 border-border/50 focus:bg-accent/40 transition-all rounded-2xl"
                 required
+                disabled={isPending}
               />
             </div>
           </div>
@@ -97,12 +131,13 @@ export default function NewItineraryPage() {
               <button
                 key={b}
                 type="button"
+                disabled={isPending}
                 onClick={() => setBudget(b)}
                 className={cn(
                   "flex-1 py-3 rounded-xl text-sm font-medium transition-all duration-300",
                   budget === b 
                     ? "bg-orange-600 text-white shadow-lg shadow-orange-950/20" 
-                    : "text-muted-foreground hover:text-foreground"
+                    : "text-muted-foreground hover:text-foreground disabled:opacity-50"
                 )}
               >
                 {b}
@@ -120,12 +155,13 @@ export default function NewItineraryPage() {
               <button
                 key={v}
                 type="button"
+                disabled={isPending}
                 onClick={() => toggleVibe(v)}
                 className={cn(
                   "px-5 py-2.5 rounded-full text-sm font-medium border transition-all duration-300",
                   selectedVibes.includes(v)
                     ? "bg-primary border-primary text-primary-foreground"
-                    : "bg-accent/20 border-border/50 text-muted-foreground hover:border-border hover:bg-accent/40"
+                    : "bg-accent/20 border-border/50 text-muted-foreground hover:border-border hover:bg-accent/40 disabled:opacity-50"
                 )}
               >
                 {v}
@@ -136,11 +172,21 @@ export default function NewItineraryPage() {
 
         <Button 
           type="submit"
-          className="w-full h-16 bg-orange-600 hover:bg-orange-700 text-white rounded-2xl text-lg font-semibold shadow-xl shadow-orange-950/30 transition-all active:scale-[0.98] group"
+          disabled={isPending}
+          className="w-full h-16 bg-orange-600 hover:bg-orange-700 text-white rounded-2xl text-lg font-semibold shadow-xl shadow-orange-950/30 transition-all active:scale-[0.98] group disabled:opacity-70 disabled:cursor-not-allowed"
         >
-          <Sparkles className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform" />
-          Generate Itinerary — 1 Credit
-          <ChevronRight className="w-5 h-5 ml-auto" />
+          {isPending ? (
+            <div className="flex items-center gap-3">
+              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              Crafting your journey...
+            </div>
+          ) : (
+            <>
+              <Sparkles className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform" />
+              Generate Itinerary — 1 Credit
+              <ChevronRight className="w-5 h-5 ml-auto" />
+            </>
+          )}
         </Button>
       </form>
     </div>

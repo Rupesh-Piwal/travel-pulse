@@ -3,7 +3,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { deductCredits } from "@/lib/credits";
-import { redirect } from "next/navigation";
+
 
 import { generateItinerary as runGenerator } from "@/lib/itinerary/generateItinerary";
 import { Vibe, Budget, ItineraryStatus } from "../../generated/prisma/client";
@@ -41,10 +41,10 @@ export async function generateItinerary(formData: FormData) {
   const budget = budgetMap[budgetStr] || Budget.MID;
   const vibe = vibeMap[vibeStr] || Vibe.ADVENTURE;
 
-  // STEP 7: Protect usage
-  await deductCredits(userId, 1);
-
   try {
+    // Deduct credits first
+    await deductCredits(userId, 1);
+
     // Generate data
     const generatedData = await runGenerator({
       destinationName: destination,
@@ -66,11 +66,21 @@ export async function generateItinerary(formData: FormData) {
       },
     });
 
-    redirect(`/dashboard/itinerary/${itinerary.id}`);
-  } catch (error) {
-    // Basic error handling - in a real app we'd refund credits here too
+    return { success: true, id: itinerary.id };
+  } catch (error: any) {
     console.error("Generation failed:", error);
-    throw error;
+    
+    // Check for specific credit error
+    if (error.message === "Insufficient credits") {
+      return { success: false, error: "INSUFFICIENT_CREDITS" };
+    }
+
+    // Check for AI Rate Limits (429)
+    if (error.statusCode === 429) {
+      return { success: false, error: "RATE_LIMIT" };
+    }
+
+    return { success: false, error: "GENERIC_ERROR" };
   }
 }
 
