@@ -54,15 +54,31 @@ export async function POST(
         // Production: use sparticuz + puppeteer-core
         browser = await puppeteerCore.launch({
           args: chromium.args,
-          defaultViewport: chromium.defaultViewport,
+          defaultViewport: { width: 1280, height: 720 },
           executablePath: await chromium.executablePath(),
-          headless: chromium.headless,
-          ignoreHTTPSErrors: true,
+          headless: true,
         });
       }
 
       const page = await browser.newPage();
       
+      // Pass the current user's session cookies to the headless browser
+      // so it doesn't get redirected to the login page by the middleware
+      const cookiesStr = req.headers.get("cookie") || "";
+      if (cookiesStr) {
+        const hostname = new URL(baseUrl).hostname;
+        const cookieArray = cookiesStr.split(';').map(c => {
+          const [name, ...rest] = c.trim().split('=');
+          return {
+            name,
+            value: rest.join('='),
+            domain: hostname,
+            path: '/'
+          };
+        });
+        await page.setCookie(...cookieArray);
+      }
+
       // Navigate and wait for network to be idle
       await page.goto(targetUrl, { waitUntil: "networkidle0", timeout: 30000 });
 
