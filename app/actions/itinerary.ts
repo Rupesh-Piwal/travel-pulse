@@ -7,6 +7,7 @@ import { deductCredits } from "@/lib/credits";
 
 import { generateItinerary as runGenerator } from "@/lib/itinerary/generateItinerary";
 import { Vibe, Budget, ItineraryStatus } from "../../generated/prisma/client";
+import { fetchUnsplashImage } from "@/lib/unsplash";
 
 export async function generateItinerary(formData: FormData) {
   const session = await auth();
@@ -52,6 +53,42 @@ export async function generateItinerary(formData: FormData) {
       vibe,
       budget,
     });
+
+    // --- Dynamic Image Enrichment ---
+    try {
+      // 1. Fetch a hero image for the destination
+      const destImage = await fetchUnsplashImage(destination, "landscape");
+      (generatedData as any).heroImage = destImage;
+      
+      // Update destination image in background if it's missing
+      await prisma.destination.upsert({
+        where: { name: destination },
+        update: { image: destImage },
+        create: { 
+          name: destination, 
+          image: destImage,
+          description: `Exploring the wonders of ${destination}`
+        }
+      });
+      
+      // 2. Fetch images for each activity in each day
+      // We do this in parallel to keep it fast
+      await Promise.all(
+        generatedData.days.map(async (day) => {
+          await Promise.all(
+            day.activities.map(async (activity) => {
+              if (!activity.image) {
+                activity.image = await fetchUnsplashImage(`${activity.title} ${destination}`, "squarish");
+              }
+            })
+          );
+        })
+      );
+
+      // --- END Dynamic Image Enrichment ---
+    } catch (imgError) {
+      console.error("Image enrichment failed (non-critical):", imgError);
+    }
 
     // Create record with status DONE
     const itinerary = await prisma.itinerary.create({

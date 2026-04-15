@@ -13,6 +13,8 @@ interface Activity {
   lat: number;
   lng: number;
   timeOfDay: "Morning" | "Afternoon" | "Evening";
+  rating?: number;
+  priceLevel?: string;
 }
 
 interface Day {
@@ -166,20 +168,39 @@ export default function ItineraryMap({
             position={[Number(activity.lat), Number(activity.lng)]}
             icon={createCustomIcon(activity.dayNumber, activeDay === activity.dayNumber)}
           >
-            <Popup className="premium-popup">
-              <div className="p-1 min-w-[200px]">
-                {activity.image && (
-                  <div className="w-full h-24 rounded-lg overflow-hidden mb-3">
-                    <img src={activity.image} alt={activity.title} className="w-full h-full object-cover" />
+              <Popup className="premium-popup">
+                <div className="p-1 min-w-[200px]">
+                  {activity.image && (
+                    <div className="w-full h-24 rounded-lg overflow-hidden mb-3">
+                      <img
+                        src={activity.image}
+                        alt={activity.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                  <h4 className="font-semibold text-sm mb-1">
+                    {activity.title}
+                  </h4>
+                  <div className="flex items-center gap-3 mb-2">
+                    {activity.rating && (
+                      <div className="flex items-center gap-1 text-[10px] font-bold text-orange-500">
+                        <span className="text-orange-500 text-xs">★</span>
+                        {activity.rating.toFixed(1)}
+                      </div>
+                    )}
+                    {activity.priceLevel && (
+                      <span className="text-[10px] font-black text-muted-foreground/60 tracking-wider">
+                        {activity.priceLevel}
+                      </span>
+                    )}
                   </div>
-                )}
-                <h4 className="font-semibold text-sm mb-1">{activity.title}</h4>
-                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <Clock className="w-3 h-3" />
-                  {activity.timeOfDay} (Day {activity.dayNumber})
+                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <Clock className="w-3 h-3" />
+                    {activity.timeOfDay} (Day {activity.dayNumber})
+                  </div>
                 </div>
-              </div>
-            </Popup>
+              </Popup>
           </Marker>
         ))}
       </MapContainer>

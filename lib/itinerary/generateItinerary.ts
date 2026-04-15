@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { Vibe, Budget } from "../../generated/prisma/client";
+import { Vibe, Budget, ActivityCategory, MealType } from "../../generated/prisma/client";
 import { generateObject } from "ai";
 import { google } from "@ai-sdk/google";
 import { z } from "zod";
@@ -18,6 +18,10 @@ const activitySchema = z.object({
   lat: z.number().describe("Latitude coordinate"),
   lng: z.number().describe("Longitude coordinate"),
   timeOfDay: z.enum(["Morning", "Afternoon", "Evening"]).describe("The best time of day for this activity"),
+  category: z.nativeEnum(ActivityCategory).describe("The primary category of this location"),
+  mealType: z.nativeEnum(MealType).describe("If this is a restaurant, which meal is it best for? Use NONE if not a restaurant."),
+  rating: z.number().min(3.5).max(5).describe("Review rating (4.0-5.0). Be honest but prioritize high-quality spots."),
+  priceLevel: z.string().describe("Estimated price level ($, $$, $$$, $$$$)"),
 });
 
 const daySchema = z.object({
@@ -43,20 +47,18 @@ export async function generateItinerary({
     include: { activities: true },
   });
 
-  if (!destination) {
-    throw new Error(`Destination "${destinationName}" not found in our database.`);
-  }
-
-  // 2. Prepare the local context
-  const availableActivities = destination.activities.map(a => ({
+  // Prepare grounding data if destination exists
+  const availableActivities = destination ? destination.activities.map(a => ({
     title: a.title,
     description: a.description,
     image: a.image,
     lat: a.lat,
     lng: a.lng,
     vibe: a.vibe,
-    duration: a.duration
-  }));
+    category: a.category,
+    rating: a.rating,
+    priceLevel: a.priceLevel,
+  })) : [];
 
   // 3. Generate the structured itinerary using Gemini
   const { object } = await generateObject({
@@ -70,17 +72,20 @@ export async function generateItinerary({
       - Vibe: ${vibe}
       - Budget: ${budget}
       
-      Available Activities (Use these as your primary source of truth, but you can refine descriptions to fit the flow):
-      ${JSON.stringify(availableActivities, null, 2)}
+      Grounding Information:
+      ${destination ? `We have the following known locations in ${destinationName}: ${JSON.stringify(availableActivities, null, 2)}` : `Note: ${destinationName} is not in our primary database. Use your internal expert knowledge to suggest REAL-WORLD, highly-rated locations.`}
       
-      Guidelines:
-      1. Logic: Group activities that are geographically close to each other in the same day.
-      2. Flow: Ensure a natural progression from Morning to Evening.
-      3. Variety: Try to match the user's ${vibe} vibe, but include legendary "must-see" spots if they fit.
-      4. Titles: Give each day a unique, evocative title that summarizes the 'theme' of that day.
-      5. Accuracy: Use the provided lat/lng coordinates and image URLs for the activities.
+      Critical Guidelines:
+      1. Dining: Every day MUST include exactly 3 meal stops: one for Breakfast, one for Lunch, and one for Dinner.
+      2. Quality: Only suggest restaurants and landmarks with a reputation for excellence (Ratings 4.0+). Avoid generic or low-quality tourist traps.
+      3. Price Balance: Ensure the suggested spots match the user's ${budget} budget.
+      4. Logic: Group activities that are geographically close to each other in the same day.
+      5. Variety: Include a mix of LANDMARKs, RESTAURANTs, and local ACTIVITIEs.
+      6. Accuracy: For new locations, provide realistic latitude/longitude coordinates.
+      7. Imagery: If suggesting a new place, leave the image field as null (we will handle it later).
     `,
   });
 
   return object;
 }
+

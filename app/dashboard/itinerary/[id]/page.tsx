@@ -9,6 +9,10 @@ interface Activity {
   lat: number;
   lng: number;
   timeOfDay: "Morning" | "Afternoon" | "Evening";
+  category: "RESTAURANT" | "HOTEL" | "LANDMARK" | "ACTIVITY" | "TRANSPORT";
+  mealType: "BREAKFAST" | "LUNCH" | "DINNER" | "SNACK" | "NONE";
+  rating: number;
+  priceLevel: string;
 }
 
 interface Day {
@@ -19,6 +23,7 @@ interface Day {
 
 interface ItineraryData {
   destination: string;
+  heroImage?: string;
   days: Day[];
 }
 
@@ -37,7 +42,7 @@ export default async function ItineraryViewPage({ params }: { params: Promise<{ 
   });
 
   const data = itinerary.data as unknown as ItineraryData;
-  const heroImage = destination?.image || "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop";
+  const heroImage = data.heroImage || destination?.image || "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop";
 
   return (
     <ItineraryViewClient

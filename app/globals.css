@@ -146,7 +146,7 @@
 
 /* While a view transition is running, suppress per‑element
    CSS transitions so they don't fight the clip‑path reveal */
-html::view-transition-old(root) *,
-html::view-transition-new(root) * {
+::view-transition-old(root),
+::view-transition-new(root) {
   transition: none !important;
 }
