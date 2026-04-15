@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { handleLogout } from "@/app/actions/auth";
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 
 interface UserProp {
   name?: string | null;
@@ -50,10 +51,10 @@ const Navbar = ({ user }: { user?: UserProp }) => {
         animate={{ y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
-            ? "glass border-b border-border/50 shadow-lg shadow-black/10"
-            : isLanding
-              ? "bg-transparent"
-              : "glass"
+          ? "glass border-b border-border/50 shadow-lg shadow-black/10"
+          : isLanding
+            ? "bg-transparent"
+            : "glass"
           }`}
       >
         <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between h-16 md:h-20">
@@ -65,15 +66,14 @@ const Navbar = ({ user }: { user?: UserProp }) => {
               TravelPulse
             </span>
           </Link>
-
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
               <Link
                 key={link.to}
                 href={link.to}
                 className={`text-sm font-medium transition-colors duration-300 ${pathname.startsWith(link.to)
-                    ? "text-primary"
-                    : "text-muted-foreground hover:text-foreground"
+                  ? "text-primary"
+                  : "text-muted-foreground hover:text-foreground"
                   }`}
               >
                 {link.label}
@@ -87,58 +87,64 @@ const Navbar = ({ user }: { user?: UserProp }) => {
             </Link>
 
             {mounted && user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center gap-2 hover:opacity-80 transition-opacity outline-none cursor-pointer">
-                  <Avatar className="w-9 h-9 border-2 border-primary/20 pointer-events-none">
-                    <AvatarImage src={user.image ?? ""} alt={user.name ?? "User"} />
-                    <AvatarFallback className="bg-primary/10 text-primary font-bold">
-                      {user.name?.charAt(0) ?? "U"}
-                    </AvatarFallback>
-                  </Avatar>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-64 p-2 rounded-2xl glass border-border/50 shadow-2xl mt-2">
-                  <DropdownMenuGroup>
-                    <DropdownMenuLabel className="p-3">
-                      <div className="flex flex-col gap-0.5">
-                        <p className="text-sm font-semibold">{user.name}</p>
-                        <p className="text-xs text-muted-foreground font-normal">{user.email}</p>
-                      </div>
-                    </DropdownMenuLabel>
-                  </DropdownMenuGroup>
-                  <DropdownMenuSeparator className="bg-border/50" />
-                  <DropdownMenuItem className="p-0 overflow-hidden">
-                    <Link href="/dashboard" className="flex items-center gap-3 w-full p-3 hover:bg-primary/10 transition-colors">
-                      <Zap className="w-4 h-4 text-primary" />
-                      <span className="text-sm">Dashboard</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="p-0 overflow-hidden">
-                    <Link href="/dashboard/wishlist" className="flex items-center gap-3 w-full p-3 hover:bg-primary/10 transition-colors">
-                      <Heart className="w-4 h-4 text-primary" />
-                      <span className="text-sm">Wishlist</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="flex items-center gap-3 p-3 cursor-pointer hover:bg-primary/10 transition-colors">
-                    <Settings className="w-4 h-4 text-primary" />
-                    <span className="text-sm">Settings</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator className="bg-border/50" />
-                  <DropdownMenuItem
-                    onClick={() => handleLogout()}
-                    className="flex items-center gap-3 p-3 rounded-xl cursor-pointer text-destructive hover:bg-destructive/10 transition-colors focus:bg-destructive/10 focus:text-destructive"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    <span className="text-sm font-medium">Log out</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <div className="flex items-center gap-4">
+                <AnimatedThemeToggler />
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="flex items-center gap-2 hover:opacity-80 transition-opacity outline-none cursor-pointer">
+                    <Avatar className="w-9 h-9 border-2 border-primary/20 pointer-events-none">
+                      <AvatarImage src={user.image ?? ""} alt={user.name ?? "User"} />
+                      <AvatarFallback className="bg-primary/10 text-primary font-bold">
+                        {user.name?.charAt(0) ?? "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-64 p-2 rounded-2xl glass border-border/50 shadow-2xl mt-2">
+                    <DropdownMenuGroup>
+                      <DropdownMenuLabel className="p-3">
+                        <div className="flex flex-col gap-0.5">
+                          <p className="text-sm font-semibold">{user.name}</p>
+                          <p className="text-xs text-muted-foreground font-normal">{user.email}</p>
+                        </div>
+                      </DropdownMenuLabel>
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator className="bg-border/50" />
+                    <DropdownMenuItem className="p-0 overflow-hidden">
+                      <Link href="/dashboard" className="flex items-center gap-3 w-full p-3 hover:bg-primary/10 transition-colors">
+                        <Zap className="w-4 h-4 text-primary" />
+                        <span className="text-sm">Dashboard</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="p-0 overflow-hidden">
+                      <Link href="/dashboard/wishlist" className="flex items-center gap-3 w-full p-3 hover:bg-primary/10 transition-colors">
+                        <Heart className="w-4 h-4 text-primary" />
+                        <span className="text-sm">Wishlist</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="flex items-center gap-3 p-3 cursor-pointer hover:bg-primary/10 transition-colors">
+                      <Settings className="w-4 h-4 text-primary" />
+                      <span className="text-sm">Settings</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator className="bg-border/50" />
+                    <DropdownMenuItem
+                      onClick={() => handleLogout()}
+                      className="flex items-center gap-3 p-3 rounded-xl cursor-pointer text-destructive hover:bg-destructive/10 transition-colors focus:bg-destructive/10 focus:text-destructive"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span className="text-sm font-medium">Log out</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             ) : mounted && !user ? (
-              <Link
-                href="/login"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Sign In
-              </Link>
+              <div className="flex items-center gap-4">
+                <AnimatedThemeToggler />
+                <Link
+                  href="/login"
+                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Sign In
+                </Link>
+              </div>
             ) : (
               <div className="w-20" /> // Spacer to prevent layout shift during mount
             )}
