@@ -67,7 +67,10 @@ export async function generateItinerary(formData: FormData) {
         create: { 
           name: destination, 
           image: destImage,
-          description: `Exploring the wonders of ${destination}`
+          description: `Exploring the wonders of ${destination}`,
+          lat: (generatedData as any).lat,
+          lng: (generatedData as any).lng,
+          tags: []
         }
       });
       

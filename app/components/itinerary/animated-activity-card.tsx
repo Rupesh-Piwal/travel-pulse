@@ -1,16 +1,17 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Badge } from "@/components/ui/badge";
-import { Clock, MapPin, Map as MapIcon } from "lucide-react";
+import { Clock, MapPin } from "lucide-react";
+
+interface Activity {
+  title: string;
+  description: string;
+  image: string | null;
+  timeOfDay: string;
+}
 
 interface ActivityProps {
-  activity: {
-    title: string;
-    description: string;
-    image: string | null;
-    timeOfDay: string;
-  };
+  activity: Activity;
   index: number;
 }
 
@@ -20,36 +21,68 @@ export default function AnimatedActivityCard({ activity, index }: ActivityProps)
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5, delay: index * 0.1, type: "spring", stiffness: 100 }}
-      className="relative group/act"
+      transition={{ duration: 0.8, delay: index * 0.1, ease: [0.21, 0.47, 0.32, 0.98] }}
+      className="relative py-20 group/act"
     >
-      {/* Elaborate Activity Bullet */}
-      <div className="absolute -left-[35px] top-6 w-5 h-5 rounded-full bg-background border-[4px] border-orange-600 transition-transform duration-500 group-hover/act:scale-125 z-10 shadow-sm" />
-      
-      <div className="bg-card/40 backdrop-blur-sm rounded-3xl border border-border/50 p-5 hover:bg-card/80 hover:border-orange-500/40 transition-all duration-300 shadow-sm hover:shadow-[0_15px_30px_-10px_rgba(234,88,12,0.15)] flex flex-col md:flex-row gap-5">
-        <div className="w-full md:w-32 h-32 rounded-2xl overflow-hidden flex-shrink-0 shadow-md group-hover/act:shadow-lg transition-shadow duration-500">
-          {activity.image ? (
-            <img src={activity.image} alt={activity.title} className="w-full h-full object-cover group-hover/act:scale-110 transition-transform duration-700" />
-          ) : (
-            <div className="w-full h-full bg-accent/20 flex items-center justify-center">
-              <MapIcon className="w-8 h-8 text-muted-foreground/30" />
-            </div>
-          )}
-        </div>
-        <div className="flex-1 space-y-2.5 flex flex-col justify-center">
-          <div className="flex items-start justify-between gap-2">
-            <h3 className="text-xl font-bold group-hover/act:text-orange-500 transition-colors duration-300 leading-tight">
+      {/* Timeline Bullet (Soft Peach Glow) */}
+      <div className="absolute -left-[30px] md:-left-[41px] top-[100px] w-4 h-4 rounded-full bg-[#F5EFE0] border-2 border-[#e5dfd0] flex items-center justify-center z-20 group-hover:border-[#fca5a5]/50 transition-colors duration-500 shadow-sm">
+        <div className="w-1.5 h-1.5 bg-[#fca5a5] rounded-full shadow-[0_0_10px_rgba(252,165,165,0.8)]" />
+      </div>
+
+      <div className="flex flex-col md:flex-row gap-12 md:items-center">
+        
+        {/* Editorial Text Area */}
+        <div className="flex-1 space-y-6">
+          <div className="flex items-center gap-4">
+             <span className="text-[10px] font-black uppercase tracking-[0.25em] text-zinc-400">
+               {activity.timeOfDay} Journey
+             </span>
+             <div className="h-px w-8 bg-zinc-200/50" />
+          </div>
+
+          <div className="space-y-4">
+            <h3 className="text-3xl md:text-4xl font-serif text-zinc-950 leading-tight group-hover:text-[#fca5a5] transition-colors duration-500">
               {activity.title}
             </h3>
-            <Badge variant="secondary" className="bg-orange-500/10 text-orange-600 border-none px-2.5 py-0.5 font-bold text-[10px] uppercase tracking-wider whitespace-nowrap shrink-0">
-              <Clock className="w-3 h-3 mr-1 inline-block" />
-              {activity.timeOfDay}
-            </Badge>
+            <p className="text-zinc-500 text-base md:text-lg font-light leading-relaxed max-w-2xl">
+              {activity.description}
+            </p>
           </div>
-          <p className="text-muted-foreground text-sm font-medium opacity-90 line-clamp-2 md:line-clamp-3">
-            {activity.description}
-          </p>
+
+          <div className="flex items-center gap-6 pt-4">
+             <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[#fca5a5]">
+               <MapPin className="w-3.5 h-3.5" />
+               Curated Spot
+             </div>
+             <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+               <Clock className="w-3.5 h-3.5" />
+               Recommended 2h
+             </div>
+          </div>
         </div>
+
+        {/* Cinematic Image Area */}
+        <div className="w-full md:w-[280px] lg:w-[350px] aspect-[4/3] md:aspect-square relative flex-shrink-0 group-hover:scale-[1.02] transition-transform duration-1000 ease-out">
+          <div className="absolute inset-0 bg-[#e5dfd0]/30 rounded-3xl overflow-hidden shadow-[0_20px_50px_-15px_rgba(0,0,0,0.1)] group-hover:shadow-[0_40px_80px_-20px_rgba(252,165,165,0.15)] transition-all duration-700">
+            {activity.image ? (
+              <>
+                <img 
+                  src={activity.image} 
+                  alt={activity.title} 
+                  className="w-full h-full object-cover scale-100 group-hover:scale-110 transition-transform duration-[8s] ease-out" 
+                />
+                <div className="absolute inset-0 shadow-[inset_0_0_80px_rgba(0,0,0,0.05)]" />
+              </>
+            ) : (
+              <div className="w-full h-full flex items-center justify-center p-12">
+                <div className="w-full h-full flex items-center justify-center bg-zinc-50 border-2 border-dashed border-zinc-200 rounded-2xl">
+                  <span className="text-[10px] font-black text-zinc-300 uppercase tracking-widest">Image Placeholder</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
       </div>
     </motion.div>
   );

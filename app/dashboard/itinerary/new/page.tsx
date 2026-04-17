@@ -1,19 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useTransition } from "react";
 import { motion } from "framer-motion";
 import { 
   MapPin, 
   Calendar, 
   Sparkles,
-  ChevronRight
+  ChevronRight,
+  AlertCircle
 } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { generateItinerary } from "@/app/actions/itinerary";
+import { itinerarySchema, type ItineraryFormValues } from "@/lib/schemas/itinerary";
 
-const budgets = ["Budget", "Mid-Range", "Luxury"];
+const budgets = ["Budget", "Mid-Range", "Luxury"] as const;
 const vibes = [
   "Adventure", 
   "Foodie", 
@@ -21,29 +29,39 @@ const vibes = [
   "Relaxation", 
   "Romantic", 
   "Photography"
-];
-
-import { useRouter } from "next/navigation";
-import { useTransition } from "react";
-import { toast } from "sonner";
-import { generateItinerary } from "@/app/actions/itinerary";
+] as const;
 
 export default function NewItineraryPage() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [budget, setBudget] = useState("Mid-Range");
-  const [selectedVibes, setSelectedVibes] = useState<string[]>([]);
 
-  const toggleVibe = (vibe: string) => {
-    setSelectedVibes(prev => 
-      prev.includes(vibe) 
-        ? prev.filter(v => v !== vibe) 
-        : [...prev, vibe]
-    );
-  };
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<ItineraryFormValues>({
+    resolver: zodResolver(itinerarySchema),
+    defaultValues: {
+      budget: "Mid-Range",
+      vibe: "",
+      duration: 3,
+    },
+  });
 
-  const handleSubmit = async (formData: FormData) => {
+  const selectedBudget = watch("budget");
+  const selectedVibe = watch("vibe");
+
+  const onSubmit = async (data: ItineraryFormValues) => {
     startTransition(async () => {
+      // Convert data to FormData for the server action
+      const formData = new FormData();
+      formData.append("destination", data.destination);
+      formData.append("duration", data.duration.toString());
+      formData.append("budget", data.budget);
+      formData.append("vibe", data.vibe);
+
       const result = await generateItinerary(formData);
       
       if (result.success) {
@@ -70,7 +88,7 @@ export default function NewItineraryPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto py-10">
+    <div className="max-w-3xl mx-auto py-10 px-4 md:px-0">
       <header className="mb-12 text-center">
         <motion.h1 
           initial={{ opacity: 0, y: 10 }}
@@ -89,53 +107,77 @@ export default function NewItineraryPage() {
         </motion.p>
       </header>
 
-      <form action={handleSubmit} className="space-y-10">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
         <section className="space-y-6">
+          {/* Destination */}
           <div className="space-y-3">
             <Label htmlFor="destination" className="text-sm font-medium ml-1">Destination</Label>
             <div className="relative group">
-              <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+              <MapPin className={cn(
+                "absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors",
+                errors.destination ? "text-destructive" : "text-muted-foreground group-focus-within:text-primary"
+              )} />
               <Input 
                 id="destination" 
-                name="destination"
+                {...register("destination")}
                 placeholder="Santorini, Greece" 
-                className="pl-12 h-14 bg-accent/20 border-border/50 focus:bg-accent/40 transition-all rounded-2xl"
-                required
+                className={cn(
+                  "pl-12 h-14 bg-accent/20 border-border/50 focus:bg-accent/40 transition-all rounded-2xl",
+                  errors.destination && "border-destructive/50 focus-visible:ring-destructive"
+                )}
                 disabled={isPending}
               />
             </div>
+            {errors.destination && (
+              <p className="text-xs text-destructive flex items-center gap-1.5 ml-1 mt-1 animate-in fade-in slide-in-from-top-1">
+                <AlertCircle className="w-3.5 h-3.5" />
+                {errors.destination.message}
+              </p>
+            )}
           </div>
 
+          {/* Duration */}
           <div className="space-y-3">
             <Label htmlFor="duration" className="text-sm font-medium ml-1">Duration (Days)</Label>
             <div className="relative group">
-              <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+              <Calendar className={cn(
+                "absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors",
+                errors.duration ? "text-destructive" : "text-muted-foreground group-focus-within:text-primary"
+              )} />
               <Input 
                 id="duration" 
-                name="duration"
                 type="number"
-                placeholder="5" 
-                className="pl-12 h-14 bg-accent/20 border-border/50 focus:bg-accent/40 transition-all rounded-2xl"
-                required
+                {...register("duration", { valueAsNumber: true })}
+                placeholder="3" 
+                className={cn(
+                  "pl-12 h-14 bg-accent/20 border-border/50 focus:bg-accent/40 transition-all rounded-2xl",
+                  errors.duration && "border-destructive/50 focus-visible:ring-destructive"
+                )}
                 disabled={isPending}
               />
             </div>
+            {errors.duration && (
+              <p className="text-xs text-destructive flex items-center gap-1.5 ml-1 mt-1 animate-in fade-in slide-in-from-top-1">
+                <AlertCircle className="w-3.5 h-3.5" />
+                {errors.duration.message}
+              </p>
+            )}
           </div>
         </section>
 
+        {/* Budget Selection */}
         <section className="space-y-4">
           <Label className="text-sm font-medium ml-1">Budget</Label>
-          <input type="hidden" name="budget" value={budget} />
           <div className="flex p-1.5 bg-accent/20 rounded-2xl border border-border/50 glass">
             {budgets.map((b) => (
               <button
                 key={b}
                 type="button"
                 disabled={isPending}
-                onClick={() => setBudget(b)}
+                onClick={() => setValue("budget", b)}
                 className={cn(
                   "flex-1 py-3 rounded-xl text-sm font-medium transition-all duration-300",
-                  budget === b 
+                  selectedBudget === b 
                     ? "bg-orange-600 text-white shadow-lg shadow-orange-950/20" 
                     : "text-muted-foreground hover:text-foreground disabled:opacity-50"
                 )}
@@ -144,23 +186,23 @@ export default function NewItineraryPage() {
               </button>
             ))}
           </div>
+          {errors.budget && <p className="text-xs text-destructive ml-1">{errors.budget.message}</p>}
         </section>
 
+        {/* Vibe Selection */}
         <section className="space-y-4">
           <Label className="text-sm font-medium ml-1">Vibe</Label>
-          <input type="hidden" name="vibe" value={selectedVibes[0] || ""} />
           <div className="flex flex-wrap gap-3">
-
             {vibes.map((v) => (
               <button
                 key={v}
                 type="button"
                 disabled={isPending}
-                onClick={() => toggleVibe(v)}
+                onClick={() => setValue("vibe", v)}
                 className={cn(
                   "px-5 py-2.5 rounded-full text-sm font-medium border transition-all duration-300",
-                  selectedVibes.includes(v)
-                    ? "bg-primary border-primary text-primary-foreground"
+                  selectedVibe === v
+                    ? "bg-primary border-primary text-primary-foreground shadow-md"
                     : "bg-accent/20 border-border/50 text-muted-foreground hover:border-border hover:bg-accent/40 disabled:opacity-50"
                 )}
               >
@@ -168,6 +210,12 @@ export default function NewItineraryPage() {
               </button>
             ))}
           </div>
+          {errors.vibe && (
+            <p className="text-xs text-destructive flex items-center gap-1.5 ml-1 animate-in fade-in slide-in-from-top-1">
+              <AlertCircle className="w-3.5 h-3.5" />
+              {errors.vibe.message}
+            </p>
+          )}
         </section>
 
         <Button 

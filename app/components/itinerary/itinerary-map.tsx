@@ -33,14 +33,17 @@ const isValidCoord = (val: any): boolean => {
 };
 
 const createCustomIcon = (dayNumber: number, isActive: boolean) => {
-  const size = isActive ? 40 : 32;
-  const bg = isActive ? "bg-orange-500" : "bg-orange-600";
-  const ring = isActive ? "ring-4 ring-orange-400/40" : "";
-  const scale = isActive ? "scale-110" : "";
+  const size = isActive ? 42 : 34;
+  const bg = isActive ? "bg-[#fca5a5]" : "bg-white";
+  const ring = isActive ? "ring-8 ring-[#fca5a5]/20" : "ring-4 ring-white/10";
+  const text = isActive ? "text-zinc-950" : "text-zinc-900";
 
   return L.divIcon({
     className: "custom-leaflet-marker",
-    html: `<div class="flex items-center justify-center w-[${size}px] h-[${size}px] rounded-full ${bg} ${ring} ${scale} border-[3px] border-background text-white font-bold text-sm shadow-xl transition-all duration-500 origin-bottom">${dayNumber}</div>`,
+    html: `<div class="flex items-center justify-center w-[${size}px] h-[${size}px] rounded-full ${bg} ${ring} border-2 border-zinc-950 ${text} font-black text-[10px] uppercase tracking-tighter shadow-2xl transition-all duration-700 origin-bottom transform hover:scale-110 active:scale-95 group">
+      <div class="absolute inset-0 rounded-full ${isActive ? 'animate-ping opacity-20' : 'opacity-0'} bg-[#fca5a5]"></div>
+      <span class="relative z-10">${dayNumber}</span>
+    </div>`,
     iconSize: [size, size],
     iconAnchor: [size / 2, size],
     popupAnchor: [0, -size],
@@ -144,7 +147,7 @@ export default function ItineraryMap({
       : [48.8566, 2.3522];
 
   return (
-    <div className="w-full h-full rounded-3xl overflow-hidden relative border border-border/50">
+    <div className="w-full h-full rounded-2xl lg:rounded-none overflow-hidden relative lg:border-none">
       <MapContainer
         center={defaultCenter}
         zoom={13}

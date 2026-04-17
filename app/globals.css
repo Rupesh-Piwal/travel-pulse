@@ -136,6 +136,23 @@
   }
 }
 
+@keyframes scroll-line {
+  0% { transform: translateY(-100%); }
+  50% { transform: translateY(0); }
+  100% { transform: translateY(100%); }
+}
+
+.animate-scroll-line {
+  animation: scroll-line 2s infinite ease-in-out;
+}
+
+.text-shadow-premium-black {
+  text-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.45),
+    0 10px 40px rgba(0, 0, 0, 0.35),
+    0 20px 80px rgba(0, 0, 0, 0.25);
+}
+
 /* View Transition: disable default cross‑fade so we control
    the radial‑clip animation from AnimatedThemeToggler only */
 ::view-transition-old(root),

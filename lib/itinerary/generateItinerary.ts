@@ -32,6 +32,8 @@ const daySchema = z.object({
 
 const itinerarySchema = z.object({
   destination: z.string(),
+  lat: z.number().describe("The latitude of the destination center"),
+  lng: z.number().describe("The longitude of the destination center"),
   days: z.array(daySchema),
 });
 
@@ -81,7 +83,7 @@ export async function generateItinerary({
       3. Price Balance: Ensure the suggested spots match the user's ${budget} budget.
       4. Logic: Group activities that are geographically close to each other in the same day.
       5. Variety: Include a mix of LANDMARKs, RESTAURANTs, and local ACTIVITIEs.
-      6. Accuracy: For new locations, provide realistic latitude/longitude coordinates.
+      6. Accuracy: For the destination and all activities, provide realistic latitude/longitude coordinates.
       7. Imagery: If suggesting a new place, leave the image field as null (we will handle it later).
     `,
   });
