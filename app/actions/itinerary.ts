@@ -42,19 +42,28 @@ export async function generateItinerary(formData: FormData) {
   const budget = budgetMap[budgetStr] || Budget.MID;
   const vibe = vibeMap[vibeStr] || Vibe.ADVENTURE;
 
+  const totalStart = performance.now();
+
   try {
-    // Deduct credits first
+    // 1. Credit Deduction
+    console.log("💳 Deducting credits...");
     await deductCredits(userId, 1);
 
-    // Generate data
+    // 2. AI Generation
+    console.log("🤖 Starting AI Itinerary Generation...");
+    const aiStart = performance.now();
     const generatedData = await runGenerator({
       destinationName: destination,
       days,
       vibe,
       budget,
     });
+    const aiEnd = performance.now();
+    console.log(`✅ AI Generation Complete: ${((aiEnd - aiStart) / 1000).toFixed(2)}s`);
 
-    // --- Dynamic Image Enrichment ---
+    // 3. Dynamic Image Enrichment
+    console.log("📸 Starting Image Enrichment...");
+    const imgStart = performance.now();
     try {
       // 1. Fetch a hero image for the destination
       const destImage = await fetchUnsplashImage(destination, "landscape");
@@ -75,30 +84,30 @@ export async function generateItinerary(formData: FormData) {
       });
       
       // 2. Fetch images for each activity in each day
-      // We do this in parallel to keep it fast
       await Promise.all(
         generatedData.days.map(async (day) => {
           await Promise.all(
             day.activities.map(async (activity) => {
               if (!activity.image) {
-                // NEW: Pass destination as fallbackQuery
                 activity.image = await fetchUnsplashImage(
                   `${activity.title} ${destination}`, 
                   "squarish",
-                  destination // FALLBACK: Use city image if spot isn't found
+                  destination
                 );
               }
             })
           );
         })
       );
-
-      // --- END Dynamic Image Enrichment ---
     } catch (imgError) {
-      console.error("Image enrichment failed (non-critical):", imgError);
+      console.error("❌ Image enrichment failed (non-critical):", imgError);
     }
+    const imgEnd = performance.now();
+    console.log(`✅ Image Enrichment Complete: ${((imgEnd - imgStart) / 1000).toFixed(2)}s`);
 
-    // Create record with status DONE
+    // 4. Database Persistence
+    console.log("💾 Saving itinerary to database...");
+    const dbStart = performance.now();
     const itinerary = await prisma.itinerary.create({
       data: {
         userId,
@@ -110,6 +119,11 @@ export async function generateItinerary(formData: FormData) {
         data: generatedData as any,
       },
     });
+    const dbEnd = performance.now();
+    console.log(`✅ Database Persistence Complete: ${((dbEnd - dbStart) / 1000).toFixed(2)}s`);
+
+    const totalEnd = performance.now();
+    console.log(`🚀 TOTAL GENERATION TIME: ${((totalEnd - totalStart) / 1000).toFixed(2)}s`);
 
     return { success: true, id: itinerary.id };
   } catch (error: any) {

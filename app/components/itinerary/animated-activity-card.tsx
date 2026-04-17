@@ -1,13 +1,20 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Clock, MapPin } from "lucide-react";
+import { Clock, MapPin, Star, Lightbulb, ExternalLink } from "lucide-react";
 
 interface Activity {
   title: string;
   description: string;
   image: string | null;
   timeOfDay: string;
+  category?: string;
+  mealType?: string;
+  rating?: number;
+  priceLevel?: string;
+  address?: string;
+  duration?: string;
+  proTip?: string;
 }
 
 interface ActivityProps {
@@ -15,75 +22,121 @@ interface ActivityProps {
   index: number;
 }
 
+const CATEGORY_EMOJI: Record<string, string> = {
+  RESTAURANT: "🍽️", LANDMARK: "🏛️", ACTIVITY: "🎯", HOTEL: "🏨", TRANSPORT: "🚆",
+};
+
+const MEAL_EMOJI: Record<string, string> = {
+  BREAKFAST: "☕", LUNCH: "🍝", DINNER: "🥂", SNACK: "🧁",
+};
+
+const TIME_COLORS: Record<string, string> = {
+  Morning: "from-amber-200/40 to-orange-100/20",
+  Afternoon: "from-sky-200/30 to-blue-100/20",
+  Evening: "from-indigo-200/40 to-purple-100/20",
+};
+
 export default function AnimatedActivityCard({ activity, index }: ActivityProps) {
+  const mapsUrl = activity.address ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(activity.address)}` : null;
+  const isEven = index % 2 === 0;
+  const emoji = CATEGORY_EMOJI[activity.category || "ACTIVITY"] || "📍";
+  const mealEmoji = activity.mealType && activity.mealType !== "NONE" ? MEAL_EMOJI[activity.mealType] : null;
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
+    <motion.article
+      initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.8, delay: index * 0.1, ease: [0.21, 0.47, 0.32, 0.98] }}
-      className="relative py-20 group/act"
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.9, delay: index * 0.03, ease: [0.22, 1, 0.36, 1] }}
+      className="group/act relative"
     >
-      {/* Timeline Bullet (Soft Peach Glow) */}
-      <div className="absolute -left-[30px] md:-left-[41px] top-[100px] w-4 h-4 rounded-full bg-[#F5EFE0] border-2 border-[#e5dfd0] flex items-center justify-center z-20 group-hover:border-[#fca5a5]/50 transition-colors duration-500 shadow-sm">
-        <div className="w-1.5 h-1.5 bg-[#fca5a5] rounded-full shadow-[0_0_10px_rgba(252,165,165,0.8)]" />
-      </div>
-
-      <div className="flex flex-col md:flex-row gap-12 md:items-center">
+      <div className={`flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} gap-0 rounded-[2rem] overflow-hidden bg-white border border-zinc-100/60 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_24px_80px_-16px_rgba(0,0,0,0.1)] transition-all duration-700`}>
         
-        {/* Editorial Text Area */}
-        <div className="flex-1 space-y-6">
-          <div className="flex items-center gap-4">
-             <span className="text-[10px] font-black uppercase tracking-[0.25em] text-zinc-400">
-               {activity.timeOfDay} Journey
-             </span>
-             <div className="h-px w-8 bg-zinc-200/50" />
-          </div>
-
-          <div className="space-y-4">
-            <h3 className="text-3xl md:text-4xl font-serif text-zinc-950 leading-tight group-hover:text-[#fca5a5] transition-colors duration-500">
-              {activity.title}
-            </h3>
-            <p className="text-zinc-500 text-base md:text-lg font-light leading-relaxed max-w-2xl">
-              {activity.description}
-            </p>
-          </div>
-
-          <div className="flex items-center gap-6 pt-4">
-             <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[#fca5a5]">
-               <MapPin className="w-3.5 h-3.5" />
-               Curated Spot
-             </div>
-             <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-zinc-400">
-               <Clock className="w-3.5 h-3.5" />
-               Recommended 2h
-             </div>
-          </div>
-        </div>
-
-        {/* Cinematic Image Area */}
-        <div className="w-full md:w-[280px] lg:w-[350px] aspect-[4/3] md:aspect-square relative flex-shrink-0 group-hover:scale-[1.02] transition-transform duration-1000 ease-out">
-          <div className="absolute inset-0 bg-[#e5dfd0]/30 rounded-3xl overflow-hidden shadow-[0_20px_50px_-15px_rgba(0,0,0,0.1)] group-hover:shadow-[0_40px_80px_-20px_rgba(252,165,165,0.15)] transition-all duration-700">
-            {activity.image ? (
-              <>
-                <img 
-                  src={activity.image} 
-                  alt={activity.title} 
-                  className="w-full h-full object-cover scale-100 group-hover:scale-110 transition-transform duration-[8s] ease-out" 
-                />
-                <div className="absolute inset-0 shadow-[inset_0_0_80px_rgba(0,0,0,0.05)]" />
-              </>
-            ) : (
-              <div className="w-full h-full flex items-center justify-center p-12">
-                <div className="w-full h-full flex items-center justify-center bg-zinc-50 border-2 border-dashed border-zinc-200 rounded-2xl">
-                  <span className="text-[10px] font-black text-zinc-300 uppercase tracking-widest">Image Placeholder</span>
-                </div>
+        {/* ──── Image Panel (50%) ──── */}
+        {activity.image && (
+          <div className="relative w-full md:w-[50%] min-h-[260px] md:min-h-[320px] overflow-hidden">
+            <img 
+              src={activity.image} 
+              alt={activity.title} 
+              className="absolute inset-0 w-full h-full object-cover group-hover/act:scale-[1.06] transition-transform duration-[4s] ease-out" 
+            />
+            {/* Subtle vignette */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+            
+            {/* Minimal floating info */}
+            <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between z-10">
+              <div className="flex items-center gap-2">
+                <span className="text-2xl drop-shadow-lg">{emoji}</span>
+                {mealEmoji && <span className="text-lg drop-shadow-lg">{mealEmoji}</span>}
               </div>
+              
+              {activity.rating && (
+                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-black/30 backdrop-blur-xl rounded-full">
+                  <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                  <span className="text-[12px] font-semibold text-white">{activity.rating.toFixed(1)}</span>
+                  {activity.priceLevel && (
+                    <span className="text-[12px] text-white/60 ml-1">{activity.priceLevel}</span>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* ──── Content Panel ──── */}
+        <div className={`flex-1 flex flex-col justify-center p-8 md:p-10 space-y-5 bg-gradient-to-br ${TIME_COLORS[activity.timeOfDay] || TIME_COLORS.Morning}`}>
+          
+          {/* Time + Duration Row */}
+          <div className="flex items-center gap-3 text-zinc-400">
+            <span className="text-[10px] font-black uppercase tracking-[0.3em]">
+              {activity.timeOfDay}
+            </span>
+            {activity.duration && (
+              <>
+                <div className="w-4 h-px bg-zinc-300" />
+                <div className="flex items-center gap-1.5">
+                  <Clock className="w-3 h-3" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest">{activity.duration}</span>
+                </div>
+              </>
             )}
           </div>
-        </div>
 
+          {/* Title — dramatic serif */}
+          <h3 className="text-2xl md:text-[1.75rem] font-serif text-zinc-950 leading-[1.15] tracking-tight">
+            {activity.title}
+          </h3>
+
+          {/* Description */}
+          <p className="text-[13px] text-zinc-500 leading-[1.8] font-light max-w-md">
+            {activity.description}
+          </p>
+
+          {/* Address */}
+          {activity.address && mapsUrl && (
+            <a 
+              href={mapsUrl} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-zinc-400 hover:text-orange-600 transition-colors duration-300 group/addr w-fit"
+            >
+              <MapPin className="w-3.5 h-3.5 shrink-0" />
+              <span className="text-[12px] truncate max-w-[250px]">{activity.address}</span>
+              <ExternalLink className="w-3 h-3 opacity-0 group-hover/addr:opacity-100 transition-opacity shrink-0" />
+            </a>
+          )}
+
+          {/* Pro Tip */}
+          {activity.proTip && (
+            <div className="flex gap-3 pt-2">
+              <Lightbulb className="w-4 h-4 text-orange-400 shrink-0 mt-0.5" />
+              <p className="text-[12px] text-zinc-500/80 italic leading-relaxed max-w-sm">
+                &ldquo;{activity.proTip}&rdquo;
+              </p>
+            </div>
+          )}
+        </div>
       </div>
-    </motion.div>
+    </motion.article>
   );
 }
