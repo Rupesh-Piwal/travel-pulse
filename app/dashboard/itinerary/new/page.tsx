@@ -3,7 +3,6 @@
 import { useTransition } from "react";
 import { motion } from "framer-motion";
 import { 
-  MapPin, 
   Calendar, 
   Sparkles,
   ChevronRight,
@@ -14,12 +13,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { generateItinerary } from "@/app/actions/itinerary";
 import { itinerarySchema, type ItineraryFormValues } from "@/lib/schemas/itinerary";
+import LocationInput from "@/app/components/itinerary/location-input";
+import { Input } from "@/components/ui/input";
 
 const budgets = ["Budget", "Mid-Range", "Luxury"] as const;
 const vibes = [
@@ -112,22 +112,14 @@ export default function NewItineraryPage() {
           {/* Destination */}
           <div className="space-y-3">
             <Label htmlFor="destination" className="text-sm font-medium ml-1">Destination</Label>
-            <div className="relative group">
-              <MapPin className={cn(
-                "absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors",
-                errors.destination ? "text-destructive" : "text-muted-foreground group-focus-within:text-primary"
-              )} />
-              <Input 
-                id="destination" 
-                {...register("destination")}
-                placeholder="Santorini, Greece" 
-                className={cn(
-                  "pl-12 h-14 bg-accent/20 border-border/50 focus:bg-accent/40 transition-all rounded-2xl",
-                  errors.destination && "border-destructive/50 focus-visible:ring-destructive"
-                )}
-                disabled={isPending}
-              />
-            </div>
+            <LocationInput 
+              defaultValue={watch("destination")}
+              onSelect={(loc) => {
+                const fullName = loc.isFeatured ? `${loc.name}, ${loc.country}` : `${loc.name}${loc.city ? `, ${loc.city}` : ""}, ${loc.country}`;
+                setValue("destination", fullName, { shouldValidate: true });
+              }}
+              disabled={isPending}
+            />
             {errors.destination && (
               <p className="text-xs text-destructive flex items-center gap-1.5 ml-1 mt-1 animate-in fade-in slide-in-from-top-1">
                 <AlertCircle className="w-3.5 h-3.5" />

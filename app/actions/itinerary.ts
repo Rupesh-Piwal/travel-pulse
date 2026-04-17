@@ -81,7 +81,12 @@ export async function generateItinerary(formData: FormData) {
           await Promise.all(
             day.activities.map(async (activity) => {
               if (!activity.image) {
-                activity.image = await fetchUnsplashImage(`${activity.title} ${destination}`, "squarish");
+                // NEW: Pass destination as fallbackQuery
+                activity.image = await fetchUnsplashImage(
+                  `${activity.title} ${destination}`, 
+                  "squarish",
+                  destination // FALLBACK: Use city image if spot isn't found
+                );
               }
             })
           );
