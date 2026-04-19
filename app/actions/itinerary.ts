@@ -9,6 +9,8 @@ import { generateItinerary as runGenerator } from "@/lib/itinerary/generateItine
 import { Vibe, Budget, ItineraryStatus } from "../../generated/prisma/client";
 import { fetchUnsplashImage } from "@/lib/unsplash";
 
+import { addItineraryJob } from "@/lib/bull/itinerary-queue";
+
 export async function generateItinerary(formData: FormData) {
   const session = await auth();
   const userId = session?.user?.id;
@@ -34,7 +36,6 @@ export async function generateItinerary(formData: FormData) {
     "Foodie": Vibe.FOODIE,
     "Cultural": Vibe.CULTURAL,
     "Relaxation": Vibe.RELAXED,
-    // Fallbacks for others
     "Romantic": Vibe.RELAXED,
     "Photography": Vibe.CULTURAL
   };
@@ -42,72 +43,13 @@ export async function generateItinerary(formData: FormData) {
   const budget = budgetMap[budgetStr] || Budget.MID;
   const vibe = vibeMap[vibeStr] || Vibe.ADVENTURE;
 
-  const totalStart = performance.now();
-
   try {
-    // 1. Credit Deduction
+    // 1. Credit Deduction (Synchronous to ensure payment)
     console.log("💳 Deducting credits...");
     await deductCredits(userId, 1);
 
-    // 2. AI Generation
-    console.log("🤖 Starting AI Itinerary Generation...");
-    const aiStart = performance.now();
-    const generatedData = await runGenerator({
-      destinationName: destination,
-      days,
-      vibe,
-      budget,
-    });
-    const aiEnd = performance.now();
-    console.log(`✅ AI Generation Complete: ${((aiEnd - aiStart) / 1000).toFixed(2)}s`);
-
-    // 3. Dynamic Image Enrichment
-    console.log("📸 Starting Image Enrichment...");
-    const imgStart = performance.now();
-    try {
-      // 1. Fetch a hero image for the destination
-      const destImage = await fetchUnsplashImage(destination, "landscape");
-      (generatedData as any).heroImage = destImage;
-      
-      // Update destination image in background if it's missing
-      await prisma.destination.upsert({
-        where: { name: destination },
-        update: { image: destImage },
-        create: { 
-          name: destination, 
-          image: destImage,
-          description: `Exploring the wonders of ${destination}`,
-          lat: (generatedData as any).lat,
-          lng: (generatedData as any).lng,
-          tags: []
-        }
-      });
-      
-      // 2. Fetch images for each activity in each day
-      await Promise.all(
-        generatedData.days.map(async (day) => {
-          await Promise.all(
-            day.activities.map(async (activity) => {
-              if (!activity.image) {
-                activity.image = await fetchUnsplashImage(
-                  `${activity.title} ${destination}`, 
-                  "squarish",
-                  destination
-                );
-              }
-            })
-          );
-        })
-      );
-    } catch (imgError) {
-      console.error("❌ Image enrichment failed (non-critical):", imgError);
-    }
-    const imgEnd = performance.now();
-    console.log(`✅ Image Enrichment Complete: ${((imgEnd - imgStart) / 1000).toFixed(2)}s`);
-
-    // 4. Database Persistence
-    console.log("💾 Saving itinerary to database...");
-    const dbStart = performance.now();
+    // 2. Create Placeholder Itinerary with QUEUED status
+    console.log("💾 Creating placeholder itinerary record...");
     const itinerary = await prisma.itinerary.create({
       data: {
         userId,
@@ -115,31 +57,24 @@ export async function generateItinerary(formData: FormData) {
         days,
         vibe,
         budget,
-        status: ItineraryStatus.DONE,
-        data: generatedData as any,
+        status: ItineraryStatus.QUEUED,
       },
     });
-    const dbEnd = performance.now();
-    console.log(`✅ Database Persistence Complete: ${((dbEnd - dbStart) / 1000).toFixed(2)}s`);
 
-    const totalEnd = performance.now();
-    console.log(`🚀 TOTAL GENERATION TIME: ${((totalEnd - totalStart) / 1000).toFixed(2)}s`);
+    // 3. Add to BullMQ Queue
+    console.log("📨 Adding generation job to queue...");
+    await addItineraryJob(itinerary.id);
 
     return { success: true, id: itinerary.id };
   } catch (error: any) {
-    console.error("Generation failed:", error);
+    console.error("Initiating generation failed:", error);
     
-    // Check for specific credit error
     if (error.message === "Insufficient credits") {
       return { success: false, error: "INSUFFICIENT_CREDITS" };
-    }
-
-    // Check for AI Rate Limits (429)
-    if (error.statusCode === 429) {
-      return { success: false, error: "RATE_LIMIT" };
     }
 
     return { success: false, error: "GENERIC_ERROR" };
   }
 }
+
 

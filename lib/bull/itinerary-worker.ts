@@ -1,0 +1,122 @@
+import { Worker, Job } from "bullmq";
+import { connection } from "./connection";
+import { prisma } from "../prisma";
+import { generateItinerary as runGenerator } from "../itinerary/generateItinerary";
+import { fetchUnsplashImage } from "../unsplash";
+import { ItineraryStatus } from "../../generated/prisma/client";
+
+export const ITINERARY_QUEUE_NAME = "itinerary-generation";
+
+const worker = new Worker(
+  ITINERARY_QUEUE_NAME,
+  async (job: Job) => {
+    const { itineraryId } = job.data;
+    console.log(`👷 Worker processing job ${job.id} for itinerary ${itineraryId}`);
+
+    // FETCH ITINERARY
+    const itinerary = await prisma.itinerary.findUnique({
+      where: { id: itineraryId },
+    });
+
+    if (!itinerary) {
+      throw new Error(`Itinerary ${itineraryId} not found`);
+    }
+
+    try {
+      // 1. UPDATE STATUS TO PROCESSING
+      await prisma.itinerary.update({
+        where: { id: itineraryId },
+        data: { status: ItineraryStatus.PROCESSING },
+      });
+
+      // 2. AI GENERATION
+      console.log(`🤖 Starting AI Generation for ${itinerary.destination}...`);
+      const generatedData = await runGenerator({
+        destinationName: itinerary.destination,
+        days: itinerary.days,
+        vibe: itinerary.vibe,
+        budget: itinerary.budget,
+      });
+
+      // 3. IMAGE ENRICHMENT
+      console.log(`📸 Starting Image Enrichment...`);
+      try {
+        const destImage = await fetchUnsplashImage(itinerary.destination, "landscape");
+        (generatedData as any).heroImage = destImage;
+
+        // Background update of destination table
+        await prisma.destination.upsert({
+          where: { name: itinerary.destination },
+          update: { image: destImage },
+          create: {
+            name: itinerary.destination,
+            image: destImage,
+            description: `Exploring the wonders of ${itinerary.destination}`,
+            lat: (generatedData as any).lat,
+            lng: (generatedData as any).lng,
+            tags: [],
+          },
+        });
+
+        // Activity images
+        await Promise.all(
+          generatedData.days.map(async (day: any) => {
+            await Promise.all(
+              day.activities.map(async (activity: any) => {
+                if (!activity.image) {
+                  activity.image = await fetchUnsplashImage(
+                    `${activity.title} ${itinerary.destination}`,
+                    "squarish",
+                    itinerary.destination
+                  );
+                }
+              })
+            );
+          })
+        );
+      } catch (imgError) {
+        console.error("❌ Image enrichment failed:", imgError);
+      }
+
+      // 4. SAVE & FINALIZE
+      await prisma.itinerary.update({
+        where: { id: itineraryId },
+        data: {
+          status: ItineraryStatus.DONE,
+          data: generatedData as any,
+          lastUsedAt: new Date(),
+        },
+      });
+
+      // 5. PUBLISH SUCCESS TO REDIS PUB/SUB
+      await connection.publish(`itinerary:status:${itineraryId}`, JSON.stringify({ status: "DONE" }));
+      
+      console.log(`✅ Itinerary ${itineraryId} complete!`);
+    } catch (error: any) {
+      console.error(`❌ Job ${job.id} failed:`, error);
+      
+      await prisma.itinerary.update({
+        where: { id: itineraryId },
+        data: { status: ItineraryStatus.FAILED },
+      });
+
+      // Publish failure
+      await connection.publish(`itinerary:status:${itineraryId}`, JSON.stringify({ status: "FAILED", error: error.message }));
+      
+      throw error;
+    }
+  },
+  { connection }
+);
+
+worker.on("completed", (job) => {
+  console.log(`✅ Job ${job.id} completed`);
+});
+
+worker.on("failed", (job, err) => {
+  console.log(`❌ Job ${job?.id} failed with ${err.message}`);
+});
+
+console.log("🚀 Itinerary Worker is running...");
+
+export default worker;

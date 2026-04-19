@@ -1,55 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import ItineraryViewClient from "@/app/components/itinerary/itinerary-view-client";
+import GenerationLoading from "@/app/components/itinerary/generation-loading";
+import { ItineraryStatus } from "../../../../generated/prisma/client";
 
-interface TravelFromPrevious {
-  mode: string;
-  duration: string;
-  distance: string;
-}
-
-interface Activity {
-  title: string;
-  description: string;
-  image: string | null;
-  lat: number;
-  lng: number;
-  timeOfDay: "Morning" | "Afternoon" | "Evening";
-  category?: string;
-  mealType?: string;
-  rating?: number;
-  priceLevel?: string;
-  address?: string;
-  duration?: string;
-  proTip?: string;
-  travelFromPrevious?: TravelFromPrevious | null;
-}
-
-interface Day {
-  day: number;
-  title: string;
-  summary?: string;
-  estimatedCost?: string;
-  activities: Activity[];
-}
-
-interface SuggestedStay {
-  name: string;
-  type: string;
-  priceRange: string;
-  neighborhood: string;
-}
-
-interface ItineraryData {
-  destination: string;
-  heroImage?: string;
-  days: Day[];
-  travelTips?: string[];
-  bestTimeToVisit?: string;
-  localCurrency?: string;
-  language?: string;
-  suggestedStays?: SuggestedStay[];
-}
+// ... (interfaces remain the same)
 
 export default async function ItineraryViewPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
@@ -57,7 +12,28 @@ export default async function ItineraryViewPage({ params }: { params: Promise<{ 
     where: { id: resolvedParams.id },
   });
 
-  if (!itinerary || !itinerary.data) {
+  if (!itinerary) {
+    notFound();
+  }
+
+  // 1. Handle Loading States
+  if (itinerary.status === ItineraryStatus.QUEUED || itinerary.status === ItineraryStatus.PROCESSING) {
+    return <GenerationLoading itineraryId={resolvedParams.id} />;
+  }
+
+  // 2. Handle Failure
+  if (itinerary.status === ItineraryStatus.FAILED) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-zinc-950 text-white p-6">
+        <h1 className="text-2xl font-serif mb-4">Generation Failed</h1>
+        <p className="text-zinc-400 mb-8">Something went wrong while crafting your trip. Please try again.</p>
+        <a href="/dashboard/itinerary/new" className="px-6 py-2 bg-orange-600 rounded-xl font-bold">Try New Trip</a>
+      </div>
+    );
+  }
+
+  // 3. Handle Done State
+  if (!itinerary.data) {
     notFound();
   }
 
@@ -82,3 +58,4 @@ export default async function ItineraryViewPage({ params }: { params: Promise<{ 
     />
   );
 }
+
