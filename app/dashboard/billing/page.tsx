@@ -6,13 +6,13 @@ import {
   CreditCard,
   Crown,
   Check,
-  Zap,
+  Lightning,
   Shield,
   Infinity,
   FileText,
-  Sparkles,
+  Sparkle,
   ArrowRight,
-} from "lucide-react";
+} from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -26,7 +26,7 @@ const CREDIT_PACKS = [
     price: "$4.99",
     pricePerCredit: "$1.00",
     popular: false,
-    icon: Zap,
+    icon: Lightning,
   },
   {
     name: "Explorer",
@@ -34,7 +34,7 @@ const CREDIT_PACKS = [
     price: "$9.99",
     pricePerCredit: "$0.67",
     popular: true,
-    icon: Sparkles,
+    icon: Sparkle,
   },
   {
     name: "Globetrotter",

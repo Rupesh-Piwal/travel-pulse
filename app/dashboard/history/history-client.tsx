@@ -4,16 +4,16 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   MapPin,
-  Calendar,
-  Sparkles,
+  CalendarBlank,
+  Sparkle,
   Clock,
   ArrowRight,
-  Search,
-  Filter,
+  MagnifyingGlass,
+  Funnel,
   Globe,
-  Plane,
+  Airplane,
   Eye,
-} from "lucide-react";
+} from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -91,7 +91,7 @@ export default function HistoryClient({ initialItineraries }: HistoryClientProps
       >
         <Link href="/dashboard/itinerary/new">
           <Button className="bg-orange-600 hover:bg-orange-700 text-white rounded-2xl px-6 h-12 gap-2 shadow-lg shadow-orange-950/20 font-bold transition-transform active:scale-95">
-            <Plane className="w-4 h-4" />
+            <Airplane className="w-4 h-4" />
             Plan New Trip
           </Button>
         </Link>
@@ -142,7 +142,7 @@ export default function HistoryClient({ initialItineraries }: HistoryClientProps
         className="flex flex-col sm:flex-row gap-4"
       >
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             type="text"
             placeholder="Search destinations..."
@@ -161,7 +161,7 @@ export default function HistoryClient({ initialItineraries }: HistoryClientProps
                 : "border-border/50"
             }`}
           >
-            <Filter className="w-3.5 h-3.5 mr-1.5" />
+            <Funnel className="w-3.5 h-3.5 mr-1.5" />
             All
           </Button>
           {vibes.map((vibe) => {
@@ -214,7 +214,7 @@ export default function HistoryClient({ initialItineraries }: HistoryClientProps
             {!searchQuery && !filterVibe && (
               <Link href="/dashboard/itinerary/new">
                 <Button className="bg-orange-600 hover:bg-orange-700 text-white rounded-2xl px-8 h-12 gap-2 shadow-lg shadow-orange-950/20 font-bold">
-                  <Plane className="w-4 h-4" />
+                  <Airplane className="w-4 h-4" />
                   Plan Your First Trip
                 </Button>
               </Link>
@@ -269,13 +269,13 @@ export default function HistoryClient({ initialItineraries }: HistoryClientProps
                             </div>
                             <div className="flex items-center gap-4 text-xs text-muted-foreground font-medium">
                               <span className="flex items-center gap-1.5">
-                                <Calendar className="w-3 h-3" />
+                                <CalendarBlank className="w-3 h-3" />
                                 {item.days} days
                               </span>
                               <Badge
                                 className={`${vibeColors.bg} ${vibeColors.text} border-none text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5`}
                               >
-                                <Sparkles className="w-2.5 h-2.5 mr-1" />
+                                <Sparkle className="w-2.5 h-2.5 mr-1" />
                                 {item.vibe}
                               </Badge>
                               <span className="flex items-center gap-1.5">

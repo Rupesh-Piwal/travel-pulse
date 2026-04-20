@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import * as L from "leaflet";
-import { Clock } from "lucide-react";
+import { Clock } from "@phosphor-icons/react";
 
 interface Activity {
   title: string;

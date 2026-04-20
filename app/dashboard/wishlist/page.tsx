@@ -5,15 +5,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Heart,
   Plus,
-  Trash2,
+  Trash,
   MapPin,
-  Loader2,
-  Plane,
+  CircleNotch,
+  Airplane,
   Globe,
-  Search,
+  MagnifyingGlass,
   X,
-  Sparkles,
-} from "lucide-react";
+  Sparkle,
+} from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
@@ -117,7 +117,7 @@ export default function WishlistPage() {
     return (
       <div className="flex items-center justify-center h-[60vh]">
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="w-8 h-8 animate-spin text-orange-500" />
+          <CircleNotch className="w-8 h-8 animate-spin text-orange-500" />
           <p className="text-muted-foreground text-sm font-medium">Loading your dream list...</p>
         </div>
       </div>
@@ -231,7 +231,7 @@ export default function WishlistPage() {
                           size="sm"
                           className="bg-orange-600 hover:bg-orange-700 text-white rounded-xl px-4 h-9 text-xs font-bold gap-1.5 shadow-sm transition-transform active:scale-95"
                         >
-                          <Plane className="w-3 h-3" />
+                          <Airplane className="w-3 h-3" />
                           Plan Trip
                         </Button>
                       </Link>
@@ -243,9 +243,9 @@ export default function WishlistPage() {
                         className="rounded-xl h-9 w-9 p-0 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-colors"
                       >
                         {deletingId === item.id ? (
-                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          <CircleNotch className="w-3.5 h-3.5 animate-spin" />
                         ) : (
-                          <Trash2 className="w-3.5 h-3.5" />
+                          <Trash className="w-3.5 h-3.5" />
                         )}
                       </Button>
                     </div>
@@ -280,7 +280,7 @@ export default function WishlistPage() {
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-orange-600/10 flex items-center justify-center">
-                      <Sparkles className="w-5 h-5 text-orange-500" />
+                      <Sparkle className="w-5 h-5 text-orange-500" />
                     </div>
                     <div>
                       <h2 className="text-xl font-bold tracking-tight">Add to Wishlist</h2>
@@ -299,7 +299,7 @@ export default function WishlistPage() {
 
                 {/* Search Bar */}
                 <div className="relative mb-6">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <input
                     type="text"
                     placeholder="Search destinations..."
@@ -330,7 +330,7 @@ export default function WishlistPage() {
                         <p className="text-white font-bold text-sm tracking-tight drop-shadow-lg">
                           {addingDest === suggestion.destination ? (
                             <span className="flex items-center gap-2">
-                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                              <CircleNotch className="w-3.5 h-3.5 animate-spin" />
                               Adding...
                             </span>
                           ) : (

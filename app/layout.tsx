@@ -1,28 +1,19 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Figtree, Playfair_Display } from "next/font/google";
+import { DM_Sans, Fraunces } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
-const figtree = Figtree({ subsets: ["latin"], variable: "--font-sans" });
+const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans" });
 
-const playfair = Playfair_Display({
+const fraunces = Fraunces({
   subsets: ["latin"],
-  variable: "--font-serif",
-});
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: "--font-fraunces",
+  axes: ["SOFT", "WONK", "opsz"],
 });
 
 export const metadata: Metadata = {
-  title: "NomadGo ",
-  description: "Your AI Travel Planner",
+  title: "TravelPulse",
+  description: "AI-free luxury travel itineraries",
 };
 
 import { Toaster } from "@/components/ui/sonner";
@@ -40,14 +31,12 @@ export default function RootLayout({
       className={cn(
         "h-full",
         "antialiased",
-        geistSans.variable,
-        geistMono.variable,
-        "font-sans",
-        figtree.variable,
-        playfair.variable,
+        dmSans.variable,
+        fraunces.variable,
+        "scrollbar-hide"
       )}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col scrollbar-hide">
         <ThemeProvider>
           {children}
           <Toaster position="top-center" richColors />

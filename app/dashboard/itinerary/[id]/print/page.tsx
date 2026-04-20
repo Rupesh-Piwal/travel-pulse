@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import { Clock, MapPin, Map as MapIcon, Calendar, Sparkles } from "lucide-react";
+import { Clock, MapPin, MapTrifold as MapIcon, CalendarBlank, Sparkle } from "@phosphor-icons/react";
 
 interface Activity {
   title: string;
@@ -57,11 +57,11 @@ export default async function PrintItineraryPage({ params }: { params: Promise<{
           <div className="text-right">
             <div className="flex flex-col items-end gap-1.5">
               <div className="flex items-center gap-2 text-slate-600 font-bold text-sm bg-slate-100 px-3 py-1.5 rounded-lg">
-                <Calendar className="w-4 h-4 text-slate-400" />
+                <CalendarBlank className="w-4 h-4 text-slate-400" />
                 {itinerary.days} Days
               </div>
               <div className="flex items-center gap-2 text-slate-600 font-bold text-sm bg-slate-100 px-3 py-1.5 rounded-lg uppercase">
-                <Sparkles className="w-4 h-4 text-slate-400" />
+                <Sparkle className="w-4 h-4 text-slate-400" />
                 {itinerary.budget} Budget
               </div>
             </div>

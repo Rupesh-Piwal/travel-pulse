@@ -2,25 +2,27 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
-import {
-  MapPin,
-  Calendar,
-  Sparkles,
-  ArrowLeft,
-  Share2,
-  X,
-  Languages,
-  Sun,
-  Lightbulb,
-  Hotel,
-  ExternalLink,
-  DollarSign,
-  ChevronDown,
-  Compass,
-  Route,
-  Camera,
-  Utensils,
-} from "lucide-react";
+// import {
+//   MapPin,
+//   CalendarBlank,
+//   Sparkle,
+//   ArrowLeft,
+//   ArrowRight,
+//   ShareNetwork,
+//   X,
+//   Translate,
+//   Sun,
+//   Lightbulb,
+//   Buildings,
+//   ArrowSquareOut,
+//   CurrencyDollar,
+//   CaretDown,
+//   Compass,
+//   Route,
+//   Camera,
+//   ForkKnife,
+// } from "@phosphor-icons/react";
+import { MapPin, ArrowRight, Share, X, Languages, Sun, Building2, DollarSign, CircleChevronUp, Sparkle, ArrowDownToDot, Compass } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import MapWrapper from "@/app/components/itinerary/map-wrapper";
@@ -131,37 +133,44 @@ function StickyDayNav({ days, activeScrollDay }: { days: Day[]; activeScrollDay:
     <AnimatePresence>
       {activeScrollDay !== null && (
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed top-[60px] left-1/2 -translate-x-1/2 z-[55] hidden lg:flex"
+          className="fixed top-1/2 left-6 md:left-10 -translate-y-1/2 z-[150] hidden lg:flex flex-col items-center py-10"
         >
-          <div className="flex items-center gap-1 p-1 bg-white/80 backdrop-blur-2xl backdrop-saturate-[1.8] rounded-2xl border border-zinc-200/60 shadow-xl shadow-black/5">
-            {days.map((day) => {
-              const isActive = activeScrollDay === day.day;
-              return (
-                <button
-                  key={day.day}
-                  onClick={() => document.getElementById(`day-${day.day}`)?.scrollIntoView({ behavior: "smooth", block: "start" })}
-                  className={`relative px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${
-                    isActive
-                      ? "bg-zinc-950 text-white shadow-sm"
-                      : "text-zinc-400 hover:text-zinc-800 hover:bg-zinc-100/60"
-                  }`}
-                >
-                  {isActive && (
-                    <motion.div
-                      layoutId="nav-pill"
-                      className="absolute inset-0 bg-zinc-950 rounded-xl"
-                      transition={{ type: "spring", bounce: 0.2, duration: 0.4 }}
-                    />
-                  )}
-                  <span className="relative z-10">Day {String(day.day).padStart(2, "0")}</span>
-                </button>
-              );
-            })}
-          </div>
+          {/* Continuous Vertical Line */}
+          <div className="absolute top-0 bottom-0 w-[1px] bg-white/20 left-1/2 -translate-x-1/2" />
+
+          {days.map((day) => {
+            const isActive = activeScrollDay === day.day;
+            return (
+              <button
+                key={day.day}
+                onClick={() => document.getElementById(`day-${day.day}`)?.scrollIntoView({ behavior: "smooth", block: "start" })}
+                className="relative py-6 flex items-center justify-center group outline-none"
+                aria-label={`Scroll to Day ${day.day}`}
+              >
+                {isActive ? (
+                  <motion.div
+                    layoutId="active-dot"
+                    className="relative z-10 w-8 h-8 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center shadow-[0_0_20px_rgba(255,255,255,0.3)] border border-white/20"
+                  >
+                    <span className="text-[13px] font-black text-black">{day.day}</span>
+                  </motion.div>
+                ) : (
+                  <div className="relative z-10 w-2.5 h-2.5 rounded-full bg-white/40 group-hover:bg-white/80 transition-all duration-300 group-hover:scale-125" />
+                )}
+
+                {/* Tooltip on Hover */}
+                <div className="absolute left-10 opacity-0 group-hover:opacity-100 transition-all duration-300 transform -translate-x-2 group-hover:translate-x-0 pointer-events-none whitespace-nowrap">
+                  <span className="bg-black/40 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-md border border-white/10 shadow-lg block">
+                    Day {day.day}
+                  </span>
+                </div>
+              </button>
+            )
+          })}
         </motion.div>
       )}
     </AnimatePresence>
@@ -253,7 +262,7 @@ function WhereToStay({ stays, destination }: { stays?: SuggestedStay[]; destinat
     >
       <div className="flex items-center gap-4 mb-10">
         <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-500/10 to-indigo-500/10 flex items-center justify-center border border-purple-500/10">
-          <Hotel className="w-5 h-5 text-purple-600" />
+          <Building2 className="w-5 h-5 text-purple-600" />
         </div>
         <h2 className="text-[11px] font-black uppercase tracking-[0.3em] text-zinc-400">Where to Stay</h2>
         <div className="h-px flex-1 bg-gradient-to-r from-zinc-200 to-transparent" />
@@ -285,7 +294,7 @@ function WhereToStay({ stays, destination }: { stays?: SuggestedStay[]; destinat
                 </div>
                 <p className="text-[13px] font-bold text-emerald-600 mt-2">{stay.priceRange}<span className="text-zinc-400 font-normal text-[11px]"> / night</span></p>
               </div>
-              <ExternalLink className="w-4 h-4 text-zinc-300 group-hover:text-purple-400 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 shrink-0 relative z-10" />
+              <ArrowDownToDot className="w-4 h-4 text-zinc-300 group-hover:text-purple-400 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 shrink-0 relative z-10" />
             </motion.a>
           );
         })}
@@ -337,11 +346,10 @@ function ParallaxDayCard({
             </div>
             <button
               onClick={onPinDay}
-              className={`shrink-0 flex items-center gap-2.5 px-5 py-2.5 rounded-2xl text-[10px] font-bold uppercase tracking-widest transition-all duration-500 border shadow-sm ${
-                isActive
-                  ? "bg-orange-500 text-white border-orange-500 shadow-lg shadow-orange-500/20"
-                  : "bg-white text-zinc-500 border-zinc-200 hover:border-orange-300 hover:text-orange-600 hover:shadow-md"
-              }`}
+              className={`shrink-0 flex items-center gap-2.5 px-5 py-2.5 rounded-2xl text-[10px] font-bold uppercase tracking-widest transition-all duration-500 border shadow-sm ${isActive
+                ? "bg-orange-500 text-white border-orange-500 shadow-lg shadow-orange-500/20"
+                : "bg-white text-zinc-500 border-zinc-200 hover:border-orange-300 hover:text-orange-600 hover:shadow-md"
+                }`}
             >
               <MapPin className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Map</span>
@@ -372,7 +380,7 @@ function ParallaxDayCard({
               viewport={{ once: true }}
               className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500/20 to-red-500/10 flex items-center justify-center border border-orange-500/20"
             >
-              <Sparkles className="w-7 h-7 text-orange-400" />
+              <Sparkle className="w-7 h-7 text-orange-400" />
             </motion.div>
             <h3 className="text-4xl md:text-5xl font-serif text-white leading-[1.1] tracking-tight">Your story<br />is ready to begin.</h3>
             <p className="text-zinc-500 text-[15px] leading-relaxed max-w-md">Download this curated experience for offline access. Every moment has been carefully crafted.</p>
@@ -391,211 +399,198 @@ function ParallaxDayCard({
 
 // ─── Main Component ────────────────────────────────────────────
 
+
+
 export default function ItineraryViewClient({ itinerary, data, heroImage }: ItineraryViewClientProps) {
   const [activeDay, setActiveDay] = useState<number | null>(null);         // for map
   const [activeScrollDay, setActiveScrollDay] = useState<number | null>(null); // for sticky nav
   const [scrolled, setScrolled] = useState(false);
-  const [heroVisible, setHeroVisible] = useState(true);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   // ── Compute trip stats ──
   const totalActivities = data.days.reduce((sum, d) => sum + d.activities.length, 0);
   const totalRestaurants = data.days.reduce((sum, d) => sum + d.activities.filter(a => a.category === "RESTAURANT").length, 0);
-  const totalLandmarks = data.days.reduce((sum, d) => sum + d.activities.filter(a => a.category === "LANDMARK" || a.category === "ACTIVITY").length, 0);
+  const totalExperiences = data.days.reduce((sum, d) => sum + d.activities.filter(a => a.category === "LANDMARK" || a.category === "ACTIVITY").length, 0);
 
-  // ── Scroll spy — listens on the fixed container, NOT window ──
+
+
+  // ── Scroll spy ──
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
-
     const handleScroll = () => {
       const scrollTop = container.scrollTop;
       setScrolled(scrollTop > 80);
-      setHeroVisible(scrollTop < window.innerHeight * 0.5);
-
-      // Scroll-spy: detect which day section is in view
       let found: number | null = null;
       for (const day of data.days) {
         const el = document.getElementById(`day-${day.day}`);
         if (el) {
           const { top } = el.getBoundingClientRect();
-          if (top <= 200) found = day.day;
+          if (top <= 250) found = day.day;
         }
       }
       if (found !== activeScrollDay) setActiveScrollDay(found);
-
-      // Map scroll-spy: auto-pan to first activity of visible day
-      if (found && found !== activeDay) {
-        setActiveDay(found);
-      }
+      if (found && found !== activeDay) setActiveDay(found);
     };
-
     container.addEventListener("scroll", handleScroll, { passive: true });
     return () => container.removeEventListener("scroll", handleScroll);
   }, [activeScrollDay, activeDay, data.days]);
 
   return (
-    <div ref={scrollContainerRef} className="fixed inset-0 z-[100] flex flex-col bg-[#FAF8F5] overflow-y-auto overflow-x-hidden font-sans selection:bg-orange-200/40">
+    <div
+      ref={scrollContainerRef}
+      className="fixed inset-0 z-[100] flex flex-col bg-white overflow-y-auto overflow-x-hidden font-sans selection:bg-orange-200/40 scrollbar-hide"
+    >
 
       {/* ══════════════════════════════ STICKY DAY NAVIGATOR */}
       <StickyDayNav days={data.days} activeScrollDay={activeScrollDay} />
 
-      {/* ══════════════════════════════ FLOATING HEADER */}
-      <header className={`fixed top-0 left-0 w-full z-[60] px-6 md:px-10 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-        scrolled ? "py-3 bg-[#FAF8F5]/70 backdrop-blur-2xl backdrop-saturate-[1.8] shadow-[0_1px_0_rgba(0,0,0,0.05)]" : "py-6 bg-transparent"
-      }`}>
-        <div className="max-w-[1800px] mx-auto flex items-center justify-between">
-          <Link href="/dashboard">
-            <Button variant="ghost" size="sm" className="rounded-2xl gap-2.5 text-zinc-400 hover:text-zinc-950 hover:bg-zinc-100/80 px-4 py-2 transition-all duration-300 group">
-              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-300" />
-              <span className="font-bold text-[10px] uppercase tracking-[0.2em]">Dashboard</span>
-            </Button>
-          </Link>
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" className="rounded-2xl text-zinc-400 hover:text-zinc-950 hover:bg-zinc-100/80 font-bold text-[10px] uppercase tracking-[0.15em] px-4 py-2 transition-all duration-300">
-              <Share2 className="w-3.5 h-3.5 mr-2" />Share
-            </Button>
-            <div className="scale-90 opacity-80 hover:opacity-100 transition-opacity">
-              <ExportPdfButton itineraryId={itinerary.id} />
-            </div>
-            <Link href="/dashboard">
-              <Button variant="ghost" size="icon" className="rounded-2xl text-zinc-400 hover:text-zinc-950 hover:bg-zinc-100/80 transition-all duration-300 w-9 h-9">
-                <X className="w-4 h-4" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </header>
+      {/* ══════════════════════════════ VALORA GLASS HERO ══════════════════════════════ */}
+      <section className="relative h-screen w-full min-h-[750px] flex items-center justify-center overflow-hidden bg-zinc-950 p-6 md:p-10">
 
-      {/* ══════════════════════════════ CINEMATIC HERO */}
-      <section className="relative h-[85vh] min-h-[700px] w-full overflow-hidden flex items-center justify-center shrink-0">
-        {/* Background Image */}
+        {/* Background Image with Radial Mask */}
         <div className="absolute inset-0 z-0">
           <motion.img
-            initial={{ scale: 1.1, opacity: 0 }}
+            initial={{ scale: 1.15, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 2.5, ease: [0.22, 1, 0.36, 1] }}
             src={heroImage}
             alt={itinerary.destination}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-black/40 z-10" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80 z-10" />
-          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#FAF8F5] to-transparent z-20" />
+          <div className="absolute inset-0 bg-black/30 z-10" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60 z-10" />
         </div>
 
-        {/* Hero Content */}
-        <div className="relative z-30 px-6 md:px-12 w-full max-w-5xl mx-auto text-center flex flex-col items-center mt-20">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-            className="space-y-6 md:space-y-8 w-full flex flex-col items-center"
-          >
-            {/* Eyebrow */}
-            <div className="flex items-center gap-4 justify-center">
-              <div className="h-[1px] w-8 md:w-16 bg-white/30" />
-              <span className="text-white/80 text-[10px] md:text-[11px] font-black uppercase tracking-[0.4em] drop-shadow-md">
-                NomadGo Curated • {itinerary.vibe}
-              </span>
-              <div className="h-[1px] w-8 md:w-16 bg-white/30" />
+        {/* Floating Glass Frame */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+          className="relative z-20 w-full h-full glass-frame rounded-[2.5rem] flex flex-col items-center justify-center p-8 md:p-16 border border-white/10"
+        >
+          {/* Integrated Header */}
+          <div className="absolute top-10 left-10 right-10 flex items-center justify-between">
+            <div className="flex items-center gap-10">
+              <Link href="/dashboard">
+                <Button variant="ghost" size="sm" className="text-white/60 hover:text-white transition-colors gap-3 px-0 font-bold text-[10px] uppercase tracking-[0.3em]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-white/40" /> Menu
+                </Button>
+              </Link>
+              <div className="hidden md:flex items-center gap-4 text-white/40 text-[10px] font-black uppercase tracking-[0.2em]">
+                <span>EN</span> <span className="w-px h-2.5 bg-white/10" /> <span>FR</span>
+              </div>
             </div>
 
-            {/* Title */}
-            <h1 className="text-[5rem] sm:text-[7rem] md:text-[9rem] lg:text-[11rem] font-serif text-white tracking-[-0.04em] leading-[0.85] drop-shadow-2xl">
-              {itinerary.destination.split(",")[0]}
-            </h1>
-            {itinerary.destination.includes(",") && (
-              <h2 className="text-xl md:text-3xl font-serif italic text-white/70 mt-[-1rem] drop-shadow-lg">
-                {itinerary.destination.split(",").slice(1).join(",").trim()}
-              </h2>
-            )}
+            <div className="absolute left-1/2 -translate-x-1/2">
+              <span className="text-xl font-serif italic text-white tracking-widest">NomadGo</span>
+            </div>
 
-            {/* ── ANIMATED TRIP STATS ── */}
+            <div className="flex items-center gap-8">
+              <Button variant="ghost" size="sm" className="text-white/60 hover:text-white font-bold text-[10px] uppercase tracking-[0.2em] px-0">
+                Share
+              </Button>
+              <Button variant="ghost" size="sm" className="text-white hover:text-white font-bold text-[10px] uppercase tracking-[0.2em] bg-white/10 backdrop-blur-3xl rounded-full px-6 py-2 border border-white/20 transition-all hover:bg-white/20">
+                Booking <ArrowRight className="w-3.5 h-3.5 ml-2" />
+              </Button>
+            </div>
+          </div>
+
+          {/* Hero Text */}
+          <div className="max-w-4xl text-center space-y-8">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.4, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-              className="flex flex-wrap items-center justify-center gap-6 md:gap-0 pt-6"
+              transition={{ delay: 0.5, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+              className="space-y-4"
             >
-              {/* Days */}
-              <div className="flex flex-col items-center gap-1.5 px-8 md:px-10">
-                <div className="text-3xl md:text-4xl font-serif text-white font-bold tabular-nums">
-                  <AnimatedCounter to={itinerary.days} duration={1} />
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Calendar className="w-3 h-3 text-white/40" />
-                  <span className="text-[9px] font-black uppercase tracking-[0.3em] text-white/40">Days</span>
-                </div>
-              </div>
-
-              <div className="hidden md:block w-px h-10 bg-white/15" />
-
-              {/* Activities */}
-              <div className="flex flex-col items-center gap-1.5 px-8 md:px-10">
-                <div className="text-3xl md:text-4xl font-serif text-white font-bold tabular-nums">
-                  <AnimatedCounter to={totalActivities} duration={1.2} />
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Route className="w-3 h-3 text-white/40" />
-                  <span className="text-[9px] font-black uppercase tracking-[0.3em] text-white/40">Stops</span>
-                </div>
-              </div>
-
-              <div className="hidden md:block w-px h-10 bg-white/15" />
-
-              {/* Restaurants */}
-              <div className="flex flex-col items-center gap-1.5 px-8 md:px-10">
-                <div className="text-3xl md:text-4xl font-serif text-white font-bold tabular-nums">
-                  <AnimatedCounter to={totalRestaurants} duration={1.4} />
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Utensils className="w-3 h-3 text-white/40" />
-                  <span className="text-[9px] font-black uppercase tracking-[0.3em] text-white/40">Dinings</span>
-                </div>
-              </div>
-
-              <div className="hidden md:block w-px h-10 bg-white/15" />
-
-              {/* Landmarks */}
-              <div className="flex flex-col items-center gap-1.5 px-8 md:px-10">
-                <div className="text-3xl md:text-4xl font-serif text-white font-bold tabular-nums">
-                  <AnimatedCounter to={totalLandmarks} duration={1.6} />
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Camera className="w-3 h-3 text-white/40" />
-                  <span className="text-[9px] font-black uppercase tracking-[0.3em] text-white/40">Experiences</span>
-                </div>
-              </div>
+              <h1 className="text-7xl md:text-[9rem] font-serif italic text-white leading-[0.8] tracking-tight drop-shadow-2xl">
+                Explore {itinerary.destination.split(",")[0]}
+              </h1>
+              <h2 className="text-5xl md:text-7xl font-serif text-white/90 leading-tight tracking-tight drop-shadow-xl">
+                {itinerary.vibe} Gateway
+              </h2>
             </motion.div>
-          </motion.div>
-        </div>
+          </div>
 
-        {/* Scroll indicator */}
+          {/* Bottom Information Bar */}
+          <div className="absolute bottom-0 left-0 right-0 h-32 border-t border-white/10 flex items-center px-12 md:px-20 overflow-hidden rounded-b-[2.5rem]">
+            <div className="absolute inset-0 bg-white/5 backdrop-blur-3xl" />
+
+            <div className="relative w-full flex items-center justify-between">
+              <div className="flex items-center gap-16 md:gap-24">
+                <div className="space-y-3">
+                  <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Destination</p>
+                  <p className="text-sm font-bold text-white tracking-widest truncate max-w-[200px]">{itinerary.destination}</p>
+                  <div className="h-px w-full bg-white/10" />
+                </div>
+                <div className="space-y-3">
+                  <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Vibe</p>
+                  <p className="text-sm font-bold text-white tracking-widest">{itinerary.vibe}</p>
+                  <div className="h-px w-full bg-white/10" />
+                </div>
+                <div className="space-y-3">
+                  <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Budget</p>
+                  <p className="text-sm font-bold text-white tracking-widest uppercase">{itinerary.budget}</p>
+                  <div className="h-px w-full bg-white/10" />
+                </div>
+              </div>
+
+              <div className="flex items-center gap-10">
+                <div className="flex flex-col items-end">
+                  <p className="text-[2rem] font-bold text-white leading-none">
+                    <AnimatedCounter to={itinerary.days} />
+                  </p>
+                  <p className="text-[8px] font-black uppercase tracking-[0.3em] text-white/30">Days</p>
+                </div>
+                <Button
+                  onClick={() => document.getElementById("day-1")?.scrollIntoView({ behavior: "smooth" })}
+                  className="group/btn relative px-8 py-4 bg-white text-zinc-950 font-black uppercase text-[10px] tracking-[0.3em] rounded-full overflow-hidden transition-all hover:pr-10"
+                >
+                  Let's Start
+                  <ArrowRight className="absolute right-4 w-4 h-4 opacity-0 group-hover/btn:opacity-100 transition-all duration-300 transform translate-x-2 group-hover/btn:translate-x-0" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Scroll Indicator */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2.2 }}
-          className="absolute bottom-14 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-3 opacity-40 hover:opacity-80 transition-opacity duration-500 cursor-pointer"
-          onClick={() => document.getElementById("day-1")?.scrollIntoView({ behavior: "smooth" })}
+          animate={{ y: [0, 10, 0] }}
+          transition={{ repeat: Infinity, duration: 2 }}
+          className="absolute bottom-1 right-1/2 translate-x-1/2 z-30 flex flex-col items-center gap-2 opacity-30"
         >
-          <motion.div animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}>
-            <ChevronDown className="w-5 h-5 text-zinc-300" />
-          </motion.div>
+          <ArrowDownToDot className="w-5 h-5 text-white" />
         </motion.div>
       </section>
 
       {/* ══════════════════════════════ CONTENT AREA */}
-      <div className="flex-1 max-w-[1800px] mx-auto w-full">
+      <div className="flex-1 max-w-[1400px] mx-auto w-full">
         <div className="flex flex-col lg:flex-row">
 
           {/* LEFT: Scrollable Content */}
-          <div className="w-full lg:w-[58%] px-6 md:px-12 lg:px-16 xl:px-20 pt-16 pb-32">
+          <div className="w-full lg:w-[62%] px-6 md:px-12 lg:px-16 pt-0 pb-32">
+
+            {/* ADVENZO STYLE SECTION HEADER */}
+            <div className="mb-20 space-y-6">
+              <h2 className="text-4xl md:text-5xl font-black tracking-tight text-zinc-950 uppercase leading-none">
+                Explore Unmissable <br />
+                Experience Tailored for you
+              </h2>
+              <div className="max-w-xl">
+                <p className="text-zinc-500 font-light text-lg">
+                  Discover exclusive activities and hidden gems curated specifically for your {itinerary.vibe.toLowerCase()} vibe.
+                  Every stop is a story waiting to be told.
+                </p>
+              </div>
+            </div>
+
             <KnowBeforeYouGo data={data} />
             <WhereToStay stays={data.suggestedStays} destination={itinerary.destination} />
 
             {/* Day Cards */}
-            <div className="space-y-24">
+            <div className="space-y-32">
               {data.days.map((day, dayIndex) => (
                 <ParallaxDayCard
                   key={day.day}
@@ -613,7 +608,6 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
                           distance={activity.travelFromPrevious.distance}
                         />
                       )}
-                      {/* Hero card for first activity, regular for rest */}
                       {actIndex === 0 ? (
                         <HeroActivityCard activity={activity} />
                       ) : (
@@ -627,34 +621,14 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
           </div>
 
           {/* RIGHT: Sticky Map */}
-          <div className="hidden lg:block lg:w-[42%]">
-            <div className="sticky top-0 h-screen">
-              <div className="w-full h-full bg-zinc-950 overflow-hidden relative">
+          <div className="hidden lg:block lg:w-[38%]">
+            <div className="sticky top-0 h-screen py-10 pr-10">
+              <div className="w-full h-full bg-zinc-950 rounded-[3rem] overflow-hidden relative shadow-2xl">
                 <MapWrapper days={data.days} activeDay={activeDay} />
-                <div className="absolute inset-0 pointer-events-none shadow-[inset_50px_0_120px_-30px_rgba(24,24,27,0.85)] z-20" />
-                <div className="absolute top-6 right-6 z-30">
-                  <div className="flex items-center gap-2 px-4 py-2 bg-zinc-900/80 backdrop-blur-2xl border border-zinc-800/80 rounded-xl text-white/50 text-[9px] font-black uppercase tracking-[0.25em]">
+                <div className="absolute top-8 right-8 z-30">
+                  <div className="flex items-center gap-2 px-4 py-2 bg-zinc-900/80 backdrop-blur-2xl border border-zinc-800/80 rounded-2xl text-white/50 text-[9px] font-black uppercase tracking-[0.25em]">
                     <Compass className="w-3 h-3" />
                     Interactive Map
-                  </div>
-                </div>
-                <div className="absolute bottom-6 left-6 right-6 z-30">
-                  <div className="flex gap-2 overflow-x-auto no-scrollbar p-1 bg-zinc-900/60 backdrop-blur-2xl rounded-2xl border border-zinc-800/50">
-                    <button
-                      onClick={() => setActiveDay(null)}
-                      className={`px-4 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all duration-300 shrink-0 ${
-                        activeDay === null ? "bg-orange-500 text-white shadow-lg shadow-orange-500/30" : "text-zinc-500 hover:text-white"
-                      }`}
-                    >All</button>
-                    {data.days.map((day) => (
-                      <button
-                        key={day.day}
-                        onClick={() => setActiveDay((prev) => (prev === day.day ? null : day.day))}
-                        className={`px-4 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all duration-300 shrink-0 ${
-                          activeDay === day.day ? "bg-orange-500 text-white shadow-lg shadow-orange-500/30" : "text-zinc-500 hover:text-white"
-                        }`}
-                      >Day {day.day}</button>
-                    ))}
                   </div>
                 </div>
               </div>
@@ -663,14 +637,6 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
         </div>
       </div>
 
-      {/* MOBILE MAP */}
-      <section className="lg:hidden mx-6 h-[400px] rounded-[1.75rem] overflow-hidden shadow-2xl border border-zinc-200 mb-20 relative print:hidden">
-        <MapWrapper days={data.days} activeDay={activeDay} />
-        <div className="absolute top-4 right-4 z-10 px-3 py-1.5 bg-zinc-900/80 backdrop-blur-xl rounded-xl text-white text-[9px] font-bold uppercase tracking-widest">
-          Interactive Map
-        </div>
-      </section>
-
       <style jsx global>{`
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -678,3 +644,4 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
     </div>
   );
 }
+

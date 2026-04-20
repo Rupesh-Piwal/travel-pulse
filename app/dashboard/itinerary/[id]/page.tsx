@@ -4,7 +4,55 @@ import ItineraryViewClient from "@/app/components/itinerary/itinerary-view-clien
 import GenerationLoading from "@/app/components/itinerary/generation-loading";
 import { ItineraryStatus } from "../../../../generated/prisma/client";
 
-// ... (interfaces remain the same)
+interface TravelFromPrevious {
+  mode: string;
+  duration: string;
+  distance: string;
+}
+
+interface Activity {
+  title: string;
+  description: string;
+  image: string | null;
+  lat: number;
+  lng: number;
+  timeOfDay: "Morning" | "Afternoon" | "Evening";
+  category?: string;
+  mealType?: string;
+  rating?: number;
+  priceLevel?: string;
+  address?: string;
+  duration?: string;
+  proTip?: string;
+  travelFromPrevious?: TravelFromPrevious | null;
+}
+
+interface Day {
+  day: number;
+  title: string;
+  summary?: string;
+  estimatedCost?: string;
+  activities: Activity[];
+}
+
+interface SuggestedStay {
+  name: string;
+  type: string;
+  priceRange: string;
+  neighborhood: string;
+}
+
+interface ItineraryData {
+  destination: string;
+  heroImage?: string;
+  days: Day[];
+  travelTips?: string[];
+  bestTimeToVisit?: string;
+  localCurrency?: string;
+  language?: string;
+  suggestedStays?: SuggestedStay[];
+}
+
 
 export default async function ItineraryViewPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;

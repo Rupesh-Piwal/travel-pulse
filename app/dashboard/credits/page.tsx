@@ -2,20 +2,11 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import {
-  CreditCard,
-  Coins,
-  ArrowUpRight,
-  ArrowDownLeft,
-  Sparkles,
-  Loader2,
-  TrendingUp,
-  Zap,
-  FileText,
-  Gift,
-  ShoppingCart,
-  RotateCcw,
-} from "lucide-react";
+
+
+import { CreditCard, Coins, ArrowUpRight, ArrowDownLeft, TrendingUp, FileText, Gift, ShoppingCart, RotateCcw, Zap, LoaderCircle } from 'lucide-react';
+
+
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useCredits } from "@/hooks/useCredits";
@@ -149,7 +140,7 @@ export default function CreditsPage() {
 
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-7 h-7 animate-spin text-orange-500" />
+            <LoaderCircle className="w-7 h-7 animate-spin text-orange-500" />
           </div>
         ) : transactions.length === 0 ? (
           <Card className="border-dashed border-2 border-border/50 bg-accent/5 p-16 flex flex-col items-center justify-center text-center gap-4 rounded-[2rem]">
@@ -193,9 +184,8 @@ export default function CreditsPage() {
                     </div>
                   </div>
                   <span
-                    className={`text-lg font-black tabular-nums ${
-                      isPositive ? "text-emerald-500" : "text-red-500"
-                    }`}
+                    className={`text-lg font-black tabular-nums ${isPositive ? "text-emerald-500" : "text-red-500"
+                      }`}
                   >
                     {isPositive ? "+" : ""}
                     {tx.amount}

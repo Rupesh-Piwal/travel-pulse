@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Plus, CreditCard as CreditCardIcon } from "lucide-react";
+import { Plus, CreditCard } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
@@ -20,7 +20,7 @@ export function CreditsCard({ initialCredits }: CreditsCardProps) {
       <Card className="relative overflow-hidden border-border/50 bg-accent/20 backdrop-blur-sm p-8 flex items-center justify-between group">
         <div className="flex items-center gap-6">
           <div className="w-14 h-14 rounded-2xl bg-orange-600/10 flex items-center justify-center border border-orange-500/20 group-hover:scale-110 transition-transform duration-500">
-            <CreditCardIcon className="w-7 h-7 text-orange-500" />
+            <CreditCard className="w-7 h-7 text-orange-500" />
           </div>
           <div>
             <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Compass, Heart, Zap, LogOut, User as UserIcon, Settings } from "lucide-react";
+import { Menu, X, Compass, Heart, Zap, LogOut, User, Settings } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {

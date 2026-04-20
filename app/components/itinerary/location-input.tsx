@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { MapPin, Search, Loader2, Sparkles, Globe, Compass, ChevronRight } from "lucide-react";
+import { MapPin, MagnifyingGlass, CircleNotch, Sparkle, Globe, Compass, CaretRight } from "@phosphor-icons/react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
@@ -136,7 +136,7 @@ export default function LocationInput({ defaultValue = "", onSelect, disabled }:
         />
         {isLoading && (
           <div className="absolute right-4 top-1/2 -translate-y-1/2">
-            <Loader2 className="w-4 h-4 text-primary animate-spin" />
+            <CircleNotch className="w-4 h-4 text-primary animate-spin" />
           </div>
         )}
       </div>
@@ -149,7 +149,7 @@ export default function LocationInput({ defaultValue = "", onSelect, disabled }:
               <div className="px-5 mb-4 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-7 h-7 rounded-lg bg-orange-500/10 flex items-center justify-center">
-                    <Sparkles className="w-4 h-4 text-orange-600" />
+                    <Sparkle className="w-4 h-4 text-orange-600" />
                   </div>
                   <span className="text-[11px] font-black uppercase tracking-[0.15em] text-foreground/80">
                     Hot Destinations
@@ -241,7 +241,7 @@ export default function LocationInput({ defaultValue = "", onSelect, disabled }:
                           )}
                         </div>
                       </div>
-                      <ChevronRight className="w-4 h-4 text-muted-foreground/0 group-hover/row:text-muted-foreground/40 group-hover/row:translate-x-1 transition-all mr-2" />
+                      <CaretRight className="w-4 h-4 text-muted-foreground/0 group-hover/row:text-muted-foreground/40 group-hover/row:translate-x-1 transition-all mr-2" />
                     </button>
                   );
                 })}

@@ -2,16 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Map, Camera, Utensils, Plane, Globe } from "lucide-react";
+import { Sparkle, MapTrifold, Camera, ForkKnife, Airplane, Globe } from "@phosphor-icons/react";
 import { useRouter } from "next/navigation";
 
 const loadingSteps = [
   { icon: Globe, text: "Mapping the destination..." },
-  { icon: Sparkles, text: "Consulting our AI travel experts..." },
-  { icon: Map, text: "Optimizing your daily routes..." },
-  { icon: Utensils, text: "Curating local culinary gems..." },
+  { icon: Sparkle, text: "Consulting our AI travel experts..." },
+  { icon: MapTrifold, text: "Optimizing your daily routes..." },
+  { icon: ForkKnife, text: "Curating local culinary gems..." },
   { icon: Camera, text: "Selecting the most scenic spots..." },
-  { icon: Plane, text: "Finalizing your dream journey..." },
+  { icon: Airplane, text: "Finalizing your dream journey..." },
 ];
 
 export default function GenerationLoading({ itineraryId }: { itineraryId: string }) {

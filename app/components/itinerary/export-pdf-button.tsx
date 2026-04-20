@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Download, Loader2 } from "lucide-react";
+import { DownloadSimple, CircleNotch } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useCredits } from "@/hooks/useCredits";
@@ -63,9 +63,9 @@ export default function ExportPdfButton({ itineraryId }: ExportPdfButtonProps) {
       disabled={isGenerating}
     >
       {isGenerating ? (
-        <Loader2 className="w-4 h-4 animate-spin" />
+        <CircleNotch className="w-4 h-4 animate-spin" />
       ) : (
-        <Download className="w-4 h-4" />
+        <DownloadSimple className="w-4 h-4" />
       )}
       {isGenerating ? "Generating..." : "Export PDF"}
     </Button>

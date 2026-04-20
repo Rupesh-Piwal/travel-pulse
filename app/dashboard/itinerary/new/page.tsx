@@ -3,11 +3,11 @@
 import { useTransition } from "react";
 import { motion } from "framer-motion";
 import { 
-  Calendar, 
-  Sparkles,
-  ChevronRight,
-  AlertCircle
-} from "lucide-react";
+  CalendarBlank, 
+  Sparkle,
+  CaretRight,
+  WarningCircle
+} from "@phosphor-icons/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -122,7 +122,7 @@ export default function NewItineraryPage() {
             />
             {errors.destination && (
               <p className="text-xs text-destructive flex items-center gap-1.5 ml-1 mt-1 animate-in fade-in slide-in-from-top-1">
-                <AlertCircle className="w-3.5 h-3.5" />
+                <WarningCircle className="w-3.5 h-3.5" />
                 {errors.destination.message}
               </p>
             )}
@@ -132,7 +132,7 @@ export default function NewItineraryPage() {
           <div className="space-y-3">
             <Label htmlFor="duration" className="text-sm font-medium ml-1">Duration (Days)</Label>
             <div className="relative group">
-              <Calendar className={cn(
+              <CalendarBlank className={cn(
                 "absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors",
                 errors.duration ? "text-destructive" : "text-muted-foreground group-focus-within:text-primary"
               )} />
@@ -150,7 +150,7 @@ export default function NewItineraryPage() {
             </div>
             {errors.duration && (
               <p className="text-xs text-destructive flex items-center gap-1.5 ml-1 mt-1 animate-in fade-in slide-in-from-top-1">
-                <AlertCircle className="w-3.5 h-3.5" />
+                <WarningCircle className="w-3.5 h-3.5" />
                 {errors.duration.message}
               </p>
             )}
@@ -204,7 +204,7 @@ export default function NewItineraryPage() {
           </div>
           {errors.vibe && (
             <p className="text-xs text-destructive flex items-center gap-1.5 ml-1 animate-in fade-in slide-in-from-top-1">
-              <AlertCircle className="w-3.5 h-3.5" />
+              <WarningCircle className="w-3.5 h-3.5" />
               {errors.vibe.message}
             </p>
           )}
@@ -222,9 +222,9 @@ export default function NewItineraryPage() {
             </div>
           ) : (
             <>
-              <Sparkles className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform" />
+              <Sparkle className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform" />
               Generate Itinerary — 1 Credit
-              <ChevronRight className="w-5 h-5 ml-auto" />
+              <CaretRight className="w-5 h-5 ml-auto" />
             </>
           )}
         </Button>
