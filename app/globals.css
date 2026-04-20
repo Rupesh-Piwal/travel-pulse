@@ -24,9 +24,10 @@
   /* TravelPulse Brand Colors */
   --color-navy: #0F1923;
   --color-sand: #F5EFE0;
-  --color-terracotta: #C4622D;
+  --color-terracotta: #C4632C;
   --color-off-white: #FAFAF8;
   --color-muted-text: #8B8680;
+  --color-carousel-teal: #1BBCBC;
   
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -161,6 +162,23 @@
       0 20px 50px rgba(0, 0, 0, 0.15);
   }
 
+  .clip-header-tab {
+    clip-path: polygon(0% 0%, 15% 100%, 85% 100%, 100% 0%);
+  }
+
+  .clip-vessel-notch {
+    clip-path: polygon(
+      0% 0%, 
+      calc(50% - 80px) 0%, 
+      calc(50% - 60px) 40px, 
+      calc(50% + 60px) 40px, 
+      calc(50% + 80px) 0%, 
+      100% 0%, 
+      100% 100%, 
+      0% 100%
+    );
+  }
+
   /* Hide scrollbars but keep functionality */
   .scrollbar-hide {
     -ms-overflow-style: none !important;
@@ -188,6 +206,31 @@
     0 4px 12px rgba(0, 0, 0, 0.45),
     0 10px 40px rgba(0, 0, 0, 0.35),
     0 20px 80px rgba(0, 0, 0, 0.25);
+}
+
+/* Hero LocationInput overrides */
+.hero-location-input > div > div:first-child svg {
+  display: none !important;
+}
+.hero-location-input input {
+  padding-left: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  height: auto !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  color: #0E1922 !important;
+  border-radius: 0 !important;
+}
+.hero-location-input input::placeholder {
+  color: rgba(14, 25, 34, 0.3) !important;
+}
+.hero-location-input input:focus {
+  ring: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  --tw-ring-shadow: none !important;
 }
 
 /* View Transition: disable default cross‑fade so we control

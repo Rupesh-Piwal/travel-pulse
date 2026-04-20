@@ -143,7 +143,7 @@ export default function LocationInput({ defaultValue = "", onSelect, disabled }:
 
       {(showFeatured || showResults) && (
         <div className="absolute top-full left-0 w-full mt-4 bg-background/60 border border-white/10 rounded-[2rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] z-50 overflow-hidden backdrop-blur-3xl backdrop-saturate-[1.8] animate-in fade-in zoom-in-95 duration-500 origin-top">
-          
+
           {showFeatured && (
             <div className="py-4">
               <div className="px-5 mb-4 flex items-center justify-between">
@@ -163,10 +163,10 @@ export default function LocationInput({ defaultValue = "", onSelect, disabled }:
                   <button
                     key={`featured-${i}`}
                     type="button"
-                    className="flex-shrink-0 w-[105px] group/card text-left outline-none"
+                    className="flex-shrink-0 md:w-[65px] group/card text-left outline-none"
                     onClick={() => handleSelect(s)}
                   >
-                    <div className="relative w-full aspect-[4/5] rounded-xl overflow-hidden mb-2 shadow-md group-hover/card:shadow-xl transition-all duration-500 group-hover/card:-translate-y-1 border border-white/5">
+                    <div className="relative w-full aspect-[4/5] rounded-sm overflow-hidden mb-2 shadow-md group-hover/card:shadow-xl transition-all duration-500 group-hover/card:-translate-y-1 border border-white/5">
                       <img
                         src={s.image}
                         alt={s.name}
@@ -183,11 +183,11 @@ export default function LocationInput({ defaultValue = "", onSelect, disabled }:
                       </div>
                       <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 shadow-sm">
                         <span className="text-xs">
-                          {s.name === "Tokyo" ? "🗼" : 
-                           s.name === "Beijing" ? "🏯" : 
-                           s.name === "Bali" ? "🏝️" : 
-                           s.name === "New York" ? "🗽" : 
-                           s.name === "Rome" ? "🏛️" : "⛪"}
+                          {s.name === "Tokyo" ? "🗼" :
+                            s.name === "Beijing" ? "🏯" :
+                              s.name === "Bali" ? "🏝️" :
+                                s.name === "New York" ? "🗽" :
+                                  s.name === "Rome" ? "🏛️" : "⛪"}
                         </span>
                       </div>
                     </div>
