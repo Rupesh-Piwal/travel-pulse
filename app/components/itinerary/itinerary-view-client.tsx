@@ -312,54 +312,98 @@ function ParallaxDayCard({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], [60, -30]);
-  const scale = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.96, 1, 1, 0.98]);
+  const y = useTransform(scrollYProgress, [0, 1], [40, -20]);
+
+  // Use the first activity's image as the Day Hero photo
+  const dayHeroImage = day.activities.find(a => a.image)?.image || null;
 
   return (
-    <motion.section ref={ref} style={{ y, scale }} id={`day-${day.day}`} className="scroll-mt-40 relative origin-top">
-      {/* ──── Day Header ──── */}
+    <motion.section ref={ref} style={{ y }} id={`day-${day.day}`} className="scroll-mt-40 relative origin-top">
+
+      {/* ──── CINEMATIC DAY HERO ──── */}
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className="relative overflow-hidden rounded-[1.75rem] mb-8 border border-zinc-100/80 shadow-sm"
+        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+        className="relative overflow-hidden rounded-[2rem] mb-10"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-white via-white to-orange-50/30" />
-        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-orange-500/[0.06] to-transparent rounded-bl-full" />
-        <div className="relative p-8 md:p-10">
-          <div className="flex items-start justify-between gap-6">
-            <div className="space-y-4 flex-1">
-              <div className="flex items-center gap-3 flex-wrap">
-                <span className="px-4 py-1.5 bg-zinc-950 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-xl shadow-lg">
-                  Day {day.day < 10 ? `0${day.day}` : day.day}
-                </span>
-                {day.estimatedCost && (
-                  <span className="flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-500/10 text-emerald-700 text-[10px] font-bold uppercase tracking-widest rounded-xl border border-emerald-500/10">
-                    <DollarSign className="w-3 h-3" />
-                    {day.estimatedCost}
+        {/* Hero Image */}
+        {dayHeroImage ? (
+          <div className="relative w-full aspect-[4/5] md:aspect-[3/2] min-h-[400px] max-h-[650px] overflow-hidden rounded-[2rem]">
+            <img
+              src={dayHeroImage}
+              alt={day.title}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            {/* Gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent" />
+
+            {/* Overlaid Chapter Info */}
+            <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12 flex items-end justify-between">
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span className="px-4 py-1.5 bg-white text-zinc-950 text-[10px] font-black uppercase tracking-[0.25em] rounded-xl shadow-lg">
+                    Day {day.day < 10 ? `0${day.day}` : day.day}
                   </span>
+                  {day.estimatedCost && (
+                    <span className="flex items-center gap-1.5 px-3.5 py-1.5 bg-white/15 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl border border-white/20">
+                      <DollarSign className="w-3 h-3" />
+                      {day.estimatedCost}
+                    </span>
+                  )}
+                </div>
+                <h2 className="text-3xl md:text-5xl font-serif italic text-white leading-[1.05] tracking-tight max-w-xl text-shadow-premium-black">
+                  {day.title}
+                </h2>
+                {day.summary && (
+                  <p className="text-[14px] text-white/70 leading-relaxed max-w-md font-light">
+                    {day.summary}
+                  </p>
                 )}
               </div>
-              <h2 className="text-3xl md:text-[2.5rem] font-serif text-zinc-950 leading-[1.1] tracking-tight">{day.title}</h2>
-              {day.summary && <p className="text-[14px] text-zinc-500 leading-relaxed max-w-lg font-light">{day.summary}</p>}
+
+              <button
+                onClick={onPinDay}
+                className={`shrink-0 flex items-center gap-2.5 px-5 py-2.5 rounded-2xl text-[10px] font-bold uppercase tracking-widest transition-all duration-500 border shadow-sm ${isActive
+                  ? "bg-orange-500 text-white border-orange-500 shadow-lg shadow-orange-500/20"
+                  : "bg-white/10 text-white border-white/20 hover:bg-white/20 hover:border-white/40"
+                  }`}
+              >
+                <MapPin className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Map</span>
+              </button>
             </div>
-            <button
-              onClick={onPinDay}
-              className={`shrink-0 flex items-center gap-2.5 px-5 py-2.5 rounded-2xl text-[10px] font-bold uppercase tracking-widest transition-all duration-500 border shadow-sm ${isActive
-                ? "bg-orange-500 text-white border-orange-500 shadow-lg shadow-orange-500/20"
-                : "bg-white text-zinc-500 border-zinc-200 hover:border-orange-300 hover:text-orange-600 hover:shadow-md"
-                }`}
-            >
-              <MapPin className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Map</span>
-            </button>
           </div>
-        </div>
+        ) : (
+          /* Fallback: No image available */
+          <div className="relative overflow-hidden rounded-[2rem] border border-zinc-100/80 shadow-sm">
+            <div className="absolute inset-0 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-orange-500/10 to-transparent rounded-bl-full" />
+            <div className="relative p-8 md:p-12">
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span className="px-4 py-1.5 bg-white text-zinc-950 text-[10px] font-black uppercase tracking-[0.25em] rounded-xl shadow-lg">
+                    Day {day.day < 10 ? `0${day.day}` : day.day}
+                  </span>
+                  {day.estimatedCost && (
+                    <span className="flex items-center gap-1.5 px-3.5 py-1.5 bg-white/10 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl border border-white/10">
+                      <DollarSign className="w-3 h-3" />
+                      {day.estimatedCost}
+                    </span>
+                  )}
+                </div>
+                <h2 className="text-3xl md:text-5xl font-serif italic text-white leading-[1.05] tracking-tight">{day.title}</h2>
+                {day.summary && <p className="text-[14px] text-white/60 leading-relaxed max-w-lg font-light">{day.summary}</p>}
+              </div>
+            </div>
+          </div>
+        )}
       </motion.div>
 
       {/* ──── Activities ──── */}
-      <div className="space-y-0 pl-4 md:pl-6">{children}</div>
+      <div className="space-y-2">{children}</div>
 
       {/* ──── End-of-trip CTA ──── */}
       {isLast && (
@@ -446,124 +490,136 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
       <StickyDayNav days={data.days} activeScrollDay={activeScrollDay} />
 
       {/* ══════════════════════════════ VALORA GLASS HERO ══════════════════════════════ */}
-      <section className="relative h-screen w-full min-h-[750px] flex items-center justify-center overflow-hidden bg-zinc-950 p-6 md:p-10">
+      <section className="relative h-screen w-full min-h-[800px] flex items-center justify-center overflow-hidden bg-zinc-950">
 
-        {/* Background Image with Radial Mask */}
+        {/* Cinematic Background Layer */}
         <div className="absolute inset-0 z-0">
           <motion.img
-            initial={{ scale: 1.15, opacity: 0 }}
+            initial={{ scale: 1.2, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 2.5, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 3, ease: [0.22, 1, 0.36, 1] }}
             src={heroImage}
             alt={itinerary.destination}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-black/30 z-10" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60 z-10" />
+          {/* Multi-layered Gradients for Premium feel without blurs */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/20 to-black/90 z-10" />
+          <div className="absolute inset-0 bg-black/10 z-10" />
         </div>
 
-        {/* Floating Glass Frame */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
-          className="relative z-20 w-full h-full glass-frame rounded-[2.5rem] flex flex-col items-center justify-center p-8 md:p-16 border border-white/10"
-        >
-          {/* Integrated Header */}
-          <div className="absolute top-10 left-10 right-10 flex items-center justify-between">
-            <div className="flex items-center gap-10">
+        {/* Edge-to-Edge Content Container */}
+        <div className="relative z-20 w-full h-full flex flex-col items-center justify-between p-12 md:p-20">
+          
+          {/* Integrated Minimalist Header */}
+          <div className="w-full flex items-center justify-between">
+            <div className="flex items-center gap-12">
               <Link href="/dashboard">
-                <Button variant="ghost" size="sm" className="text-white/60 hover:text-white transition-colors gap-3 px-0 font-bold text-[10px] uppercase tracking-[0.3em]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-white/40" /> Menu
+                <Button variant="ghost" size="sm" className="text-white/70 hover:text-white transition-all gap-4 px-0 font-black text-[10px] uppercase tracking-[0.4em]">
+                  <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" /> Explorer
                 </Button>
               </Link>
-              <div className="hidden md:flex items-center gap-4 text-white/40 text-[10px] font-black uppercase tracking-[0.2em]">
-                <span>EN</span> <span className="w-px h-2.5 bg-white/10" /> <span>FR</span>
+              <div className="hidden lg:flex items-center gap-6 text-white/30 text-[9px] font-black uppercase tracking-[0.3em]">
+                <span className="text-white/60">Global</span> <span className="w-px h-3 bg-white/10" /> <span>Archive</span>
               </div>
             </div>
 
-            <div className="absolute left-1/2 -translate-x-1/2">
-              <span className="text-xl font-serif italic text-white tracking-widest">NomadGo</span>
+            <div className="absolute left-1/2 -translate-x-1/2 scale-125">
+              <span className="text-2xl font-serif italic text-white tracking-[0.3em] font-light">NOMADGO</span>
             </div>
 
-            <div className="flex items-center gap-8">
-              <Button variant="ghost" size="sm" className="text-white/60 hover:text-white font-bold text-[10px] uppercase tracking-[0.2em] px-0">
+            <div className="flex items-center gap-10">
+              <Button variant="ghost" size="sm" className="text-white/60 hover:text-white font-black text-[10px] uppercase tracking-[0.3em] px-0">
                 Share
               </Button>
-              <Button variant="ghost" size="sm" className="text-white hover:text-white font-bold text-[10px] uppercase tracking-[0.2em] bg-white/10 backdrop-blur-3xl rounded-full px-6 py-2 border border-white/20 transition-all hover:bg-white/20">
-                Booking <ArrowRight className="w-3.5 h-3.5 ml-2" />
+              <Button variant="ghost" size="sm" className="text-white font-black text-[11px] uppercase tracking-[0.25em] bg-white/10 rounded-full px-8 py-3 border border-white/20 transition-all hover:bg-white/20 hover:scale-105 active:scale-95">
+                Book Experience <ArrowRight className="w-4 h-4 ml-3" />
               </Button>
             </div>
           </div>
 
-          {/* Hero Text */}
-          <div className="max-w-4xl text-center space-y-8">
+          {/* Hero Typography - MAGAZINE STYLE */}
+          <div className="max-w-6xl w-full text-center space-y-12">
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-              className="space-y-4"
+              transition={{ delay: 0.6, duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+              className="space-y-6"
             >
-              <h1 className="text-7xl md:text-[9rem] font-serif italic text-white leading-[0.8] tracking-tight drop-shadow-2xl">
-                Explore {itinerary.destination.split(",")[0]}
+              <div className="flex items-center justify-center gap-6 mb-4">
+                <div className="h-px w-12 bg-white/30" />
+                <span className="text-[11px] font-black uppercase tracking-[0.6em] text-orange-400 drop-shadow-lg">Now Discovering</span>
+                <div className="h-px w-12 bg-white/30" />
+              </div>
+              
+              <h1 className="text-8xl md:text-[12rem] font-serif italic text-white leading-[0.85] tracking-tighter text-shadow-premium-black">
+                {itinerary.destination.split(",")[0]}
               </h1>
-              <h2 className="text-5xl md:text-7xl font-serif text-white/90 leading-tight tracking-tight drop-shadow-xl">
-                {itinerary.vibe} Gateway
-              </h2>
+              
+              <div className="relative inline-block mt-4">
+                <h2 className="text-4xl md:text-6xl font-serif text-white/90 leading-tight tracking-tight text-shadow-premium-black">
+                  A {itinerary.vibe} <span className="italic font-light opacity-60">Odyssey</span>
+                </h2>
+                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-24 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+              </div>
             </motion.div>
           </div>
 
-          {/* Bottom Information Bar */}
-          <div className="absolute bottom-0 left-0 right-0 h-32 border-t border-white/10 flex items-center px-12 md:px-20 overflow-hidden rounded-b-[2.5rem]">
-            <div className="absolute inset-0 bg-white/5 backdrop-blur-3xl" />
-
-            <div className="relative w-full flex items-center justify-between">
-              <div className="flex items-center gap-16 md:gap-24">
-                <div className="space-y-3">
-                  <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Destination</p>
-                  <p className="text-sm font-bold text-white tracking-widest truncate max-w-[200px]">{itinerary.destination}</p>
-                  <div className="h-px w-full bg-white/10" />
-                </div>
-                <div className="space-y-3">
-                  <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Vibe</p>
-                  <p className="text-sm font-bold text-white tracking-widest">{itinerary.vibe}</p>
-                  <div className="h-px w-full bg-white/10" />
-                </div>
-                <div className="space-y-3">
-                  <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Budget</p>
-                  <p className="text-sm font-bold text-white tracking-widest uppercase">{itinerary.budget}</p>
-                  <div className="h-px w-full bg-white/10" />
+          {/* Luxury Information Bar */}
+          <div className="w-full max-w-7xl flex flex-col md:flex-row items-end md:items-center justify-between gap-12 pb-4">
+            <div className="flex items-center gap-16 md:gap-24">
+              <div className="space-y-4 group">
+                <p className="text-[10px] font-black uppercase tracking-[0.5em] text-white/40 group-hover:text-orange-400 transition-colors">Coordinates</p>
+                <div className="flex flex-col gap-1">
+                  <p className="text-sm font-bold text-white tracking-[0.2em] uppercase">{itinerary.destination}</p>
                 </div>
               </div>
+              
+              <div className="space-y-4 group">
+                <p className="text-[10px] font-black uppercase tracking-[0.5em] text-white/40 group-hover:text-orange-400 transition-colors">Aura</p>
+                <p className="text-sm font-bold text-white tracking-[0.2em] uppercase italic">{itinerary.vibe}</p>
+              </div>
 
-              <div className="flex items-center gap-10">
-                <div className="flex flex-col items-end">
-                  <p className="text-[2rem] font-bold text-white leading-none">
-                    <AnimatedCounter to={itinerary.days} />
-                  </p>
-                  <p className="text-[8px] font-black uppercase tracking-[0.3em] text-white/30">Days</p>
+              <div className="space-y-4 group">
+                <p className="text-[10px] font-black uppercase tracking-[0.5em] text-white/40 group-hover:text-orange-400 transition-colors">Investment</p>
+                <div className="flex items-center gap-3">
+                  <p className="text-sm font-bold text-white tracking-[0.2em] uppercase">{itinerary.budget}</p>
                 </div>
-                <Button
-                  onClick={() => document.getElementById("day-1")?.scrollIntoView({ behavior: "smooth" })}
-                  className="group/btn relative px-8 py-4 bg-white text-zinc-950 font-black uppercase text-[10px] tracking-[0.3em] rounded-full overflow-hidden transition-all hover:pr-10"
-                >
-                  Let's Start
-                  <ArrowRight className="absolute right-4 w-4 h-4 opacity-0 group-hover/btn:opacity-100 transition-all duration-300 transform translate-x-2 group-hover/btn:translate-x-0" />
-                </Button>
               </div>
             </div>
-          </div>
-        </motion.div>
 
-        {/* Scroll Indicator */}
+            <div className="flex items-center gap-12">
+              <div className="flex flex-col items-end">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-5xl font-black text-white leading-none tracking-tighter">
+                    <AnimatedCounter to={itinerary.days} />
+                  </span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-orange-400">Days</span>
+                </div>
+                <p className="text-[8px] font-black uppercase tracking-[0.2em] text-white/20 mt-1">Full Curriculum</p>
+              </div>
+
+              <Button
+                onClick={() => document.getElementById("day-1")?.scrollIntoView({ behavior: "smooth" })}
+                className="group/btn relative h-20 px-12 bg-white text-zinc-950 font-black uppercase text-[11px] tracking-[0.4em] rounded-full overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-[0_20px_50px_rgba(255,255,255,0.15)]"
+              >
+                <span className="relative z-10">Commence</span>
+                <ArrowRight className="relative z-10 w-5 h-5 ml-4 transition-transform duration-500 group-hover/btn:translate-x-2" />
+                <div className="absolute inset-0 bg-zinc-100 transform translate-y-full group-hover/btn:translate-y-0 transition-transform duration-500" />
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Scroll indicator with no blur */}
         <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-          className="absolute bottom-1 right-1/2 translate-x-1/2 z-30 flex flex-col items-center gap-2 opacity-30"
+          animate={{ y: [0, 15, 0] }}
+          transition={{ repeat: Infinity, duration: 2.5 }}
+          className="absolute bottom-6 right-1/2 translate-x-1/2 z-30 opacity-40"
         >
-          <ArrowDownToDot className="w-5 h-5 text-white" />
+          <div className="w-px h-12 bg-gradient-to-b from-white via-white to-transparent" />
         </motion.div>
       </section>
+
 
       {/* ══════════════════════════════ CONTENT AREA */}
       <div className="flex-1 max-w-[1400px] mx-auto w-full">
