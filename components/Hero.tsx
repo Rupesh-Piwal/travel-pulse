@@ -19,11 +19,14 @@ const HERO_IMAGES = [
 const BUDGETS = ["Budget", "Mid-Range", "Luxury"] as const;
 const VIBES = ["Adventure", "Foodie", "Cultural", "Relaxation"] as const;
 
-
 export default function Hero() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [idx, setIdx] = useState(0);
+
+  //video state
+  const [videoLoaded, setVideoLoaded] = useState(false);
+  const [videoError, setVideoError] = useState(false);
 
   // Form state
   const [destination, setDestination] = useState("");
@@ -32,7 +35,10 @@ export default function Hero() {
   const [vibe, setVibe] = useState<string>("Adventure");
 
   useEffect(() => {
-    const t = setInterval(() => setIdx((p) => (p + 1) % HERO_IMAGES.length), 3000);
+    const t = setInterval(
+      () => setIdx((p) => (p + 1) % HERO_IMAGES.length),
+      3000,
+    );
     return () => clearInterval(t);
   }, []);
 
@@ -61,7 +67,8 @@ export default function Hero() {
       } else {
         if (result.error === "INSUFFICIENT_CREDITS") {
           toast.error("Insufficient Credits", {
-            description: "You've used all your credits. Credits reset every 24 hours.",
+            description:
+              "You've used all your credits. Credits reset every 24 hours.",
           });
         } else {
           toast.error("Something went wrong", {
@@ -73,25 +80,72 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative w-full h-screen overflow-hidden bg-[#0E1922]">
-
+    <section className="relative w-full h-screen overflow-hidden">
       {/* ════ FULL-SCREEN BACKGROUND IMAGES ════ */}
-      <div className="absolute inset-0 z-0">
-        <AnimatePresence mode="popLayout">
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        {/* 🔹 Fallback image (instant render) */}
+        <AnimatePresence mode="wait">
           <motion.img
             key={idx}
             src={HERO_IMAGES[idx]}
-            alt="destination"
+            alt="Travel destination"
             initial={{ opacity: 0, scale: 1.06 }}
-            animate={{ opacity: 1, scale: 1 }}
+            animate={{ opacity: videoLoaded ? 0 : 1, scale: 1.02 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 1.6, ease: "easeInOut" }}
+            transition={{ duration: 1.8, ease: [0.25, 0.8, 0.25, 1] }}
             className="absolute inset-0 w-full h-full object-cover"
           />
         </AnimatePresence>
-        {/* Cinematic overlays */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0E1922]/60 via-[#0E1922]/25 to-[#0E1922]/80" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0E1922]/40 to-transparent" />
+
+        {/* 🔹 Video layer (optimized + accessible) */}
+        {!videoError && (
+          <video
+            className={`absolute inset-0 w-full h-full object-cover 
+      transition-opacity duration-1000 
+      ${videoLoaded ? "opacity-100" : "opacity-0"}
+      brightness-[0.9] contrast-[1.05]`}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            poster="/hero-fallback.jpg"
+            onLoadedData={() => {
+              setTimeout(() => setVideoLoaded(true), 150);
+            }}
+            onError={() => setVideoError(true)}
+          >
+            <source src="./hero/hero-vid-3.mp4" type="video/mp4" />
+            {/* <source src="/hero-video.webm" type="video/webm" /> */}
+            {/* Accessibility: captions */}
+            <track
+              src="/captions.vtt"
+              kind="subtitles"
+              srcLang="en"
+              label="English"
+              default
+            />
+            {/* Fallback text */}
+            Your browser does not support the video tag.
+          </video>
+        )}
+
+        {/* 🔹 Cinematic overlays (refined, not heavy) */}
+
+        {/* Base depth */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/70" />
+
+        {/* Left readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-transparent" />
+
+        {/* Top light (subtle premium touch) */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.07),transparent_60%)]" />
+
+        {/* Vignette */}
+        <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_120px_rgba(0,0,0,0.6)]" />
+
+        {/* Optional grain */}
+        <div className="absolute inset-0 opacity-[0.05] mix-blend-overlay pointer-events-none bg-[url('/noise.png')]" />
       </div>
 
       {/* ════ HEADER NAV ════ */}
@@ -102,20 +156,25 @@ export default function Hero() {
         className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-8 md:px-14 py-6"
       >
         {/* Left nav */}
-        <nav className="flex items-center gap-2 md:gap-3">
+        <nav className="flex items-center gap-4 md:gap-6">
           {["Explore", "Pricing", "How it Works"].map((label) => (
             <Link
               key={label}
               href={`#${label.toLowerCase().replace(/\s+/g, "-")}`}
-              className="px-5 py-2.5 rounded-full border border-white/20 text-[13px] text-white/85 font-medium backdrop-blur-md hover:bg-white/10 hover:border-white/35 transition-all"
+              className="group relative text-sm text-white/80 font-medium tracking-wide transition-colors duration-300 hover:text-white"
             >
               {label}
+
+              <span className="absolute left-1/2 -bottom-1 h-[1.5px] w-0 -translate-x-1/2 bg-white transition-all duration-300 group-hover:w-full"></span>
             </Link>
           ))}
         </nav>
 
         {/* Center logo */}
-        <Link href="/" className="absolute left-1/2 -translate-x-1/2 font-serif italic text-[26px] text-white tracking-tight drop-shadow-lg">
+        <Link
+          href="/"
+          className="absolute left-1/2 -translate-x-1/2 font-serif italic text-[26px] text-white tracking-tight drop-shadow-lg"
+        >
           NomadGo
         </Link>
 
@@ -129,9 +188,14 @@ export default function Hero() {
           </Link>
           <Link
             href="/dashboard/itinerary/new"
-            className="px-5 py-2.5 rounded-full bg-white/15 border border-white/25 backdrop-blur-md text-[13px] text-white font-semibold hover:bg-white/25 transition-all flex items-center gap-2"
+            className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full
+  bg-[#C5632D] text-[13px] text-white font-medium tracking-[0.02em]
+  transition-all duration-300 ease-[cubic-bezier(0.25,0.8,0.25,1)]
+  hover:bg-[#b55524] active:scale-[0.98]"
           >
-            Plan Trip <ArrowRight className="w-3.5 h-3.5" />
+            <span>Plan Trip</span>
+
+            <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
           </Link>
         </div>
       </motion.header>
@@ -145,11 +209,13 @@ export default function Hero() {
           className="max-w-4xl"
         >
           <h1 className="font-serif text-[clamp(44px,8vw,110px)] text-white leading-[1.05] mb-6 tracking-tight drop-shadow-[0_4px_40px_rgba(0,0,0,0.5)]">
-            Plan your perfect<br />journey
+            Plan your perfect
+            <br />
+            journey
           </h1>
           <p className="font-sans text-[clamp(15px,1.3vw,20px)] text-white/70 max-w-[580px] mx-auto leading-[1.7]">
-            Tell us your destination and travel vibe. Get a beautiful day-by-day itinerary with photos,
-            maps, and a luxury PDF guide — in seconds.
+            Tell us your destination and travel vibe. Get a beautiful day-by-day
+            itinerary with photos, maps, and a luxury PDF guide — in seconds.
           </p>
         </motion.div>
       </div>
@@ -162,10 +228,11 @@ export default function Hero() {
         className="absolute bottom-10 md:bottom-14 left-1/2 -translate-x-1/2 z-40 w-[94%] max-w-[960px]"
       >
         <div className="bg-[#F5EFE0] rounded-[22px] shadow-[0_24px_80px_rgba(0,0,0,0.35)] flex flex-col md:flex-row items-stretch overflow-visible relative">
-
           {/* Destination — uses LocationInput */}
           <div className="flex-[1.4] flex flex-col justify-center px-5 py-4 border-b md:border-b-0 md:border-r border-[#0E1922]/10 relative">
-            <span className="text-[10px] uppercase tracking-[0.15em] text-[#0E1922]/40 font-bold mb-1">Destination</span>
+            <span className="text-[10px] uppercase tracking-[0.15em] text-[#0E1922]/40 font-bold mb-1">
+              Destination
+            </span>
             <div className="hero-location-input [&_input]:!bg-transparent [&_input]:!border-none [&_input]:!shadow-none [&_input]:!outline-none [&_input]:!ring-0 [&_input]:!h-auto [&_input]:!p-0 [&_input]:!pl-0 [&_input]:!text-[#0E1922] [&_input]:!text-[15px] [&_input]:!font-medium [&_input]:!placeholder:text-[#0E1922]/30 [&_input]:!rounded-none [&_.absolute.left-4]:!hidden [&_input]:focus:!ring-0 [&_input]:focus:!bg-transparent [&_input]:!focus-visible:ring-0">
               <LocationInput
                 onSelect={(loc) => {
@@ -181,7 +248,9 @@ export default function Hero() {
 
           {/* Days */}
           <div className="flex-1 flex flex-col justify-center px-5 py-4 border-b md:border-b-0 md:border-r border-[#0E1922]/10">
-            <span className="text-[10px] uppercase tracking-[0.15em] text-[#0E1922]/40 font-bold mb-1">Days</span>
+            <span className="text-[10px] uppercase tracking-[0.15em] text-[#0E1922]/40 font-bold mb-1">
+              Days
+            </span>
             <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4 text-[#0E1922]/40" />
               <input
@@ -198,7 +267,9 @@ export default function Hero() {
 
           {/* Budget */}
           <div className="flex-1 flex flex-col justify-center px-5 py-4 border-b md:border-b-0 md:border-r border-[#0E1922]/10">
-            <span className="text-[10px] uppercase tracking-[0.15em] text-[#0E1922]/40 font-bold mb-1">Budget</span>
+            <span className="text-[10px] uppercase tracking-[0.15em] text-[#0E1922]/40 font-bold mb-1">
+              Budget
+            </span>
             <div className="flex items-center gap-2">
               <Wallet className="w-4 h-4 text-[#0E1922]/40" />
               <select
@@ -207,14 +278,18 @@ export default function Hero() {
                 className="bg-transparent outline-none text-[#0E1922] text-[15px] font-medium w-full appearance-none cursor-pointer"
                 disabled={isPending}
               >
-                {BUDGETS.map((b) => <option key={b}>{b}</option>)}
+                {BUDGETS.map((b) => (
+                  <option key={b}>{b}</option>
+                ))}
               </select>
             </div>
           </div>
 
           {/* Vibe */}
           <div className="flex-1 flex flex-col justify-center px-5 py-4 border-b md:border-b-0 md:border-r border-[#0E1922]/10">
-            <span className="text-[10px] uppercase tracking-[0.15em] text-[#0E1922]/40 font-bold mb-1">Vibe</span>
+            <span className="text-[10px] uppercase tracking-[0.15em] text-[#0E1922]/40 font-bold mb-1">
+              Vibe
+            </span>
             <div className="flex items-center gap-2">
               <Compass className="w-4 h-4 text-[#0E1922]/40" />
               <select
@@ -223,7 +298,9 @@ export default function Hero() {
                 className="bg-transparent outline-none text-[#0E1922] text-[15px] font-medium w-full appearance-none cursor-pointer"
                 disabled={isPending}
               >
-                {VIBES.map((v) => <option key={v}>{v}</option>)}
+                {VIBES.map((v) => (
+                  <option key={v}>{v}</option>
+                ))}
               </select>
             </div>
           </div>

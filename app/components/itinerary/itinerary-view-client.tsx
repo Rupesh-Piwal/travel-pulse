@@ -140,7 +140,7 @@ function StickyDayNav({ days, activeScrollDay }: { days: Day[]; activeScrollDay:
           className="fixed top-1/2 left-6 md:left-10 -translate-y-1/2 z-[150] hidden lg:flex flex-col items-center py-10"
         >
           {/* Continuous Vertical Line */}
-          <div className="absolute top-0 bottom-0 w-[1px] bg-white/20 left-1/2 -translate-x-1/2" />
+          <div className="absolute top-0 bottom-0 w-px bg-white/10 left-1/2 -translate-x-1/2" />
 
           {days.map((day) => {
             const isActive = activeScrollDay === day.day;
@@ -154,17 +154,17 @@ function StickyDayNav({ days, activeScrollDay }: { days: Day[]; activeScrollDay:
                 {isActive ? (
                   <motion.div
                     layoutId="active-dot"
-                    className="relative z-10 w-8 h-8 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center shadow-[0_0_20px_rgba(255,255,255,0.3)] border border-white/20"
+                    className="relative z-10 w-9 h-9 rounded-full bg-white flex items-center justify-center shadow-[0_0_30px_rgba(255,255,255,0.2)] border border-white/10"
                   >
-                    <span className="text-[13px] font-black text-black">{day.day}</span>
+                    <span className="text-[14px] font-black text-black">{day.day}</span>
                   </motion.div>
                 ) : (
                   <div className="relative z-10 w-2.5 h-2.5 rounded-full bg-white/40 group-hover:bg-white/80 transition-all duration-300 group-hover:scale-125" />
                 )}
 
                 {/* Tooltip on Hover */}
-                <div className="absolute left-10 opacity-0 group-hover:opacity-100 transition-all duration-300 transform -translate-x-2 group-hover:translate-x-0 pointer-events-none whitespace-nowrap">
-                  <span className="bg-black/40 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-md border border-white/10 shadow-lg block">
+                <div className="absolute left-12 opacity-0 group-hover:opacity-100 transition-all duration-300 transform -translate-x-2 group-hover:translate-x-0 pointer-events-none whitespace-nowrap">
+                  <span className="bg-zinc-900/80 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-[0.3em] px-4 py-2 rounded-xl border border-white/10 shadow-2xl block">
                     Day {day.day}
                   </span>
                 </div>
@@ -192,28 +192,32 @@ function KnowBeforeYouGo({ data }: { data: ItineraryData }) {
       className="mb-24"
     >
       <div className="flex items-center gap-6 mb-12">
-        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-zinc-200 to-transparent" />
-        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-300">Essential Intel</span>
-        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-zinc-200 to-transparent" />
+        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-500">Essential Intel</span>
+        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
       </div>
 
       {(data.language || data.bestTimeToVisit) && (
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-12 mb-12">
           {data.language && (
-            <div className="flex items-center gap-3">
-              <Languages className="w-4 h-4 text-zinc-300" />
+            <div className="flex items-center gap-4">
+              <div className="p-2.5 bg-zinc-900 rounded-xl border border-white/5">
+                <Languages className="w-4 h-4 text-orange-400" />
+              </div>
               <div>
-                <span className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-400 block">Language</span>
-                <span className="text-[15px] font-semibold text-zinc-800 mt-0.5 block">{data.language}</span>
+                <span className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-500 block">Language</span>
+                <span className="text-[15px] font-semibold text-white mt-0.5 block">{data.language}</span>
               </div>
             </div>
           )}
           {data.bestTimeToVisit && (
-            <div className="flex items-center gap-3">
-              <Sun className="w-4 h-4 text-zinc-300" />
+            <div className="flex items-center gap-4">
+              <div className="p-2.5 bg-zinc-900 rounded-xl border border-white/5">
+                <Sun className="w-4 h-4 text-orange-400" />
+              </div>
               <div>
-                <span className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-400 block">Best Time to Visit</span>
-                <span className="text-[15px] font-semibold text-zinc-800 mt-0.5 block">{data.bestTimeToVisit}</span>
+                <span className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-500 block">Best Time to Visit</span>
+                <span className="text-[15px] font-semibold text-white mt-0.5 block">{data.bestTimeToVisit}</span>
               </div>
             </div>
           )}
@@ -231,10 +235,10 @@ function KnowBeforeYouGo({ data }: { data: ItineraryData }) {
               transition={{ delay: i * 0.08, duration: 0.6 }}
               className="flex items-start gap-5 group/tip"
             >
-              <span className="text-[2rem] font-serif text-zinc-200 leading-none mt-[-4px] group-hover/tip:text-orange-300 transition-colors duration-500 select-none">
+              <span className="text-[2rem] font-serif italic text-zinc-800 leading-none mt-[-4px] group-hover/tip:text-orange-400/50 transition-colors duration-500 select-none">
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <p className="text-[14px] text-zinc-600 leading-relaxed pt-1 border-l border-zinc-100 pl-5 group-hover/tip:border-orange-200 transition-colors duration-500">
+              <p className="text-[14px] text-zinc-400 leading-relaxed pt-1 border-l border-white/5 pl-5 group-hover/tip:border-orange-400/30 transition-colors duration-500">
                 {tip}
               </p>
             </motion.div>
@@ -260,41 +264,55 @@ function WhereToStay({ stays, destination }: { stays?: SuggestedStay[]; destinat
       transition={{ duration: 0.9, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
       className="mb-20"
     >
-      <div className="flex items-center gap-4 mb-10">
-        <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-500/10 to-indigo-500/10 flex items-center justify-center border border-purple-500/10">
-          <Building2 className="w-5 h-5 text-purple-600" />
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-4">
+          <div className="w-1 h-1 rounded-full bg-orange-400" />
+          <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-500">Reside</h2>
         </div>
-        <h2 className="text-[11px] font-black uppercase tracking-[0.3em] text-zinc-400">Where to Stay</h2>
-        <div className="h-px flex-1 bg-gradient-to-r from-zinc-200 to-transparent" />
+        <div className="flex items-center gap-2 text-[9px] font-bold text-zinc-600 uppercase tracking-widest">
+          Scroll <ArrowRight className="w-3 h-3" />
+        </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+      <div className="flex gap-4 overflow-x-auto pb-8 snap-x no-scrollbar -mx-4 px-4">
         {stays.map((stay, i) => {
           const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(stay.name + " " + destination)}`;
           return (
             <motion.a
               key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.08, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ delay: i * 0.05, duration: 0.6 }}
               href={searchUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative overflow-hidden flex items-center gap-5 p-6 rounded-[1.25rem] bg-white/80 border border-zinc-100 hover:border-purple-200 shadow-sm hover:shadow-xl transition-all duration-500"
+              className="flex-none w-[280px] snap-start group relative p-6 rounded-[1.75rem] bg-zinc-900/40 border border-white/5 hover:border-orange-400/20 transition-all duration-500"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-50/0 to-purple-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-50 to-indigo-50 flex items-center justify-center shrink-0 text-2xl relative z-10 border border-purple-100/50 group-hover:scale-110 transition-transform duration-500">
-                {stayEmoji[stay.type] || "🏨"}
-              </div>
-              <div className="flex-1 min-w-0 relative z-10">
-                <p className="text-[15px] font-bold text-zinc-900 truncate group-hover:text-purple-700 transition-colors">{stay.name}</p>
-                <div className="flex items-center gap-2.5 mt-1.5">
-                  <span className="text-[9px] font-black uppercase tracking-[0.2em] text-purple-500 bg-purple-50 px-2 py-0.5 rounded-md">{stay.type}</span>
-                  <span className="text-[11px] text-zinc-400">{stay.neighborhood}</span>
+              <div className="flex items-start justify-between mb-4">
+                <div className="w-10 h-10 rounded-xl bg-zinc-800 border border-white/5 flex items-center justify-center text-lg">
+                  {stayEmoji[stay.type] || "🏨"}
                 </div>
-                <p className="text-[13px] font-bold text-emerald-600 mt-2">{stay.priceRange}<span className="text-zinc-400 font-normal text-[11px]"> / night</span></p>
+                <span className="text-[8px] font-black uppercase tracking-[0.2em] text-orange-400/70 bg-orange-400/5 px-2 py-0.5 rounded-md border border-orange-400/10">{stay.type}</span>
               </div>
-              <ArrowDownToDot className="w-4 h-4 text-zinc-300 group-hover:text-purple-400 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 shrink-0 relative z-10" />
+
+              <div className="space-y-1 mb-4">
+                <h3 className="text-xl font-serif italic text-white truncate group-hover:text-orange-400 transition-colors">
+                  {stay.name}
+                </h3>
+                <p className="text-[11px] text-zinc-500 font-medium truncate opacity-70">
+                  {stay.neighborhood}
+                </p>
+              </div>
+
+              <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                <p className="text-sm font-bold text-white">
+                  {stay.priceRange}<span className="text-zinc-600 font-normal text-[10px] ml-1">/ nt</span>
+                </p>
+                <div className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white transition-all duration-500">
+                  <ArrowRight className="w-3 h-3 text-white group-hover:text-black transition-colors" />
+                </div>
+              </div>
             </motion.a>
           );
         })}
@@ -378,24 +396,24 @@ function ParallaxDayCard({
           </div>
         ) : (
           /* Fallback: No image available */
-          <div className="relative overflow-hidden rounded-[2rem] border border-zinc-100/80 shadow-sm">
-            <div className="absolute inset-0 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950" />
+          <div className="relative overflow-hidden rounded-[2rem] border border-white/5 shadow-2xl">
+            <div className="absolute inset-0 bg-gradient-to-br from-zinc-900 via-black to-zinc-900" />
             <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-orange-500/10 to-transparent rounded-bl-full" />
             <div className="relative p-8 md:p-12">
               <div className="space-y-4">
                 <div className="flex items-center gap-3 flex-wrap">
-                  <span className="px-4 py-1.5 bg-white text-zinc-950 text-[10px] font-black uppercase tracking-[0.25em] rounded-xl shadow-lg">
+                  <span className="px-4 py-1.5 bg-white text-black text-[10px] font-black uppercase tracking-[0.25em] rounded-xl shadow-lg">
                     Day {day.day < 10 ? `0${day.day}` : day.day}
                   </span>
                   {day.estimatedCost && (
-                    <span className="flex items-center gap-1.5 px-3.5 py-1.5 bg-white/10 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl border border-white/10">
+                    <span className="flex items-center gap-1.5 px-3.5 py-1.5 bg-white/5 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl border border-white/10">
                       <DollarSign className="w-3 h-3" />
                       {day.estimatedCost}
                     </span>
                   )}
                 </div>
                 <h2 className="text-3xl md:text-5xl font-serif italic text-white leading-[1.05] tracking-tight">{day.title}</h2>
-                {day.summary && <p className="text-[14px] text-white/60 leading-relaxed max-w-lg font-light">{day.summary}</p>}
+                {day.summary && <p className="text-[14px] text-zinc-500 leading-relaxed max-w-lg font-light">{day.summary}</p>}
               </div>
             </div>
           </div>
@@ -483,7 +501,7 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
   return (
     <div
       ref={scrollContainerRef}
-      className="fixed inset-0 z-[100] flex flex-col bg-white overflow-y-auto overflow-x-hidden font-sans selection:bg-orange-200/40 scrollbar-hide"
+      className="fixed inset-0 z-[100] flex flex-col bg-black overflow-y-auto overflow-x-hidden font-sans selection:bg-orange-200/40 scrollbar-hide"
     >
 
       {/* ══════════════════════════════ STICKY DAY NAVIGATOR */}
@@ -509,7 +527,7 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
 
         {/* Edge-to-Edge Content Container */}
         <div className="relative z-20 w-full h-full flex flex-col items-center justify-between p-12 md:p-20">
-          
+
           {/* Integrated Minimalist Header */}
           <div className="w-full flex items-center justify-between">
             <div className="flex items-center gap-12">
@@ -550,11 +568,11 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
                 <span className="text-[11px] font-black uppercase tracking-[0.6em] text-orange-400 drop-shadow-lg">Now Discovering</span>
                 <div className="h-px w-12 bg-white/30" />
               </div>
-              
+
               <h1 className="text-8xl md:text-[12rem] font-serif italic text-white leading-[0.85] tracking-tighter text-shadow-premium-black">
                 {itinerary.destination.split(",")[0]}
               </h1>
-              
+
               <div className="relative inline-block mt-4">
                 <h2 className="text-4xl md:text-6xl font-serif text-white/90 leading-tight tracking-tight text-shadow-premium-black">
                   A {itinerary.vibe} <span className="italic font-light opacity-60">Odyssey</span>
@@ -573,7 +591,7 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
                   <p className="text-sm font-bold text-white tracking-[0.2em] uppercase">{itinerary.destination}</p>
                 </div>
               </div>
-              
+
               <div className="space-y-4 group">
                 <p className="text-[10px] font-black uppercase tracking-[0.5em] text-white/40 group-hover:text-orange-400 transition-colors">Aura</p>
                 <p className="text-sm font-bold text-white tracking-[0.2em] uppercase italic">{itinerary.vibe}</p>
@@ -630,13 +648,13 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
 
             {/* ADVENZO STYLE SECTION HEADER */}
             <div className="mb-20 space-y-6">
-              <h2 className="text-4xl md:text-5xl font-black tracking-tight text-zinc-950 uppercase leading-none">
+              <h2 className="text-4xl md:text-6xl font-serif italic tracking-tight text-white leading-none">
                 Explore Unmissable <br />
-                Experience Tailored for you
+                <span className="text-orange-400 font-sans font-black not-italic text-3xl md:text-4xl uppercase tracking-[0.1em]">Experience Tailored for you</span>
               </h2>
               <div className="max-w-xl">
-                <p className="text-zinc-500 font-light text-lg">
-                  Discover exclusive activities and hidden gems curated specifically for your {itinerary.vibe.toLowerCase()} vibe.
+                <p className="text-zinc-500 font-light text-lg leading-relaxed">
+                  Discover exclusive activities and hidden gems curated specifically for your <span className="text-white font-medium italic">{itinerary.vibe.toLowerCase()}</span> vibe.
                   Every stop is a story waiting to be told.
                 </p>
               </div>
@@ -677,9 +695,9 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
           </div>
 
           {/* RIGHT: Sticky Map */}
-          <div className="hidden lg:block lg:w-[38%]">
-            <div className="sticky top-0 h-screen py-10 pr-10">
-              <div className="w-full h-full bg-zinc-950 rounded-[3rem] overflow-hidden relative shadow-2xl">
+          <div className="hidden lg:block lg:w-[38%] border-l border-white/5">
+            <div className="sticky top-0 h-screen">
+              <div className="w-full h-full bg-zinc-950 overflow-hidden relative">
                 <MapWrapper days={data.days} activeDay={activeDay} />
                 <div className="absolute top-8 right-8 z-30">
                   <div className="flex items-center gap-2 px-4 py-2 bg-zinc-900/80 backdrop-blur-2xl border border-zinc-800/80 rounded-2xl text-white/50 text-[9px] font-black uppercase tracking-[0.25em]">

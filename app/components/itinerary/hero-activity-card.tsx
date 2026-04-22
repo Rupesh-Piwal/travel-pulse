@@ -31,9 +31,15 @@ const TIME_DOT_COLOR: Record<string, string> = {
 };
 
 const TIME_LABEL_COLOR: Record<string, string> = {
-  Morning: "text-amber-600",
-  Afternoon: "text-orange-600",
-  Evening: "text-indigo-600",
+  Morning: "text-amber-400",
+  Afternoon: "text-orange-400",
+  Evening: "text-indigo-400",
+};
+
+const TIME_BG_COLOR: Record<string, string> = {
+  Morning: "bg-amber-400/10",
+  Afternoon: "bg-orange-400/10",
+  Evening: "bg-indigo-400/10",
 };
 
 export default function HeroActivityCard({ activity }: { activity: Activity }) {
@@ -49,154 +55,102 @@ export default function HeroActivityCard({ activity }: { activity: Activity }) {
     <motion.article
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
+      viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-      className="group/hero relative overflow-hidden rounded-[2rem] bg-white border border-zinc-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.12)] transition-all duration-700 mb-4"
+      className="group/hero relative w-full h-[360px] md:h-[420px] rounded-[1.5rem] overflow-hidden bg-zinc-950 border border-white/5 cursor-pointer hover:scale-[1.02] hover:shadow-[0_20px_50px_-10px_rgba(0,0,0,0.6)] transition-all duration-500 mb-6"
     >
-      {/* ──── Cinematic Full-Width Image ──── */}
-      {activity.image && (
-        <div className="relative w-full aspect-[4/5] max-h-[600px] overflow-hidden">
+      {/* Background Image Layer */}
+      {activity.image ? (
+        <>
           <img
             src={activity.image}
             alt={activity.title}
-            className="w-full h-full object-cover group-hover/hero:scale-[1.05] transition-transform duration-[4s] ease-out"
+            className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover/hero:scale-[1.03] transition-transform duration-1000 ease-out"
           />
-          {/* Deep gradient for text legibility */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-
-          {/* "Featured Experience" editorial badge */}
-          <div className="absolute top-8 left-8 flex items-center gap-3">
-            <div className="px-5 py-2.5 bg-white text-zinc-950 text-[10px] font-black uppercase tracking-[0.25em] rounded-2xl shadow-xl">
-              Featured Experience ✦
-            </div>
-          </div>
-
-          {/* Rating + Price top-right */}
-          {(activity.rating || activity.priceLevel) && (
-            <div className="absolute top-8 right-8 flex items-center gap-3">
-              {activity.rating && (
-                <div className="flex items-center gap-2 px-4 py-2.5 bg-white/10 rounded-2xl border border-white/20 text-white">
-                  <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                  <span className="text-[13px] font-black">{activity.rating.toFixed(1)}</span>
-                </div>
-              )}
-              {activity.priceLevel && (
-                <div className="px-4 py-2.5 bg-white/10 rounded-2xl border border-white/20 text-white text-[13px] font-black tracking-widest">
-                  {activity.priceLevel}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Bottom info bar on image */}
-          <div className="absolute bottom-8 left-8 right-8 flex items-end justify-between">
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-white/15 rounded-xl border border-white/20 text-2xl">
-                  {emoji}
-                </div>
-                {mealEmoji && (
-                  <div className="p-2.5 bg-white/15 rounded-xl border border-white/20 text-xl uppercase font-black text-[10px] text-white tracking-widest pl-3 pr-4 flex items-center gap-2">
-                    {mealEmoji} {activity.mealType}
-                  </div>
-                )}
-              </div>
-              {/* Title over the image — Fraunces Serif, evocative */}
-              {/* Title over the image — Fraunces Serif, evocative */}
-              <div className="space-y-1">
-                <a 
-                  href={directionsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block group/title"
-                  title="Get Directions on Google Maps"
-                >
-                  <h3 className="text-4xl md:text-6xl font-serif text-white leading-[1] tracking-tight max-w-4xl text-shadow-premium-black group-hover/title:underline decoration-white/50 decoration-2 underline-offset-[6px]">
-                    {cleanTitle}
-                  </h3>
-                </a>
-                {activity.title.includes('(') && (
-                  <p className="text-sm md:text-base font-medium text-orange-400 uppercase tracking-[0.3em] font-sans italic opacity-90 text-shadow-premium-black mt-1">
-                    {activity.title.split('(')[1].replace(')', '').trim()}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Time + Duration */}
-            <div className="flex items-center gap-3 px-5 py-3 bg-white/95 rounded-2xl shadow-2xl shrink-0">
-              <div className={`w-2.5 h-2.5 rounded-full ${TIME_DOT_COLOR[activity.timeOfDay] || "bg-zinc-300"}`} />
-              <span className={`text-[11px] font-black uppercase tracking-widest ${TIME_LABEL_COLOR[activity.timeOfDay] || "text-zinc-500"}`}>{activity.timeOfDay}</span>
-              {activity.duration && (
-                <>
-                  <div className="w-px h-3 bg-zinc-200" />
-                  <Clock className="w-3.5 h-3.5 text-zinc-400" />
-                  <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{activity.duration}</span>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
+          {/* Deep gradient overlay for perfect legibility */}
+          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/70 to-transparent" />
+        </>
+      ) : (
+        <div className="absolute inset-0 bg-gradient-to-br from-zinc-900 to-black" />
       )}
 
-      {/* ──── Content area ──── */}
-      <div className="p-8 md:p-10 space-y-6">
-
-        {/* Fallback title if no image */}
-        {!activity.image && (
-          <div className="space-y-4 mb-4">
-            <div className="flex items-center gap-3">
-              <div className="p-3 bg-zinc-100 rounded-2xl text-3xl">{emoji}</div>
-              <div className="px-5 py-2 bg-zinc-950 text-white text-[10px] font-black uppercase tracking-[0.25em] rounded-xl">
-                Featured Experience ✦
-              </div>
-            </div>
-            <a 
-              href={directionsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block group/title"
-              title="Get Directions on Google Maps"
-            >
-              <h3 className="text-4xl md:text-5xl font-serif text-zinc-950 leading-[1] tracking-tight group-hover/title:underline decoration-zinc-300 decoration-2 underline-offset-[6px]">
-                {activity.title}
-              </h3>
-            </a>
+      {/* Content Layer */}
+      <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-end">
+        <div className="space-y-1.5 relative z-10 w-full">
+          
+          {/* Top inline badge + Subtitle */}
+          <div className="flex items-center gap-3 mb-1">
+             <span className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] bg-white text-black px-2.5 py-1 rounded-md shadow-lg">
+               Featured Experience ✦
+             </span>
+             {activity.title.includes('(') && (
+               <p className="text-[11px] md:text-[12px] font-medium text-orange-400/90 uppercase tracking-widest truncate">
+                 {activity.title.split('(')[1].replace(')', '').trim()}
+               </p>
+             )}
           </div>
-        )}
 
-        <div className="flex flex-col md:flex-row gap-10">
-          <div className="flex-1 space-y-5">
-            {/* Description — readable, breathable */}
-            <p className="text-[16px] text-zinc-500 leading-[1.85] font-normal max-w-2xl">
+          {/* Title */}
+          <a 
+            href={directionsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block group/title max-w-[95%]"
+            title="Get Directions on Google Maps"
+          >
+            <h3 className="text-3xl md:text-5xl font-sans font-bold text-white leading-tight tracking-tight group-hover/title:text-orange-400 transition-colors duration-300 truncate">
+              {cleanTitle}
+            </h3>
+          </a>
+
+          {/* Description (Truncated to 1 line) */}
+          {activity.description && (
+            <p className="text-[14px] md:text-[16px] text-zinc-300 font-light truncate max-w-full opacity-80 pt-1">
               {activity.description}
             </p>
+          )}
 
-            {/* Address — small, secondary */}
+          {/* Inline Meta String */}
+          <div className="flex flex-wrap items-center gap-2.5 text-[12px] md:text-[13px] text-zinc-400 font-medium tracking-wide pt-2.5">
+            {activity.timeOfDay && <span className="text-zinc-300">{activity.timeOfDay}</span>}
+            
+            {activity.duration && (
+              <>
+                {activity.timeOfDay && <span className="opacity-30">•</span>}
+                <span>{activity.duration}</span>
+              </>
+            )}
+
+            {activity.rating && (
+              <>
+                {(activity.timeOfDay || activity.duration) && <span className="opacity-30">•</span>}
+                <span className="flex items-center gap-1 text-amber-400/90">
+                  <Star className="w-3.5 h-3.5 md:w-4 md:h-4 fill-amber-400/90" /> {activity.rating.toFixed(1)}
+                </span>
+              </>
+            )}
+
             {activity.address && mapsUrl && (
-              <a
-                href={mapsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2.5 text-zinc-400 hover:text-orange-600 transition-all duration-300 group/addr"
-              >
-                <div className="p-1.5 rounded-lg bg-zinc-50 group-hover/addr:bg-orange-50 transition-colors">
-                  <MapPin className="w-3.5 h-3.5 shrink-0 group-hover/addr:text-orange-600" />
-                </div>
-                <span className="text-[13px] font-medium tracking-tight">{activity.address}</span>
-              </a>
+              <>
+                {(activity.timeOfDay || activity.duration || activity.rating) && <span className="opacity-30">•</span>}
+                <span className="truncate max-w-[200px] md:max-w-[300px] hover:text-orange-400 transition-colors">{activity.address}</span>
+              </>
+            )}
+
+            {activity.priceLevel && (
+              <>
+                {(activity.timeOfDay || activity.duration || activity.rating || activity.address) && <span className="opacity-30">•</span>}
+                <span>{activity.priceLevel}</span>
+              </>
             )}
           </div>
 
-          {/* ──── Insider Tip — Premium Pull Quote ──── */}
+          {/* Expert Directive / Highlight (1 line) */}
           {activity.proTip && (
-            <div className="w-full md:w-80 relative pl-6 py-6 pr-6 bg-[#FDF8F4] rounded-xl border-l-[3px] border-[#C4632C] self-start">
-              <div className="flex items-center gap-2.5 mb-3">
-                <Lightbulb className="w-4 h-4 text-[#C4632C]" />
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#C4632C]">Insider Tip</span>
-              </div>
-              <p className="text-[15px] text-zinc-700 font-medium italic leading-relaxed">
-                &ldquo;{activity.proTip}&rdquo;
+            <div className="pt-2.5">
+              <p className="text-[14px] text-orange-300/90 italic truncate flex items-center gap-2">
+                <Lightbulb className="w-4 h-4 shrink-0" />
+                {activity.proTip}
               </p>
             </div>
           )}

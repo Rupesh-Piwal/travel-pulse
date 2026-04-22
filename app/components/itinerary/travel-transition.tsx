@@ -21,33 +21,39 @@ export default function TravelTransition({ mode = "walk", duration = "10 mins", 
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className="flex flex-col items-center py-2"
+      className="relative flex flex-col items-center py-8"
     >
-      {/* Top dotted line */}
-      <div className="w-px h-8 border-l-2 border-dotted border-zinc-200" />
+      {/* Background connecting dashed line */}
+      <div className="absolute top-0 bottom-0 w-px border-l-2 border-dashed border-white/10 -z-10" />
 
-      {/* Centered travel pill */}
-      <div className="flex items-center gap-2.5 px-5 py-2.5 bg-white border border-zinc-200/80 rounded-full shadow-sm">
-        <span className="text-base">{travel.emoji}</span>
-        <span className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em]">
-          {duration}
-        </span>
-        {distance && (
-          <>
-            <div className="w-px h-3 bg-zinc-200" />
-            <span className="text-[10px] font-bold text-zinc-400 tracking-wide">
-              {distance}
-            </span>
-          </>
-        )}
+      {/* Transit Card */}
+      <div className="w-full max-w-2xl mx-auto p-8 rounded-[2.5rem] bg-indigo-950/30 border border-indigo-500/20 shadow-2xl backdrop-blur-xl flex items-center justify-between group hover:border-indigo-500/40 transition-all duration-500 overflow-hidden relative">
+        
+        {/* Decorative giant icon outline in background */}
+        <div className="absolute right-[-10%] top-[-20%] text-[150px] opacity-[0.03] rotate-12 select-none pointer-events-none">
+          {travel.emoji}
+        </div>
+
+        <div className="relative z-10 space-y-3">
+          <h4 className="text-2xl md:text-3xl font-black uppercase text-white tracking-tighter flex items-center gap-4">
+            <span className="text-indigo-400">{travel.emoji}</span> Transit via {mode}
+          </h4>
+          <div className="flex flex-wrap items-center gap-4 text-[10px] md:text-[11px] font-bold uppercase tracking-[0.2em] text-indigo-300/80">
+            <span className="bg-indigo-500/10 px-3 py-1.5 rounded-lg border border-indigo-500/10">Est. Time: {duration}</span>
+            {distance && <span className="bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">Distance: {distance}</span>}
+          </div>
+        </div>
+
+        <div className="relative z-10 w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-indigo-500/20 flex items-center justify-center border border-indigo-500/30 group-hover:scale-110 group-hover:bg-indigo-500 text-indigo-300 group-hover:text-white transition-all duration-500">
+          <svg className="w-6 h-6 md:w-7 md:h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+          </svg>
+        </div>
       </div>
-
-      {/* Bottom dotted line */}
-      <div className="w-px h-8 border-l-2 border-dotted border-zinc-200" />
     </motion.div>
   );
 }

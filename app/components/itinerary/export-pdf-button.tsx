@@ -57,17 +57,17 @@ export default function ExportPdfButton({ itineraryId }: ExportPdfButtonProps) {
 
   return (
     <Button 
-      variant="outline" 
-      className="rounded-xl border-border/50 gap-2 min-w-[120px]"
+      variant="ghost" 
+      className="h-14 px-10 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-2xl font-bold uppercase text-[11px] tracking-[0.2em] transition-all duration-500 active:scale-95 gap-3"
       onClick={handleExport}
       disabled={isGenerating}
     >
       {isGenerating ? (
-        <CircleNotch className="w-4 h-4 animate-spin" />
+        <CircleNotch className="w-4 h-4 animate-spin text-orange-400" />
       ) : (
-        <DownloadSimple className="w-4 h-4" />
+        <DownloadSimple className="w-4 h-4 text-orange-400" />
       )}
-      {isGenerating ? "Generating..." : "Export PDF"}
+      {isGenerating ? "Processing..." : "Save PDF"}
     </Button>
   );
 }
