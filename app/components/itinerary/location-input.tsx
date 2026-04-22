@@ -142,73 +142,60 @@ export default function LocationInput({ defaultValue = "", onSelect, disabled }:
       </div>
 
       {(showFeatured || showResults) && (
-        <div className="absolute top-full left-0 w-full mt-4 bg-background/60 border border-white/10 rounded-[2rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] z-50 overflow-hidden backdrop-blur-3xl backdrop-saturate-[1.8] animate-in fade-in zoom-in-95 duration-500 origin-top">
+        <div className="absolute top-full left-0 w-full mt-4 bg-black/40 border border-white/10 rounded-[2rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] z-50 overflow-hidden backdrop-blur-3xl backdrop-saturate-[1.8] animate-in fade-in zoom-in-95 duration-500 origin-top">
 
           {showFeatured && (
-            <div className="py-4">
-              <div className="px-5 mb-4 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-orange-500/10 flex items-center justify-center">
-                    <Sparkle className="w-4 h-4 text-orange-600" />
+            <div className="py-5">
+              <div className="px-6 mb-5 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-xl bg-orange-500/20 flex items-center justify-center">
+                    <Sparkle className="w-4 h-4 text-orange-400" />
                   </div>
-                  <span className="text-[11px] font-black uppercase tracking-[0.15em] text-foreground/80">
+                  <span className="text-[11px] font-black uppercase tracking-[0.2em] text-white/90">
                     Hot Destinations
                   </span>
                 </div>
-                <div className="h-px bg-border/40 flex-1 ml-6" />
+                <div className="h-px bg-white/10 flex-1 ml-6" />
               </div>
 
-              <div className="flex gap-3 overflow-x-auto px-5 pb-2 no-scrollbar scroll-smooth">
+              <div className="flex gap-4 overflow-x-auto px-6 pb-4 no-scrollbar scroll-smooth">
                 {FEATURED_DESTINATIONS.map((s, i) => (
                   <button
                     key={`featured-${i}`}
                     type="button"
-                    className="flex-shrink-0 md:w-[65px] group/card text-left outline-none"
+                    className="flex-shrink-0 w-[110px] group/card text-left outline-none"
                     onClick={() => handleSelect(s)}
                   >
-                    <div className="relative w-full aspect-[4/5] rounded-sm overflow-hidden mb-2 shadow-md group-hover/card:shadow-xl transition-all duration-500 group-hover/card:-translate-y-1 border border-white/5">
+                    <div className="relative w-full aspect-[4/5] rounded-xl overflow-hidden mb-2.5 shadow-lg group-hover/card:shadow-orange-500/20 transition-all duration-500 group-hover/card:-translate-y-1 border border-white/5">
                       <img
                         src={s.image}
                         alt={s.name}
-                        onError={(e) => {
-                          e.currentTarget.src = "https://images.unsplash.com/photo-1488646016282-440158ce567d?q=80&w=400&auto=format&fit=crop";
-                          e.currentTarget.className = e.currentTarget.className + " opacity-50";
-                        }}
-                        className="w-full h-full object-cover grayscale-[0.3] group-hover/card:grayscale-0 group-hover/card:scale-110 transition-all duration-700"
+                        className="w-full h-full object-cover grayscale-[0.2] group-hover/card:grayscale-0 group-hover/card:scale-110 transition-all duration-700"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover/card:opacity-60 transition-opacity" />
-                      <div className="absolute bottom-2 left-2.5 right-2.5">
-                        <p className="text-white font-bold text-[11px] tracking-tight leading-tight">{s.name}</p>
-                        <p className="text-white/60 text-[8px] uppercase font-black tracking-widest mt-0.5">{s.country}</p>
-                      </div>
-                      <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 shadow-sm">
-                        <span className="text-xs">
-                          {s.name === "Tokyo" ? "🗼" :
-                            s.name === "Beijing" ? "🏯" :
-                              s.name === "Bali" ? "🏝️" :
-                                s.name === "New York" ? "🗽" :
-                                  s.name === "Rome" ? "🏛️" : "⛪"}
-                        </span>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-90 group-hover/card:opacity-70 transition-opacity" />
+                      <div className="absolute bottom-3 left-3 right-3">
+                        <p className="text-white font-bold text-xs tracking-tight leading-tight">{s.name}</p>
+                        <p className="text-white/50 text-[9px] uppercase font-black tracking-widest mt-1">{s.country}</p>
                       </div>
                     </div>
                   </button>
                 ))}
-                <div className="flex-shrink-0 w-1" />
+                <div className="flex-shrink-0 w-2" />
               </div>
             </div>
           )}
 
           {showResults && (
-            <div className="py-2">
-              <div className="px-5 py-2 mb-2 flex items-center justify-between">
+            <div className="py-4">
+              <div className="px-6 py-2 mb-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs">🌏</span>
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Search Results</span>
+                  <Globe className="w-4 h-4 text-white/40" />
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Search Results</span>
                 </div>
-                <div className="h-px bg-border/20 flex-1 ml-4" />
+                <div className="h-px bg-white/10 flex-1 ml-6" />
               </div>
 
-              <div className="px-2 pb-2">
+              <div className="px-3 pb-2">
                 {suggestions.map((s, i) => {
                   const isAirport = s.name.toLowerCase().includes("airport");
                   const isStation = s.name.toLowerCase().includes("station") || s.name.toLowerCase().includes("terminus");
@@ -217,31 +204,31 @@ export default function LocationInput({ defaultValue = "", onSelect, disabled }:
                     <button
                       key={`result-${i}`}
                       type="button"
-                      className="w-full text-left px-4 py-3 hover:bg-primary/[0.04] rounded-2xl transition-all duration-200 flex items-center gap-4 group/row"
+                      className="w-full text-left px-5 py-4 hover:bg-white/5 rounded-2xl transition-all duration-200 flex items-center gap-4 group/row"
                       onClick={() => handleSelect(s)}
                     >
-                      <div className="w-10 h-10 rounded-xl bg-accent/30 flex items-center justify-center shrink-0 group-hover/row:bg-primary/10 group-hover/row:scale-110 transition-all border border-border/10 shadow-sm text-lg">
+                      <div className="w-11 h-11 rounded-xl bg-white/5 flex items-center justify-center shrink-0 group-hover/row:bg-white/10 group-hover/row:scale-110 transition-all border border-white/5 shadow-sm text-lg">
                         {isAirport ? "🛫" : isStation ? "🚉" : "📍"}
                       </div>
                       <div className="flex flex-col flex-1 min-w-0">
-                        <span className="text-sm font-bold text-foreground leading-tight truncate group-hover/row:text-primary transition-colors">
+                        <span className="text-[15px] font-bold text-white leading-tight truncate group-hover/row:text-orange-400 transition-colors">
                           {s.name}
                         </span>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="text-[9px] text-muted-foreground uppercase tracking-widest font-black">
+                        <div className="flex items-center gap-2 mt-1.5">
+                          <span className="text-[10px] text-white/40 uppercase tracking-widest font-black">
                             {s.city ? `${s.city}` : s.country}
                           </span>
                           {s.city && (
                             <>
-                              <div className="w-1 h-1 rounded-full bg-border" />
-                              <span className="text-[9px] text-muted-foreground/60 uppercase tracking-widest font-medium">
+                              <div className="w-1 h-1 rounded-full bg-white/20" />
+                              <span className="text-[10px] text-white/40 uppercase tracking-widest font-medium">
                                 {s.country}
                               </span>
                             </>
                           )}
                         </div>
                       </div>
-                      <CaretRight className="w-4 h-4 text-muted-foreground/0 group-hover/row:text-muted-foreground/40 group-hover/row:translate-x-1 transition-all mr-2" />
+                      <CaretRight className="w-5 h-5 text-white/0 group-hover/row:text-white/40 group-hover/row:translate-x-1 transition-all mr-2" />
                     </button>
                   );
                 })}

@@ -4,9 +4,17 @@ import { useState, useEffect, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Calendar, Wallet, Compass, Loader2 } from "lucide-react";
+import { ArrowRight, Calendar, Wallet, Compass, Loader2, MapPin, Search } from "lucide-react";
 import { toast } from "sonner";
+import Header from "@/components/Header";
 import LocationInput from "@/app/components/itinerary/location-input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { generateItinerary } from "@/app/actions/itinerary";
 
 /* ── Auto-rotating hero images ── */
@@ -81,6 +89,8 @@ export default function Hero() {
 
   return (
     <section className="relative w-full h-screen overflow-hidden">
+      <Header />
+
       {/* ════ FULL-SCREEN BACKGROUND IMAGES ════ */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         {/* 🔹 Fallback image (instant render) */}
@@ -148,58 +158,6 @@ export default function Hero() {
         <div className="absolute inset-0 opacity-[0.05] mix-blend-overlay pointer-events-none bg-[url('/noise.png')]" />
       </div>
 
-      {/* ════ HEADER NAV ════ */}
-      <motion.header
-        initial={{ y: -40, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-        className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-8 md:px-14 py-6"
-      >
-        {/* Left nav */}
-        <nav className="flex items-center gap-4 md:gap-6">
-          {["Explore", "Pricing", "How it Works"].map((label) => (
-            <Link
-              key={label}
-              href={`#${label.toLowerCase().replace(/\s+/g, "-")}`}
-              className="group relative text-sm text-white/80 font-medium tracking-wide transition-colors duration-300 hover:text-white"
-            >
-              {label}
-
-              <span className="absolute left-1/2 -bottom-1 h-[1.5px] w-0 -translate-x-1/2 bg-white transition-all duration-300 group-hover:w-full"></span>
-            </Link>
-          ))}
-        </nav>
-
-        {/* Center logo */}
-        <Link
-          href="/"
-          className="absolute left-1/2 -translate-x-1/2 font-serif italic text-[26px] text-white tracking-tight drop-shadow-lg"
-        >
-          NomadGo
-        </Link>
-
-        {/* Right buttons */}
-        <div className="flex items-center gap-3">
-          <Link
-            href="/signin"
-            className="px-5 py-2.5 rounded-full border border-white/20 text-[13px] text-white/85 font-medium backdrop-blur-md hover:bg-white/10 hover:border-white/35 transition-all"
-          >
-            LogIn
-          </Link>
-          <Link
-            href="/dashboard/itinerary/new"
-            className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full
-  bg-[#C5632D] text-[13px] text-white font-medium tracking-[0.02em]
-  transition-all duration-300 ease-[cubic-bezier(0.25,0.8,0.25,1)]
-  hover:bg-[#b55524] active:scale-[0.98]"
-          >
-            <span>Plan Trip</span>
-
-            <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
-          </Link>
-        </div>
-      </motion.header>
-
       {/* ════ HERO CONTENT ════ */}
       <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6 pb-40 md:pb-48">
         <motion.div
@@ -208,12 +166,12 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.3 }}
           className="max-w-4xl"
         >
-          <h1 className="font-serif text-[clamp(44px,8vw,110px)] text-white leading-[1.05] mb-6 tracking-tight drop-shadow-[0_4px_40px_rgba(0,0,0,0.5)]">
+          <h1 className="font-serif text-[clamp(48px,8.5vw,115px)] text-white leading-[0.95] mb-8 tracking-tighter drop-shadow-[0_4px_40px_rgba(0,0,0,0.5)]">
             Plan your perfect
             <br />
-            journey
+            <span className="italic">journey</span>
           </h1>
-          <p className="font-sans text-[clamp(15px,1.3vw,20px)] text-white/70 max-w-[580px] mx-auto leading-[1.7]">
+          <p className="font-sans text-[clamp(16px,1.2vw,20px)] text-white/80 max-w-[620px] mx-auto leading-[1.6] tracking-wide">
             Tell us your destination and travel vibe. Get a beautiful day-by-day
             itinerary with photos, maps, and a luxury PDF guide — in seconds.
           </p>
@@ -225,102 +183,132 @@ export default function Hero() {
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.6 }}
-        className="absolute bottom-10 md:bottom-14 left-1/2 -translate-x-1/2 z-40 w-[94%] max-w-[960px]"
+        className="absolute bottom-6 md:bottom-12 left-1/2 -translate-x-1/2 z-40 w-[96%] max-w-[1060px] dark"
       >
-        <div className="bg-[#F5EFE0] rounded-[22px] shadow-[0_24px_80px_rgba(0,0,0,0.35)] flex flex-col md:flex-row items-stretch overflow-visible relative">
-          {/* Destination — uses LocationInput */}
-          <div className="flex-[1.4] flex flex-col justify-center px-5 py-4 border-b md:border-b-0 md:border-r border-[#0E1922]/10 relative">
-            <span className="text-[10px] uppercase tracking-[0.15em] text-[#0E1922]/40 font-bold mb-1">
-              Destination
-            </span>
-            <div className="hero-location-input [&_input]:!bg-transparent [&_input]:!border-none [&_input]:!shadow-none [&_input]:!outline-none [&_input]:!ring-0 [&_input]:!h-auto [&_input]:!p-0 [&_input]:!pl-0 [&_input]:!text-[#0E1922] [&_input]:!text-[15px] [&_input]:!font-medium [&_input]:!placeholder:text-[#0E1922]/30 [&_input]:!rounded-none [&_.absolute.left-4]:!hidden [&_input]:focus:!ring-0 [&_input]:focus:!bg-transparent [&_input]:!focus-visible:ring-0">
-              <LocationInput
-                onSelect={(loc) => {
-                  const fullName = loc.isFeatured
-                    ? `${loc.name}, ${loc.country}`
-                    : `${loc.name}${loc.city ? `, ${loc.city}` : ""}, ${loc.country}`;
-                  setDestination(fullName);
-                }}
-                disabled={isPending}
-              />
+        <div className="bg-black/20 backdrop-blur-2xl border border-white/20 rounded-[32px] md:rounded-full shadow-[0_32px_80px_-12px_rgba(0,0,0,0.6)] flex flex-col md:flex-row items-center p-2 md:p-3 relative">
+
+          {/* Destination */}
+          <div className="flex-[1.4] w-full flex items-center px-4 py-3 md:py-2 relative group cursor-text">
+            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 mr-3">
+              <MapPin className="w-5 h-5 text-white" />
+            </div>
+            <div className="flex flex-col flex-1 w-full relative">
+              <span className="text-[10px] uppercase tracking-widest text-white/50 font-black mb-1">
+                Destination
+              </span>
+              <div className="hero-location-input [&_input]:!bg-transparent [&_input]:!border-none [&_input]:!shadow-none [&_input]:!outline-none [&_input]:!ring-0 [&_input]:!h-auto [&_input]:!p-0 [&_input]:!text-white [&_input]:!text-[16px] md:[&_input]:!text-[17px] [&_input]:!font-bold [&_input]:!placeholder:text-white/30 [&_input]:!rounded-none [&_.absolute.left-4]:!hidden [&_input]:focus:!ring-0 [&_input]:focus:!bg-transparent [&_input]:!focus-visible:ring-0 w-full relative z-20">
+                <LocationInput
+                  onSelect={(loc) => {
+                    const fullName = loc.isFeatured
+                      ? `${loc.name}, ${loc.country}`
+                      : `${loc.name}${loc.city ? `, ${loc.city}` : ""}, ${loc.country}`;
+                    setDestination(fullName);
+                  }}
+                  disabled={isPending}
+                />
+              </div>
             </div>
           </div>
+
+          <div className="hidden md:block w-px h-10 bg-white/20 mx-2" />
+          <div className="md:hidden h-px w-full bg-white/10 my-1" />
 
           {/* Days */}
-          <div className="flex-1 flex flex-col justify-center px-5 py-4 border-b md:border-b-0 md:border-r border-[#0E1922]/10">
-            <span className="text-[10px] uppercase tracking-[0.15em] text-[#0E1922]/40 font-bold mb-1">
-              Days
-            </span>
-            <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-[#0E1922]/40" />
-              <input
-                type="number"
-                min={1}
-                max={3}
-                value={duration}
-                onChange={(e) => setDuration(parseInt(e.target.value) || 1)}
-                className="bg-transparent outline-none text-[#0E1922] text-[15px] font-medium w-full appearance-none"
-                disabled={isPending}
-              />
+          <div className="flex-[0.8] w-full flex items-center px-4 py-3 md:py-2 relative">
+            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 mr-3">
+              <Calendar className="w-5 h-5 text-white" />
+            </div>
+            <div className="flex flex-col flex-1">
+              <span className="text-[10px] uppercase tracking-widest text-white/50 font-black mb-1">
+                Duration
+              </span>
+              <div className="flex items-center">
+                <input
+                  type="number"
+                  min={1}
+                  max={3}
+                  value={duration}
+                  onChange={(e) => setDuration(parseInt(e.target.value) || 1)}
+                  className="bg-transparent outline-none text-white text-[16px] md:text-[17px] font-bold w-full appearance-none placeholder:text-white/30"
+                  disabled={isPending}
+                />
+                <span className="text-white/40 text-[11px] ml-1.5 font-bold uppercase tracking-wider">Days</span>
+              </div>
             </div>
           </div>
+
+          <div className="hidden md:block w-px h-10 bg-white/20 mx-2" />
+          <div className="md:hidden h-px w-full bg-white/10 my-1" />
 
           {/* Budget */}
-          <div className="flex-1 flex flex-col justify-center px-5 py-4 border-b md:border-b-0 md:border-r border-[#0E1922]/10">
-            <span className="text-[10px] uppercase tracking-[0.15em] text-[#0E1922]/40 font-bold mb-1">
-              Budget
-            </span>
-            <div className="flex items-center gap-2">
-              <Wallet className="w-4 h-4 text-[#0E1922]/40" />
-              <select
-                value={budget}
-                onChange={(e) => setBudget(e.target.value)}
-                className="bg-transparent outline-none text-[#0E1922] text-[15px] font-medium w-full appearance-none cursor-pointer"
-                disabled={isPending}
-              >
-                {BUDGETS.map((b) => (
-                  <option key={b}>{b}</option>
-                ))}
-              </select>
+          <div className="flex-[1] w-full flex items-center px-4 py-3 md:py-2 relative">
+            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 mr-3">
+              <Wallet className="w-5 h-5 text-white" />
+            </div>
+            <div className="flex flex-col flex-1">
+              <span className="text-[10px] uppercase tracking-widest text-white/60 font-bold mb-0.5">
+                Budget
+              </span>
+              <Select value={budget} onValueChange={(val) => val && setBudget(val)} disabled={isPending}>
+                <SelectTrigger className="bg-transparent border-none shadow-none p-0 h-auto text-white text-[16px] md:text-[17px] font-semibold focus:ring-0 flex-row-reverse justify-end gap-2 [&>svg]:opacity-50">
+                  <SelectValue placeholder="Budget" />
+                </SelectTrigger>
+                <SelectContent className="bg-black/40 border-white/10 shadow-2xl backdrop-blur-3xl">
+                  {BUDGETS.map((b) => (
+                    <SelectItem key={b} value={b}>
+                      {b}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
+
+          <div className="hidden md:block w-px h-10 bg-white/20 mx-2" />
+          <div className="md:hidden h-px w-full bg-white/10 my-1" />
 
           {/* Vibe */}
-          <div className="flex-1 flex flex-col justify-center px-5 py-4 border-b md:border-b-0 md:border-r border-[#0E1922]/10">
-            <span className="text-[10px] uppercase tracking-[0.15em] text-[#0E1922]/40 font-bold mb-1">
-              Vibe
-            </span>
-            <div className="flex items-center gap-2">
-              <Compass className="w-4 h-4 text-[#0E1922]/40" />
-              <select
-                value={vibe}
-                onChange={(e) => setVibe(e.target.value)}
-                className="bg-transparent outline-none text-[#0E1922] text-[15px] font-medium w-full appearance-none cursor-pointer"
-                disabled={isPending}
-              >
-                {VIBES.map((v) => (
-                  <option key={v}>{v}</option>
-                ))}
-              </select>
+          <div className="flex-[1] w-full flex items-center px-4 py-3 md:py-2 relative">
+            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 mr-3">
+              <Compass className="w-5 h-5 text-white" />
+            </div>
+            <div className="flex flex-col flex-1">
+              <span className="text-[10px] uppercase tracking-widest text-white/60 font-bold mb-0.5">
+                Vibe
+              </span>
+              <Select value={vibe} onValueChange={(val) => val && setVibe(val)} disabled={isPending}>
+                <SelectTrigger className="bg-transparent border-none shadow-none p-0 h-auto text-white text-[16px] md:text-[17px] font-semibold focus:ring-0 flex-row-reverse justify-end gap-2 [&>svg]:opacity-50">
+                  <SelectValue placeholder="Vibe" />
+                </SelectTrigger>
+                <SelectContent className="bg-black/40 border-white/10 shadow-2xl backdrop-blur-3xl">
+                  {VIBES.map((v) => (
+                    <SelectItem key={v} value={v}>
+                      {v}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
-          {/* CTA */}
+          {/* CTA Button */}
           <button
             onClick={handleSubmit}
             disabled={isPending}
-            className="bg-[#0E1922] text-[#F5EFE0] px-8 py-5 md:py-0 text-[14px] font-bold flex items-center justify-center gap-2 hover:bg-[#1a2d3d] active:scale-[0.98] transition-all whitespace-nowrap md:rounded-r-[22px] shrink-0 disabled:opacity-60"
+            className="group relative overflow-hidden w-full md:w-[150px] h-[56px] md:h-[56px] mt-2 md:mt-0 rounded-[20px] md:rounded-full bg-[#C5632D] text-white flex items-center justify-center shrink-0 transition-all duration-500 active:scale-95 shadow-[0_8px_32px_rgba(197,99,45,0.4)] md:ml-2 disabled:opacity-70 disabled:active:scale-100"
           >
-            {isPending ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Crafting...
-              </>
-            ) : (
-              <>
-                Plan My Trip <ArrowRight className="w-4 h-4" />
-              </>
-            )}
+            {/* Shimmer effect */}
+            <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer" />
+
+            <span className="relative z-10 flex items-center gap-2 font-bold text-[14px] tracking-wide">
+              {isPending ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <>
+                  Plan My Trip <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                </>
+              )}
+            </span>
           </button>
         </div>
       </motion.div>

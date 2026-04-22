@@ -220,11 +220,11 @@
   height: auto !important;
   font-size: 15px !important;
   font-weight: 500 !important;
-  color: #0E1922 !important;
+  color: inherit !important;
   border-radius: 0 !important;
 }
 .hero-location-input input::placeholder {
-  color: rgba(14, 25, 34, 0.3) !important;
+  color: rgba(255, 255, 255, 0.4) !important;
 }
 .hero-location-input input:focus {
   ring: none !important;

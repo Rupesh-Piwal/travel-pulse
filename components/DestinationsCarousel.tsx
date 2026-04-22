@@ -53,7 +53,7 @@ const CONTAINER_H = 720;   // total carousel track height
 
 const EASE = [0.25, 0.1, 0.25, 1] as const;
 const TRANSITION = { duration: 0.5, ease: EASE };
-const INSTANT   = { duration: 0 };
+const INSTANT = { duration: 0 };
 
 /* ─── Helpers ───────────────────────────────────────────────── */
 
@@ -66,9 +66,9 @@ function getRelPos(i: number, selected: number): number {
 
 /** Framer-motion animate target for a card at relPos */
 function computeTarget(relPos: number) {
-  const abs   = Math.abs(relPos);
-  const sign  = relPos > 0 ? 1 : relPos < 0 ? -1 : 0;
-  const cfg   = abs < 3 ? CARD[abs] : CARD[2];
+  const abs = Math.abs(relPos);
+  const sign = relPos > 0 ? 1 : relPos < 0 ? -1 : 0;
+  const cfg = abs < 3 ? CARD[abs] : CARD[2];
 
   // Horizontal center offset from container midpoint
   let cx = 0;
@@ -83,13 +83,13 @@ function computeTarget(relPos: number) {
 
   return {
     // left: 50% is the base; x shifts so the card center lands on cx
-    x:      cx - cfg.w / 2,
+    x: cx - cfg.w / 2,
     // vertically center each card in the track
-    y:      (CONTAINER_H - cfg.h) / 2,
-    width:  cfg.w,
+    y: (CONTAINER_H - cfg.h) / 2,
+    width: cfg.w,
     height: cfg.h,
     opacity: abs >= 3 ? 0 : cfg.opacity,
-    zIndex:  abs >= 3 ? 10 : cfg.zIndex,
+    zIndex: abs >= 3 ? 10 : cfg.zIndex,
   };
 }
 
@@ -137,10 +137,10 @@ export default function DestinationsCarousel() {
         aria-live="polite"
       >
         {DESTINATIONS.map((dest, i) => {
-          const relPos     = getRelPos(i, selected);
-          const target     = computeTarget(relPos);
+          const relPos = getRelPos(i, selected);
+          const target = computeTarget(relPos);
           const transition = getTransition(i, relPos);
-          const isCenter   = relPos === 0;
+          const isCenter = relPos === 0;
 
           return (
             <motion.div
@@ -152,10 +152,10 @@ export default function DestinationsCarousel() {
                 zIndex: target.zIndex,
               }}
               animate={{
-                x:       target.x,
-                y:       target.y,
-                width:   target.width,
-                height:  target.height,
+                x: target.x,
+                y: target.y,
+                width: target.width,
+                height: target.height,
                 opacity: target.opacity,
               }}
               initial={false}
@@ -244,10 +244,10 @@ export default function DestinationsCarousel() {
             onClick={() => setSelected(i)}
             className="rounded-full transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-2"
             style={{
-              width:           i === selected ? 12 : 8,
-              height:          8,
+              width: i === selected ? 12 : 8,
+              height: 8,
               backgroundColor: i === selected ? "#1BBCBC" : "rgba(14,25,34,0.2)",
-              outline:         i === selected ? "none" : undefined,
+              outline: i === selected ? "none" : undefined,
             }}
           />
         ))}

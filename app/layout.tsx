@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DM_Sans, Fraunces, Playfair_Display } from "next/font/google";
+import { DM_Sans, Fraunces, Playfair_Display, Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
@@ -13,10 +13,17 @@ const fraunces = Fraunces({
   axes: ["SOFT", "WONK", "opsz"],
 });
 
+const bricolage_grotesque = Bricolage_Grotesque({
+  subsets: ["latin"],
+  variable: "--font-bricolage",
+  weight: ["400", "500", "600"],
+});
+
 
 
 export const playfair = Playfair_Display({
   subsets: ["latin"],
+  variable: "--font-playfair",
   weight: ["400", "500", "600"],
 });
 
@@ -42,6 +49,7 @@ export default function RootLayout({
         "antialiased",
         dmSans.variable,
         fraunces.variable,
+        bricolage_grotesque.variable,
         "scrollbar-hide"
       )}
     >
