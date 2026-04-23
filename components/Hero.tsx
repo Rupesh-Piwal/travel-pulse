@@ -145,14 +145,12 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.3 }}
           className="max-w-4xl"
         >
-          <h1 className="text-[90px] sm:text-5xl md:text-6xl font-normal tracking-tight text-white mb-5 font-[family-name:var(--font-serif)] italic">
-            Plan your perfect
-            <br />
-            <span>journey</span>
+          <h1 className="text-[62px] md:text-[100px] font-normal tracking-tight text-white font-[family-name:var(--font-serif)] italic">
+            Plan your <br />
+            <span className="text-white/60">perfect</span> journey
           </h1>
-          <p className="font-bricolage text-[clamp(16px,1.2vw,20px)] text-white/80 max-w-[620px] mx-auto leading-[1.6] tracking-wide font-medium">
-            Tell us your destination and travel vibe. Get a beautiful day-by-day
-            itinerary with photos, maps, and a luxury PDF guide — in seconds.
+          <p className="font-bricolage text-[clamp(15px,1.1vw,18px)] text-white/70 max-w-[500px] mx-auto leading-relaxed tracking-wide font-light">
+            AI-powered luxury itineraries tailored to your vibe. Get curated guides, maps, and photos in seconds.
           </p>
         </motion.div>
       </div>
@@ -164,18 +162,18 @@ export default function Hero() {
         transition={{ duration: 0.7, delay: 0.6 }}
         className="absolute bottom-6 md:bottom-12 left-1/2 -translate-x-1/2 z-40 w-[96%] max-w-[1060px] dark"
       >
-        <div className="bg-black/20 backdrop-blur-2xl border border-white/20 rounded-[32px] md:rounded-full shadow-[0_32px_80px_-12px_rgba(0,0,0,0.6)] flex flex-col md:flex-row items-center p-2 md:p-3 relative">
+        <div className="bg-black/20 backdrop-blur-3xl border border-white/10 rounded-[28px] md:rounded-full shadow-[0_32px_80px_-12px_rgba(0,0,0,0.6)] flex flex-wrap md:flex-nowrap items-center p-1.5 md:p-3 relative">
 
           {/* Destination */}
-          <div className="flex-[1.4] w-full flex items-center px-4 py-3 md:py-2 relative group cursor-text">
-            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 mr-3">
-              <MapPin className="w-5 h-5 text-white" />
+          <div className="w-full md:flex-[1.4] flex items-center px-4 py-2.5 md:py-2 relative group cursor-text">
+            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 mr-3">
+              <MapPin className="w-4 h-4 md:w-5 md:h-5 text-white/70" />
             </div>
             <div className="flex flex-col flex-1 w-full relative">
-              <span className="text-[10px] uppercase tracking-widest text-white/50 font-black mb-1">
+              <span className="text-[9px] md:text-[10px] uppercase tracking-widest text-white/40 font-bold mb-0.5">
                 Destination
               </span>
-              <div className="hero-location-input [&_input]:!bg-transparent [&_input]:!border-none [&_input]:!shadow-none [&_input]:!outline-none [&_input]:!ring-0 [&_input]:!h-auto [&_input]:!p-0 [&_input]:!text-white [&_input]:!text-[16px] md:[&_input]:!text-[17px] [&_input]:!font-bold [&_input]:!placeholder:text-white/30 [&_input]:!rounded-none [&_.absolute.left-4]:!hidden [&_input]:focus:!ring-0 [&_input]:focus:!bg-transparent [&_input]:!focus-visible:ring-0 w-full relative z-20">
+              <div className="hero-location-input [&_input]:!bg-transparent [&_input]:!border-none [&_input]:!shadow-none [&_input]:!outline-none [&_input]:!ring-0 [&_input]:!h-auto [&_input]:!p-0 [&_input]:!text-white [&_input]:!text-[15px] md:[&_input]:!text-[17px] [&_input]:!font-bold [&_input]:!placeholder:text-white/20 [&_input]:!rounded-none [&_.absolute.left-4]:!hidden [&_input]:focus:!ring-0 [&_input]:focus:!bg-transparent [&_input]:!focus-visible:ring-0 w-full relative z-20">
                 <LocationInput
                   onSelect={(loc) => {
                     const fullName = loc.isFeatured
@@ -189,17 +187,17 @@ export default function Hero() {
             </div>
           </div>
 
-          <div className="hidden md:block w-px h-10 bg-white/20 mx-2" />
-          <div className="md:hidden h-px w-full bg-white/10 my-1" />
+          <div className="hidden md:block w-px h-10 bg-white/10 mx-2" />
+          <div className="md:hidden h-px w-full bg-white/5 my-1" />
 
           {/* Days */}
-          <div className="flex-[0.8] w-full flex items-center px-4 py-3 md:py-2 relative">
-            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 mr-3">
-              <Calendar className="w-5 h-5 text-white" />
+          <div className="w-1/2 md:flex-[0.8] flex items-center px-4 py-2 md:py-2 relative border-r border-white/5 md:border-none">
+            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 mr-3">
+              <Calendar className="w-4 h-4 md:w-5 md:h-5 text-white/70" />
             </div>
             <div className="flex flex-col flex-1">
-              <span className="text-[10px] uppercase tracking-widest text-white/50 font-black mb-1">
-                Duration
+              <span className="text-[9px] md:text-[10px] uppercase tracking-widest text-white/40 font-bold mb-0.5">
+                Days
               </span>
               <div className="flex items-center">
                 <input
@@ -208,31 +206,29 @@ export default function Hero() {
                   max={3}
                   value={duration}
                   onChange={(e) => setDuration(parseInt(e.target.value) || 1)}
-                  className="bg-transparent outline-none text-white text-[16px] md:text-[17px] font-bold w-full appearance-none placeholder:text-white/30"
+                  className="bg-transparent outline-none text-white text-[15px] md:text-[17px] font-bold w-full appearance-none placeholder:text-white/20"
                   disabled={isPending}
                 />
-                <span className="text-white/40 text-[11px] ml-1.5 font-bold uppercase tracking-wider">Days</span>
               </div>
             </div>
           </div>
 
-          <div className="hidden md:block w-px h-10 bg-white/20 mx-2" />
-          <div className="md:hidden h-px w-full bg-white/10 my-1" />
+          <div className="hidden md:block w-px h-10 bg-white/10 mx-2" />
 
           {/* Budget */}
-          <div className="flex-[1] w-full flex items-center px-4 py-3 md:py-2 relative">
-            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 mr-3">
-              <Wallet className="w-5 h-5 text-white" />
+          <div className="w-1/2 md:flex-[1] flex items-center px-4 py-2 md:py-2 relative">
+            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 mr-3">
+              <Wallet className="w-4 h-4 md:w-5 md:h-5 text-white/70" />
             </div>
             <div className="flex flex-col flex-1">
-              <span className="text-[10px] uppercase tracking-widest text-white/60 font-bold mb-0.5">
+              <span className="text-[9px] md:text-[10px] uppercase tracking-widest text-white/40 font-bold mb-0.5">
                 Budget
               </span>
               <Select value={budget} onValueChange={(val) => val && setBudget(val)} disabled={isPending}>
-                <SelectTrigger className="bg-transparent border-none shadow-none p-0 h-auto text-white text-[16px] md:text-[17px] font-semibold focus:ring-0 flex-row-reverse justify-end gap-2 [&>svg]:opacity-50">
+                <SelectTrigger className="bg-transparent border-none shadow-none p-0 h-auto text-white text-[15px] md:text-[17px] font-bold focus:ring-0 flex-row-reverse justify-end gap-1.5 [&>svg]:opacity-30">
                   <SelectValue placeholder="Budget" />
                 </SelectTrigger>
-                <SelectContent className="bg-black/40 border-white/10 shadow-2xl backdrop-blur-3xl">
+                <SelectContent className="bg-black/90 border-white/10 shadow-2xl backdrop-blur-3xl">
                   {BUDGETS.map((b) => (
                     <SelectItem key={b} value={b}>
                       {b}
@@ -243,23 +239,23 @@ export default function Hero() {
             </div>
           </div>
 
-          <div className="hidden md:block w-px h-10 bg-white/20 mx-2" />
-          <div className="md:hidden h-px w-full bg-white/10 my-1" />
+          <div className="hidden md:block w-px h-10 bg-white/10 mx-2" />
+          <div className="md:hidden h-px w-full bg-white/5 my-1" />
 
           {/* Vibe */}
-          <div className="flex-[1] w-full flex items-center px-4 py-3 md:py-2 relative">
-            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 mr-3">
-              <Compass className="w-5 h-5 text-white" />
+          <div className="w-1/2 md:flex-[1] flex items-center px-4 py-2 md:py-2 relative border-r border-white/5 md:border-none">
+            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 mr-3">
+              <Compass className="w-4 h-4 md:w-5 md:h-5 text-white/70" />
             </div>
             <div className="flex flex-col flex-1">
-              <span className="text-[10px] uppercase tracking-widest text-white/60 font-bold mb-0.5">
+              <span className="text-[9px] md:text-[10px] uppercase tracking-widest text-white/40 font-bold mb-0.5">
                 Vibe
               </span>
               <Select value={vibe} onValueChange={(val) => val && setVibe(val)} disabled={isPending}>
-                <SelectTrigger className="bg-transparent border-none shadow-none p-0 h-auto text-white text-[16px] md:text-[17px] font-semibold focus:ring-0 flex-row-reverse justify-end gap-2 [&>svg]:opacity-50">
+                <SelectTrigger className="bg-transparent border-none shadow-none p-0 h-auto text-white text-[15px] md:text-[17px] font-bold focus:ring-0 flex-row-reverse justify-end gap-1.5 [&>svg]:opacity-30">
                   <SelectValue placeholder="Vibe" />
                 </SelectTrigger>
-                <SelectContent className="bg-black/40 border-white/10 shadow-2xl backdrop-blur-3xl">
+                <SelectContent className="bg-black/90 border-white/10 shadow-2xl backdrop-blur-3xl">
                   {VIBES.map((v) => (
                     <SelectItem key={v} value={v}>
                       {v}
@@ -271,24 +267,26 @@ export default function Hero() {
           </div>
 
           {/* CTA Button */}
-          <button
-            onClick={handleSubmit}
-            disabled={isPending}
-            className="group relative overflow-hidden w-full md:w-[150px] h-[56px] md:h-[56px] mt-2 md:mt-0 rounded-[20px] md:rounded-full bg-[#C5632D] text-white flex items-center justify-center shrink-0 transition-all duration-500 active:scale-95 shadow-[0_8px_32px_rgba(197,99,45,0.4)] md:ml-2 disabled:opacity-70 disabled:active:scale-100"
-          >
-            {/* Shimmer effect */}
-            <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer" />
+          <div className="w-1/2 md:w-auto md:ml-2">
+            <button
+              onClick={handleSubmit}
+              disabled={isPending}
+              className="group relative overflow-hidden w-full md:w-[150px] h-[50px] md:h-[56px] rounded-xl md:rounded-full bg-gradient-to-br from-[#E67E22] to-[#C0392B] text-white flex items-center justify-center shrink-0 transition-all duration-300 active:scale-95 shadow-[0_8px_32px_rgba(197,99,45,0.4)] disabled:opacity-70"
+            >
+              <div className="absolute inset-0 w-full h-full bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
 
-            <span className="relative z-10 flex items-center gap-2 font-bold text-[14px] tracking-wide">
-              {isPending ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <>
-                  Plan My Trip <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                </>
-              )}
-            </span>
-          </button>
+              <span className="relative z-10 flex items-center gap-1.5 font-bold text-[13px] md:text-[14px] tracking-wide">
+                {isPending ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <>
+                    <span className="md:inline">Plan Trip</span>
+                    <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                  </>
+                )}
+              </span>
+            </button>
+          </div>
         </div>
       </motion.div>
 

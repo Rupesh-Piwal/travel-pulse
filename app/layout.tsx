@@ -59,6 +59,7 @@ export default function RootLayout({
         dmSans.variable,
         fraunces.variable,
         bricolage_grotesque.variable,
+        instrument.variable,
         "scrollbar-hide"
       )}
     >
