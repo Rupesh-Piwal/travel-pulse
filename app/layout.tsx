@@ -1,11 +1,20 @@
 import type { Metadata } from "next";
-import { DM_Sans, Fraunces, Playfair_Display, Bricolage_Grotesque } from "next/font/google";
+import { DM_Sans, Fraunces, Playfair_Display, Bricolage_Grotesque, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
 
 
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans" });
+
+const instrument = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: "italic",
+  variable: "--font-serif",
+  display: "swap",
+});
+
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -16,7 +25,7 @@ const fraunces = Fraunces({
 const bricolage_grotesque = Bricolage_Grotesque({
   subsets: ["latin"],
   variable: "--font-bricolage",
-  weight: ["400", "500", "600"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 

@@ -7,7 +7,28 @@
 
 import { connection } from "@/lib/bull/connection";
 
-const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1488085061387-422e29b40080?q=80&w=2000&auto=format&fit=crop"; // More neutral premium travel image
+// A curated list of premium, high-quality travel and food images to use as fallbacks
+// This guarantees the app maintains its "Luxury" aesthetic even if the Unsplash API is rate-limited.
+const CURATED_FALLBACKS = [
+  "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=1200&auto=format&fit=crop", // Mountains/Lake
+  "https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1200&auto=format&fit=crop", // High-end Food
+  "https://images.unsplash.com/photo-1515238152791-8216bfdf89a7?q=80&w=1200&auto=format&fit=crop", // Beach
+  "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?q=80&w=1200&auto=format&fit=crop", // Paris/City
+  "https://images.unsplash.com/photo-1514933651103-005eec06c04b?q=80&w=1200&auto=format&fit=crop", // Restaurant Interior
+  "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=1200&auto=format&fit=crop", // Road trip / Explorer
+  "https://images.unsplash.com/photo-1541336032412-2048a678540d?q=80&w=1200&auto=format&fit=crop", // Luxury Hotel
+  "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1200&auto=format&fit=crop", // Fine Dining
+  "https://images.unsplash.com/photo-1480796927426-f609979314bd?q=80&w=1200&auto=format&fit=crop", // Tokyo/Neon City
+  "https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=1200&auto=format&fit=crop"  // Coffee/Cafe
+];
+
+const getFallbackImage = (query: string) => {
+  // If we hit the rate limit, we pick a random premium image.
+  // We use the query length to deterministically pick an image so it doesn't change on every render,
+  // but it looks random across different activities.
+  const index = query.length % CURATED_FALLBACKS.length;
+  return CURATED_FALLBACKS[index];
+};
 
 export async function fetchUnsplashImage(
   query: string, 
@@ -16,22 +37,18 @@ export async function fetchUnsplashImage(
 ): Promise<string> {
   const accessKey = process.env.UNSPLASH_ACCESS_KEY;
   
-  if (!accessKey) {
-    return `https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1200&auto=format&fit=crop&query=${encodeURIComponent(query)}`;
-  }
-
   const tryFetch = async (q: string) => {
+    if (!accessKey) return null;
+
     const cacheKey = `unsplash:image:${encodeURIComponent(q)}:${orientation}`;
 
     try {
       // 1. Check Redis Cache
       const cached = await connection.get(cacheKey);
-      if (cached) {
-        return cached;
-      }
+      if (cached) return cached;
 
       const response = await fetch(
-        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(q)}&orientation=${orientation}&per_page=1`,
+        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(q)}&orientation=${orientation}&per_page=10`,
         {
           headers: {
             Authorization: `Client-ID ${accessKey}`,
@@ -39,9 +56,19 @@ export async function fetchUnsplashImage(
         }
       );
 
-      if (!response.ok) return null;
+      if (!response.ok) {
+        console.warn(`Unsplash API error (${response.status}) for: ${q}`);
+        return null;
+      }
+
       const data = await response.json();
-      const url = (data.results && data.results.length > 0) ? data.results[0].urls.regular : null;
+      const results = data.results || [];
+      
+      if (results.length === 0) return null;
+
+      // Pick a random image from the top 10 results to ensure variety
+      const randomIndex = Math.floor(Math.random() * results.length);
+      const url = results[randomIndex].urls.regular;
 
       // 2. Cache in Redis (24 hours)
       if (url) {
@@ -63,5 +90,6 @@ export async function fetchUnsplashImage(
     imageUrl = await tryFetch(fallbackQuery);
   }
 
-  return imageUrl || FALLBACK_IMAGE;
+  // 3. Final Result: API image OR a dynamic relevant fallback
+  return imageUrl || getFallbackImage(query);
 }

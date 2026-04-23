@@ -510,28 +510,10 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
 
           {/* Integrated Minimalist Header */}
           <div className="w-full flex items-center justify-between">
-            <div className="flex items-center gap-12">
-              <Link href="/dashboard">
-                <Button variant="ghost" size="sm" className="text-white/70 hover:text-white transition-all gap-4 px-0 font-black text-[10px] uppercase tracking-[0.4em]">
-                  <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" /> Explorer
-                </Button>
-              </Link>
-              <div className="hidden lg:flex items-center gap-6 text-white/30 text-[9px] font-black uppercase tracking-[0.3em]">
-                <span className="text-white/60">Global</span> <span className="w-px h-3 bg-white/10" /> <span>Archive</span>
-              </div>
-            </div>
+
 
             <div className="absolute left-1/2 -translate-x-1/2 scale-125">
               <span className="text-2xl font-serif italic text-white tracking-[0.3em] font-light">NOMADGO</span>
-            </div>
-
-            <div className="flex items-center gap-10">
-              <Button variant="ghost" size="sm" className="text-white/60 hover:text-white font-black text-[10px] uppercase tracking-[0.3em] px-0">
-                Share
-              </Button>
-              <Button variant="ghost" size="sm" className="text-white font-black text-[11px] uppercase tracking-[0.25em] bg-white/10 rounded-full px-8 py-3 border border-white/20 transition-all hover:bg-white/20 hover:scale-105 active:scale-95">
-                Book Experience <ArrowRight className="w-4 h-4 ml-3" />
-              </Button>
             </div>
           </div>
 
@@ -566,22 +548,6 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
           <div className="w-full max-w-7xl flex flex-col md:flex-row items-end md:items-center justify-between gap-12 pb-4">
             <div className="flex items-center gap-16 md:gap-24">
               <div className="space-y-4 group">
-                <p className="text-[10px] font-black uppercase tracking-[0.5em] text-white/40 group-hover:text-orange-400 transition-colors">Coordinates</p>
-                <div className="flex flex-col gap-1">
-                  <p className="text-sm font-bold text-white tracking-[0.2em] uppercase">{itinerary.destination}</p>
-                </div>
-              </div>
-
-              <div className="space-y-4 group">
-                <p className="text-[10px] font-black uppercase tracking-[0.5em] text-white/40 group-hover:text-orange-400 transition-colors">Aura</p>
-                <p className="text-sm font-bold text-white tracking-[0.2em] uppercase italic">{itinerary.vibe}</p>
-              </div>
-
-              <div className="space-y-4 group">
-                <p className="text-[10px] font-black uppercase tracking-[0.5em] text-white/40 group-hover:text-orange-400 transition-colors">Investment</p>
-                <div className="flex items-center gap-3">
-                  <p className="text-sm font-bold text-white tracking-[0.2em] uppercase">{itinerary.budget}</p>
-                </div>
               </div>
             </div>
 
@@ -593,17 +559,7 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
                   </span>
                   <span className="text-[10px] font-black uppercase tracking-[0.4em] text-orange-400">Days</span>
                 </div>
-                <p className="text-[8px] font-black uppercase tracking-[0.2em] text-white/20 mt-1">Full Curriculum</p>
               </div>
-
-              <Button
-                onClick={() => document.getElementById("day-1")?.scrollIntoView({ behavior: "smooth" })}
-                className="group/btn relative h-20 px-12 bg-white text-zinc-950 font-black uppercase text-[11px] tracking-[0.4em] rounded-full overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-[0_20px_50px_rgba(255,255,255,0.15)]"
-              >
-                <span className="relative z-10">Commence</span>
-                <ArrowRight className="relative z-10 w-5 h-5 ml-4 transition-transform duration-500 group-hover/btn:translate-x-2" />
-                <div className="absolute inset-0 bg-zinc-100 transform translate-y-full group-hover/btn:translate-y-0 transition-transform duration-500" />
-              </Button>
             </div>
           </div>
         </div>

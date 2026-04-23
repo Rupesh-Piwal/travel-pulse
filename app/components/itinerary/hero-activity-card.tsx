@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Clock, MapPin, Star, Lightbulb } from "lucide-react";
+import { Star, Lightbulb } from "lucide-react";
 
 interface Activity {
   title: string;

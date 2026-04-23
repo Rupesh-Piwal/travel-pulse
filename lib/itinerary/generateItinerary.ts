@@ -26,6 +26,7 @@ const activitySchema = z.object({
   timeOfDay: z.enum(["Morning", "Afternoon", "Evening"]).describe("The best time of day for this activity"),
   category: z.nativeEnum(ActivityCategory).describe("The primary category of this location"),
   mealType: z.nativeEnum(MealType).describe("If this is a restaurant, which meal is it best for? Use NONE if not a restaurant."),
+  cuisine: z.string().optional().describe("If this is a restaurant, what is the primary cuisine? e.g. 'Italian', 'Japanese', 'Street Food'"),
   rating: z.number().min(3.5).max(5).describe("Review rating (4.0-5.0). Be honest but prioritize high-quality spots."),
   priceLevel: z.string().describe("Estimated price level ($, $$, $$$, $$$$)"),
   address: z.string().describe("Full street address of the location"),
@@ -102,7 +103,7 @@ export async function generateItinerary({
       ${destination ? `We have the following known locations in ${destinationName}: ${JSON.stringify(availableActivities, null, 2)}` : `Note: ${destinationName} is not in our primary database. Use your internal expert knowledge to suggest REAL-WORLD, highly-rated locations.`}
       
       Critical Guidelines:
-      1. Dining: Every day MUST include exactly 3 meal stops: one for Breakfast, one for Lunch, and one for Dinner.
+      1. Dining: Every day MUST include exactly 3 meal stops: one for Breakfast, one for Lunch, and one for Dinner. For each dining stop, specify the primary cuisine (e.g. 'Sushi', 'Italian', 'Fine Dining').
       2. Quality: Only suggest restaurants and landmarks with a reputation for excellence (Ratings 4.0+). Avoid generic or low-quality tourist traps.
       3. Price Balance: Ensure the suggested spots match the user's ${budget} budget.
       4. Logic: Group activities that are geographically close to each other in the same day.

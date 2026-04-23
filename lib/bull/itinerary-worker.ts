@@ -68,9 +68,18 @@ const worker = new Worker(
             day.activities.map((activity: any) =>
               limit(async () => {
                 if (!activity.image) {
-                  console.log(`🖼️ Fetching image for: ${activity.title}`);
+                  // SMARTER SEARCH: If it's a meal/restaurant, search for the cuisine/vibe 
+                  // instead of the specific name which Unsplash won't have.
+                  let searchQuery = `${activity.title} ${itinerary.destination}`;
+                  
+                  if (activity.category === "RESTAURANT" || activity.mealType !== "NONE") {
+                    const cuisine = (activity as any).cuisine || "";
+                    searchQuery = `${cuisine} food restaurant ${itinerary.destination}`;
+                  }
+
+                  console.log(`🖼️ Fetching image for: ${activity.title} (Query: ${searchQuery})`);
                   activity.image = await fetchUnsplashImage(
-                    `${activity.title} ${itinerary.destination}`,
+                    searchQuery,
                     "squarish",
                     itinerary.destination
                   );

@@ -20,6 +20,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-dm-sans);
   --font-serif: var(--font-fraunces);
+  --font-bricolage: var(--font-bricolage);
   
   /* TravelPulse Brand Colors */
   --color-navy: #0F1923;

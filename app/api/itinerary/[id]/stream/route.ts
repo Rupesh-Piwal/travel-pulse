@@ -40,6 +40,15 @@ export async function GET(
       const subClient = connection.duplicate(); // Sub clients must be exclusive
       const channel = `itinerary:status:${id}`;
 
+      // Heartbeat to keep connection alive
+      const interval = setInterval(() => {
+        try {
+          controller.enqueue(encoder.encode(": heartbeat\n\n"));
+        } catch (e) {
+          clearInterval(interval);
+        }
+      }, 15000);
+
       await subClient.subscribe(channel);
 
       subClient.on("message", (chan, message) => {
@@ -48,24 +57,20 @@ export async function GET(
           sendEvent(data);
 
           if (data.status === "DONE" || data.status === "FAILED") {
+            clearInterval(interval); // 🔥 Clear interval on completion
             subClient.unsubscribe(channel);
             subClient.quit();
-            controller.close();
+            try { controller.close(); } catch (e) {}
           }
         }
       });
 
-      // Heartbeat to keep connection alive
-      const interval = setInterval(() => {
-        controller.enqueue(encoder.encode(": heartbeat\n\n"));
-      }, 15000);
-
       // 4. Cleanup on close
       req.signal.addEventListener("abort", () => {
-        clearInterval(interval);
+        clearInterval(interval); // 🔥 Clear interval on user exit
         subClient.unsubscribe(channel);
         subClient.quit();
-        controller.close();
+        try { controller.close(); } catch (e) {}
       });
     },
   });

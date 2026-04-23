@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useEffect, useTransition } from "react";
-import Link from "next/link";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Calendar, Wallet, Compass, Loader2, MapPin, Search } from "lucide-react";
+import { ArrowRight, Calendar, Wallet, Compass, Loader2, MapPin } from "lucide-react";
 import { toast } from "sonner";
 import Header from "@/components/Header";
 import LocationInput from "@/app/components/itinerary/location-input";
@@ -17,12 +16,9 @@ import {
 } from "@/components/ui/select";
 import { generateItinerary } from "@/app/actions/itinerary";
 
-/* ── Auto-rotating hero images ── */
-const HERO_IMAGES = [
-  "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=2000&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1542820229-081e0c12af0b?q=80&w=2000&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=2000&auto=format&fit=crop",
-];
+/* ── Cloudinary Media Configuration ── */
+const HERO_IMAGE_URL = `https://res.cloudinary.com/dtw4aayy4/image/upload/f_auto,q_auto/v1776936139/Hero-Poster_cedudf.png`;
+const HERO_VIDEO_URL = `https://res.cloudinary.com/dtw4aayy4/video/upload/f_auto,q_auto/v1776936875/Hero-video_ggtagi.mp4`;
 
 const BUDGETS = ["Budget", "Mid-Range", "Luxury"] as const;
 const VIBES = ["Adventure", "Foodie", "Cultural", "Relaxation"] as const;
@@ -30,7 +26,6 @@ const VIBES = ["Adventure", "Foodie", "Cultural", "Relaxation"] as const;
 export default function Hero() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [idx, setIdx] = useState(0);
 
   //video state
   const [videoLoaded, setVideoLoaded] = useState(false);
@@ -42,13 +37,7 @@ export default function Hero() {
   const [budget, setBudget] = useState<string>("Mid-Range");
   const [vibe, setVibe] = useState<string>("Adventure");
 
-  useEffect(() => {
-    const t = setInterval(
-      () => setIdx((p) => (p + 1) % HERO_IMAGES.length),
-      3000,
-    );
-    return () => clearInterval(t);
-  }, []);
+  // Removed rotating images interval as we now use a single Cloudinary video/image
 
   const handleSubmit = () => {
     if (!destination) {
@@ -96,8 +85,7 @@ export default function Hero() {
         {/* 🔹 Fallback image (instant render) */}
         <AnimatePresence>
           <motion.img
-            key={idx}
-            src={HERO_IMAGES[idx]}
+            src={HERO_IMAGE_URL}
             alt="Travel destination"
             initial={{ opacity: 0, scale: 1.06 }}
             animate={{ opacity: videoLoaded ? 0 : 1, scale: 1.02 }}
@@ -107,7 +95,7 @@ export default function Hero() {
           />
         </AnimatePresence>
 
-        {/* 🔹 Video layer (optimized + accessible) */}
+        {/* 🔹 Video layer (Cloudinary optimized) */}
         {!videoError && (
           <video
             className={`absolute inset-0 w-full h-full object-cover 
@@ -118,23 +106,14 @@ export default function Hero() {
             muted
             loop
             playsInline
-            preload="metadata"
-            poster="/hero-fallback.jpg"
+            preload="auto"
+            poster={HERO_IMAGE_URL}
             onLoadedData={() => {
               setTimeout(() => setVideoLoaded(true), 150);
             }}
             onError={() => setVideoError(true)}
           >
-            <source src="./hero/hero-vid-3.mp4" type="video/mp4" />
-            {/* <source src="/hero-video.webm" type="video/webm" /> */}
-            {/* Accessibility: captions */}
-            <track
-              src="/captions.vtt"
-              kind="subtitles"
-              srcLang="en"
-              label="English"
-              default
-            />
+            <source src={HERO_VIDEO_URL} type="video/mp4" />
             {/* Fallback text */}
             Your browser does not support the video tag.
           </video>
@@ -166,12 +145,12 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.3 }}
           className="max-w-4xl"
         >
-          <h1 className="font-serif text-[clamp(48px,8.5vw,115px)] text-white leading-[0.95] mb-8 tracking-tighter drop-shadow-[0_4px_40px_rgba(0,0,0,0.5)]">
+          <h1 className="text-[90px] sm:text-5xl md:text-6xl font-normal tracking-tight text-white mb-5 font-[family-name:var(--font-serif)] italic">
             Plan your perfect
             <br />
-            <span className="italic">journey</span>
+            <span>journey</span>
           </h1>
-          <p className="font-sans text-[clamp(16px,1.2vw,20px)] text-white/80 max-w-[620px] mx-auto leading-[1.6] tracking-wide">
+          <p className="font-bricolage text-[clamp(16px,1.2vw,20px)] text-white/80 max-w-[620px] mx-auto leading-[1.6] tracking-wide font-medium">
             Tell us your destination and travel vibe. Get a beautiful day-by-day
             itinerary with photos, maps, and a luxury PDF guide — in seconds.
           </p>
