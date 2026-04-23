@@ -1,12 +1,10 @@
 "use server";
 
 import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
-import { deductCredits } from "@/lib/credits";
-
-
 import { initiateItineraryGeneration } from "@/lib/itinerary/service";
 import { Vibe, Budget } from "../../generated/prisma/client";
+
+import { itinerarySchema } from "@/lib/schemas/itinerary";
 
 export async function generateItinerary(formData: FormData) {
   const session = await auth();
@@ -16,10 +14,21 @@ export async function generateItinerary(formData: FormData) {
     throw new Error("Unauthorized");
   }
 
-  const destination = formData.get("destination") as string;
-  const days = parseInt(formData.get("duration") as string);
-  const budgetStr = formData.get("budget") as string;
-  const vibeStr = formData.get("vibe") as string;
+  // 1. Validate the input using the shared schema
+  const rawData = {
+    destination: formData.get("destination"),
+    duration: Number(formData.get("duration")),
+    budget: formData.get("budget"),
+    vibe: formData.get("vibe"),
+  };
+
+  const validated = itinerarySchema.safeParse(rawData);
+
+  if (!validated.success) {
+    return { success: false, error: "VALIDATION_ERROR" };
+  }
+
+  const { destination, duration: days, budget: budgetStr, vibe: vibeStr } = validated.data;
 
   // Simple mapping
   const budgetMap: Record<string, Budget> = {

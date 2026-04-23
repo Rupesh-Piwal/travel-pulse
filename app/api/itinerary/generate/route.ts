@@ -6,7 +6,7 @@ import { getCurrentUser } from "@/lib/auth";
 
 const generateSchema = z.object({
   destination: z.string().min(1),
-  days: z.number().int().min(1).max(30),
+  days: z.number().int().min(1).max(3),
   vibe: z.nativeEnum(Vibe),
   budget: z.nativeEnum(Budget),
 });

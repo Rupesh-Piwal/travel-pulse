@@ -1,4 +1,5 @@
 import { Worker, Job } from "bullmq";
+import pLimit from "p-limit";
 import { connection } from "./connection";
 import { prisma } from "../prisma";
 import { generateItinerary as runGenerator } from "../itinerary/generateItinerary";
@@ -6,6 +7,9 @@ import { fetchUnsplashImage } from "../unsplash";
 import { ItineraryStatus } from "../../generated/prisma/client";
 
 export const ITINERARY_QUEUE_NAME = "itinerary-generation";
+
+// Initialize the limiter with a concurrency of 5
+const limit = pLimit(5);
 
 const worker = new Worker(
   ITINERARY_QUEUE_NAME,
@@ -58,12 +62,13 @@ const worker = new Worker(
           },
         });
 
-        // Activity images
+        // Activity images with concurrency limiting (max 5 at a time)
         await Promise.all(
-          generatedData.days.map(async (day: any) => {
-            await Promise.all(
-              day.activities.map(async (activity: any) => {
+          generatedData.days.flatMap((day: any) =>
+            day.activities.map((activity: any) =>
+              limit(async () => {
                 if (!activity.image) {
+                  console.log(`🖼️ Fetching image for: ${activity.title}`);
                   activity.image = await fetchUnsplashImage(
                     `${activity.title} ${itinerary.destination}`,
                     "squarish",
@@ -71,8 +76,8 @@ const worker = new Worker(
                   );
                 }
               })
-            );
-          })
+            )
+          )
         );
       } catch (imgError) {
         console.error("❌ Image enrichment failed:", imgError);
