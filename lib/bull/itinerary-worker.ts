@@ -3,7 +3,7 @@ import pLimit from "p-limit";
 import { connection } from "./connection";
 import { prisma } from "../prisma";
 import { generateItinerary as runGenerator } from "../itinerary/generateItinerary";
-import { fetchUnsplashImage } from "../unsplash";
+import { fetchPexelsImage } from "../pexels";
 import { ItineraryStatus } from "../../generated/prisma/client";
 
 export const ITINERARY_QUEUE_NAME = "itinerary-generation";
@@ -45,7 +45,7 @@ const worker = new Worker(
       // 3. IMAGE ENRICHMENT
       console.log(`📸 Starting Image Enrichment...`);
       try {
-        const destImage = await fetchUnsplashImage(itinerary.destination, "landscape");
+        const destImage = await fetchPexelsImage(itinerary.destination, "landscape");
         (generatedData as any).heroImage = destImage;
 
         // Background update of destination table
@@ -78,9 +78,9 @@ const worker = new Worker(
                   }
 
                   console.log(`🖼️ Fetching image for: ${activity.title} (Query: ${searchQuery})`);
-                  activity.image = await fetchUnsplashImage(
+                  activity.image = await fetchPexelsImage(
                     searchQuery,
-                    "squarish",
+                    "square",
                     itinerary.destination
                   );
                 }
