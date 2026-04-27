@@ -52,4 +52,25 @@ export async function refundCredits(userId: string, amount: number) {
   ]);
 }
 
+export async function addCredits(
+  userId: string,
+  amount: number,
+  referenceId?: string
+) {
+  return await prisma.$transaction([
+    prisma.credit.update({
+      where: { userId },
+      data: { balance: { increment: amount } },
+    }),
+    prisma.creditTransaction.create({
+      data: {
+        userId,
+        amount: amount,
+        reason: "PURCHASE",
+        referenceId,
+      },
+    }),
+  ]);
+}
+
 

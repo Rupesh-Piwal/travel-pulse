@@ -1,10 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Check } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 const TIERS = [
   {
+    key: "voyager",
     name: "Voyager",
     price: 5,
     credits: 30,
@@ -18,6 +21,7 @@ const TIERS = [
     featured: false,
   },
   {
+    key: "pathfinder",
     name: "Pathfinder",
     price: 20,
     credits: 100,
@@ -31,6 +35,7 @@ const TIERS = [
     featured: true,
   },
   {
+    key: "globalist",
     name: "Globalist",
     price: 49,
     credits: 300,
@@ -46,6 +51,40 @@ const TIERS = [
 ];
 
 export default function PricingSection() {
+  const [loadingTier, setLoadingTier] = useState<string | null>(null);
+
+  const handleBuy = async (tierKey: string) => {
+    setLoadingTier(tierKey);
+    try {
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tier: tierKey }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        // Handle unauthenticated users
+        if (res.status === 401) {
+          toast.error("Please sign in to purchase credits.");
+          return;
+        }
+        throw new Error(data.error || "Something went wrong");
+      }
+
+      if (data.url) {
+        // Redirect to Stripe Checkout
+        window.location.href = data.url;
+      }
+    } catch (err) {
+      console.error("Checkout error:", err);
+      toast.error("Failed to start checkout. Please try again.");
+    } finally {
+      setLoadingTier(null);
+    }
+  };
+
   return (
     <section id="pricing" className="bg-[#F5EFE0] py-[160px] px-6 md:px-[8vw]">
       <div className="max-w-[1240px] mx-auto">
@@ -65,6 +104,7 @@ export default function PricingSection() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           {TIERS.map((tier) => {
             const pricePerCredit = (tier.price / tier.credits).toFixed(2);
+            const isLoading = loadingTier === tier.key;
 
             return (
               <motion.div
@@ -133,13 +173,22 @@ export default function PricingSection() {
 
                 {/* CTA */}
                 <button
-                  className={`w-full py-4 rounded-[20px] font-bold uppercase text-[13px] tracking-widest mt-auto ${
+                  onClick={() => handleBuy(tier.key)}
+                  disabled={loadingTier !== null}
+                  className={`w-full py-4 rounded-[20px] font-bold uppercase text-[13px] tracking-widest mt-auto transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed ${
                     tier.featured
-                      ? "bg-terracotta text-sand"
-                      : "bg-navy text-sand"
+                      ? "bg-terracotta text-sand hover:bg-terracotta/90"
+                      : "bg-navy text-sand hover:bg-navy/90"
                   }`}
                 >
-                  {tier.cta}
+                  {isLoading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Redirecting…
+                    </span>
+                  ) : (
+                    tier.cta
+                  )}
                 </button>
               </motion.div>
             );
