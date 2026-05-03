@@ -6,15 +6,14 @@ import { PlaneTakeoff, Building, Upload, Check } from "lucide-react";
 
 export default function MapPlanningSection() {
   return (
-    <section className="bg-[#FEFEFF] py-24 md:py-32 px-6 md:px-[8vw] relative overflow-hidden">
+    <section className="bg-[#FEFEFF] py-[30px] md:py-[60px] px-6 md:px-[8vw] relative overflow-hidden">
       <div className="max-w-[1200px] mx-auto flex flex-col items-center">
         {/* Header Text */}
         <div className="text-center mb-16 md:mb-20 max-w-3xl flex flex-col items-center">
 
-          <div className="text-[20px] md:text-[40px] font-[family-name:var(--font-serif)] italic leading-[0.95] text-terracotta"
+          <div className="text-[20px] md:text-[32px] font-serif italic leading-none text-terracotta mb-2"
           >
             Map-Integrated Planning
-
           </div>
 
           <motion.h2
@@ -22,7 +21,7 @@ export default function MapPlanningSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-navy text-3xl md:text-5xl lg:text-[52px] font-sans font-medium tracking-tight leading-[1.15] mb-6"
+            className="text-navy text-[28px] md:text-[44px] font-sans font-medium tracking-tighter leading-[1.1] mb-8"
           >
             See everything on a map as you plan.
           </motion.h2>
@@ -32,7 +31,7 @@ export default function MapPlanningSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="text-navy/60 text-lg md:text-xl max-w-2xl leading-relaxed"
+            className="text-navy/60 text-[17px] md:text-[20px] max-w-2xl leading-relaxed mx-auto"
           >
             Hotels and attractions appear on a live map as you explore. Visualize neighborhoods, distances, and how your days fit together.
           </motion.p>

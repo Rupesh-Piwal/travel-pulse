@@ -118,7 +118,7 @@ export default function Header() {
       {/* Right buttons */}
       <div className="flex items-center gap-3 md:gap-5">
         <Link
-          href="/signin"
+          href="/login"
           className={cn(
             "hidden sm:block px-5 py-2.5 rounded-full border text-[13px] font-medium backdrop-blur-md transition-all",
             (scrolled && isLandingPage) 
@@ -176,7 +176,7 @@ export default function Header() {
                 className="w-full flex flex-col gap-4 mt-8"
               >
                 <Link
-                  href="/signin"
+                  href="/login"
                   onClick={() => setIsOpen(false)}
                   className="w-full py-4 text-center rounded-2xl border border-sand/10 text-sand/80 font-medium"
                 >

@@ -209,7 +209,7 @@ export default function Hero() {
                     setDestination(fullName);
                   }}
                   disabled={isPending}
-                  dropdownClassName="md:w-[360px] md:-left-4 bg-white/95 backdrop-blur-3xl border border-white/20 shadow-[0_32px_120px_-15px_rgba(0,0,0,0.5)] rounded-[10px]"
+                  dropdownClassName="md:w-[360px] mx-auto md:left-0 md:-left-4 bg-white/95 backdrop-blur-3xl border border-white/20 shadow-[0_32px_120px_-15px_rgba(0,0,0,0.5)] rounded-[10px]"
                 />
               </div>
             </div>

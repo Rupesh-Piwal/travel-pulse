@@ -49,24 +49,27 @@ const guides = [
 
 export default function GuidesSection() {
   return (
-    <section className="bg-[#FEFEFF] py-20 md:py-32 px-6 md:px-[8vw] border-t border-navy/5">
+    <section className="bg-[#FEFEFF] py-[30px] md:py-[60px] px-6 md:px-[8vw] border-t border-navy/5">
       <div className="max-w-[1240px] mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.6 }}
-          className="mb-12 md:mb-16"
+          className="mb-12 md:mb-16 text-center"
         >
-          <h2 className="text-[28px] md:text-[40px] font-medium text-navy tracking-tight">
+          <div className="text-[20px] md:text-[32px] font-serif italic leading-none text-terracotta mb-2">
+            Guides
+          </div>
+          <h2 className="text-navy text-[28px] md:text-[44px] font-sans font-medium tracking-tighter leading-[1.1] mb-8">
             Not sure where to go? Start with these guides.
           </h2>
         </motion.div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
           {guides.map((guide, idx) => (
-            <Link 
-              key={guide.slug} 
+            <Link
+              key={guide.slug}
               href={`/dashboard/itinerary/${guide.slug}`}
               className="group block"
             >

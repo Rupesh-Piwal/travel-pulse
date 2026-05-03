@@ -90,12 +90,11 @@ export default function PricingSection() {
       <div className="max-w-[1240px] mx-auto">
         <div className="text-center mb-24">
           <div
-            className="text-[20px] md:text-[40px] font-[family-name:var(--font-serif)] italic leading-[0.95] text-terracotta mb-4"
+            className="text-[20px] md:text-[32px] font-serif italic leading-none text-terracotta mb-2"
           >
             Membership
           </div>
-
-          <h2 className="text-navy text-lg md:text-5xl font-sans text-center shrink-0 font-thin">
+          <h2 className="text-navy text-[28px] md:text-[44px] font-sans font-medium tracking-tighter leading-[1.1] mb-8">
             Invest in your discoveries
           </h2>
         </div>
