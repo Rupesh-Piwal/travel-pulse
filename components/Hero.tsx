@@ -176,7 +176,7 @@ export default function Hero() {
             Plan your <br />
             <span className="text-terracotta/70">perfect</span> journey
           </h1>
-          <p className="font-bricolage text-[clamp(15px,1.1vw,18px)] text-sand/70 max-w-[500px] mx-auto leading-relaxed tracking-wide font-light ">
+          <p className="font-sans text-[clamp(15px,1.1vw,18px)] text-sand/70 max-w-[500px] mx-auto leading-relaxed tracking-wide font-light ">
             AI-powered luxury itineraries tailored to your vibe. Get curated guides, maps, and photos in seconds.
           </p>
         </div>
@@ -189,15 +189,15 @@ export default function Hero() {
         transition={{ duration: 0.7, delay: 0.6 }}
         className="absolute bottom-6 md:bottom-12 left-1/2 -translate-x-1/2 z-40 w-[96%] max-w-[1060px] px-3 dark"
       >
-        <div className="bg-neutral-950/60 backdrop-blur-md border border-white/10 rounded-[24px] md:rounded-full shadow-[0_32px_80px_-12px_rgba(0,0,0,0.6)] flex flex-wrap md:flex-nowrap items-stretch p-0 md:p-2 relative overflow-hidden md:overflow-visible">
+        <div className="bg-white/[0.12] backdrop-blur-2xl border border-white/20 rounded-[24px] md:rounded-full shadow-[0_32px_80px_-12px_rgba(0,0,0,0.3)] flex flex-wrap md:flex-nowrap items-stretch p-0 md:p-2 relative overflow-hidden md:overflow-visible">
 
           {/* Destination */}
-          <div className="w-full md:flex-[2] flex items-center px-4 py-4 md:pl-6 md:pr-4 md:py-5 relative group cursor-text transition-colors hover:bg-white/[0.02] rounded-t-[24px] md:rounded-none md:rounded-l-full">
+          <div className="w-full md:flex-[2] flex items-center px-4 py-4 md:pl-6 md:pr-4 md:py-5 relative group cursor-text transition-colors hover:bg-white/10 rounded-t-[24px] md:rounded-none md:rounded-l-full">
             <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 mr-4 transition-colors group-hover:bg-white/[0.15]">
               <MapPin className="w-5 h-5 text-white" />
             </div>
             <div className="flex flex-col flex-1 w-full relative min-w-0 justify-center">
-              <span className="text-[11px] uppercase tracking-wider text-white/40 font-semibold mb-0.5">
+              <span className="text-[11px] uppercase tracking-wider text-white/60 font-semibold mb-0.5">
                 Destination
               </span>
               <div className="hero-location-input [&_input]:!bg-transparent [&_input]:!border-none [&_input]:!shadow-none [&_input]:!outline-none [&_input]:!ring-0 [&_input]:!p-0 [&_input]:!h-auto [&_input]:!text-white [&_input]:!text-[18px] [&_input]:!font-semibold [&_input]:!placeholder:text-white/40 [&_input]:!rounded-none [&_.absolute.left-4]:!hidden [&_input]:focus:!ring-0 [&_input]:focus:!bg-transparent [&_input]:!focus-visible:ring-0 w-full relative z-20">
@@ -209,7 +209,7 @@ export default function Hero() {
                     setDestination(fullName);
                   }}
                   disabled={isPending}
-                  dropdownClassName="md:w-[360px] md:-left-4 bg-neutral-900 border-white/10 shadow-2xl rounded-[8px]"
+                  dropdownClassName="md:w-[360px] md:-left-4 bg-white/90 backdrop-blur-xl border-navy/10 shadow-2xl rounded-[8px]"
                 />
               </div>
             </div>
@@ -221,7 +221,7 @@ export default function Hero() {
               <Calendar className="w-5 h-5 text-white/80" />
             </div>
             <div className="flex flex-col flex-1 min-w-0 justify-center">
-              <span className="text-[11px] uppercase tracking-wider text-white/40 font-semibold mb-0.5">
+              <span className="text-[11px] uppercase tracking-wider text-white/60 font-semibold mb-0.5">
                 Days
               </span>
               <div className="flex items-center">
@@ -240,19 +240,19 @@ export default function Hero() {
           </div>
 
           {/* Budget */}
-          <div className="w-1/2 md:flex-1 flex items-center px-4 py-4 md:px-4 md:py-5 border-t border-white/10 md:border-none relative before:hidden md:before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-[40px] before:w-[1px] before:bg-white/10 transition-colors hover:bg-white/[0.02]">
+          <div className="w-1/2 md:flex-1 flex items-center px-4 py-4 md:px-4 md:py-5 border-t border-white/10 md:border-none relative before:hidden md:before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-[40px] before:w-[1px] before:bg-white/20 transition-colors hover:bg-white/10">
             <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 mr-3">
               <Wallet className="w-5 h-5 text-white/80" />
             </div>
             <div className="flex flex-col flex-1 min-w-0 justify-center">
-              <span className="text-[11px] uppercase tracking-wider text-white/40 font-semibold mb-0.5">
+              <span className="text-[11px] uppercase tracking-wider text-white/60 font-semibold mb-0.5">
                 Budget
               </span>
               <Select value={budget} onValueChange={(val) => val && setBudget(val)} disabled={isPending}>
                 <SelectTrigger aria-label="Select budget" className="bg-transparent border-none shadow-none p-0 h-auto text-white text-[16px] font-semibold focus:ring-0 justify-between gap-2 [&>svg]:opacity-50 [&>svg]:w-4 [&>svg]:h-4">
                   <SelectValue placeholder="Budget" />
                 </SelectTrigger>
-                <SelectContent className="bg-neutral-900 border-white/10 shadow-2xl text-white">
+                <SelectContent className="bg-white/90 backdrop-blur-xl border-navy/10 shadow-2xl text-navy">
                   {BUDGETS.map((b) => (
                     <SelectItem key={b} value={b} className="focus:bg-white/10 cursor-pointer">
                       {b}
@@ -269,14 +269,14 @@ export default function Hero() {
               <Compass className="w-5 h-5 text-white/80" />
             </div>
             <div className="flex flex-col flex-1 min-w-0 justify-center">
-              <span className="text-[11px] uppercase tracking-wider text-white/40 font-semibold mb-0.5">
+              <span className="text-[11px] uppercase tracking-wider text-white/60 font-semibold mb-0.5">
                 Vibe
               </span>
               <Select value={vibe} onValueChange={(val) => val && setVibe(val)} disabled={isPending}>
                 <SelectTrigger aria-label="Select vibe" className="bg-transparent border-none shadow-none p-0 h-auto text-white text-[16px] font-semibold focus:ring-0 justify-between gap-2 [&>svg]:opacity-50 [&>svg]:w-4 [&>svg]:h-4">
                   <SelectValue placeholder="Vibe" />
                 </SelectTrigger>
-                <SelectContent className="bg-neutral-900 border-white/10 shadow-2xl text-white">
+                <SelectContent className="bg-white/90 backdrop-blur-xl border-navy/10 shadow-2xl text-navy">
                   {VIBES.map((v) => (
                     <SelectItem key={v} value={v} className="focus:bg-white/10 cursor-pointer">
                       {v}
@@ -288,7 +288,7 @@ export default function Hero() {
           </div>
 
           {/* CTA Button */}
-          <div className="w-1/2 md:w-auto flex items-center justify-center p-4 md:pl-8 md:pr-2 border-t border-white/10 md:border-none relative before:hidden md:before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-[40px] before:w-[1px] before:bg-white/10">
+          <div className="w-1/2 md:w-auto flex items-center justify-center p-4 md:pl-8 md:pr-2 border-t border-white/10 md:border-none relative before:hidden md:before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-[40px] before:w-[1px] before:bg-white/20">
             <button
               onClick={handleSubmit}
               disabled={isPending}

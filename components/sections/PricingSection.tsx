@@ -86,17 +86,16 @@ export default function PricingSection() {
   };
 
   return (
-    <section id="pricing" className="bg-[#060606] py-[160px] px-6 md:px-[8vw]">
+    <section id="pricing" className="bg-[#FEFEFF] py-[160px] px-6 md:px-[8vw]">
       <div className="max-w-[1240px] mx-auto">
         <div className="text-center mb-24">
           <div
-            className="text-[20px] md:text-[40px] font-bold tracking-[0.6em] text-terracotta mb-4"
-            style={{ fontFamily: "var(--font-dancing), cursive" }}
+            className="text-[20px] md:text-[40px] font-[family-name:var(--font-serif)] italic leading-[0.95] text-terracotta mb-4"
           >
             Membership
           </div>
 
-          <h2 className="text-sand text-lg md:text-5xl font-serif tracking-[0.15em] uppercase text-center shrink-0 font-thin">
+          <h2 className="text-navy text-lg md:text-5xl font-sans text-center shrink-0 font-thin">
             Invest in your discoveries
           </h2>
         </div>
@@ -111,8 +110,8 @@ export default function PricingSection() {
                 key={tier.name}
                 whileHover={{ y: -10 }}
                 className={`p-10 rounded-[40px] flex flex-col transition-all duration-500 ${tier.featured
-                  ? "bg-[#060606] text-sand shadow-[0_50px_100px_-20px_rgba(15,25,35,0.3)]"
-                  : "bg-sand text-navy border border-navy/5 shadow-[0_20px_60px_rgba(15,25,35,0.03)]"
+                  ? "bg-[#0F1923] text-sand shadow-[0_50px_100px_-20px_rgba(15,25,35,0.3)]"
+                  : "bg-white text-navy border border-navy/10 shadow-[0_20px_60px_rgba(15,25,35,0.03)]"
                   }`}
               >
                 {/* Plan Name */}
@@ -122,7 +121,7 @@ export default function PricingSection() {
 
                 {/* Price */}
                 <div className="mb-2">
-                  <span className="font-serif italic text-[64px] leading-none">
+                  <span className="font-sans text-[64px] leading-none">
                     ${tier.price}
                   </span>
                   <span

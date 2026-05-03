@@ -1,12 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function Header() {
+  const pathname = usePathname();
+  const isLandingPage = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -44,7 +47,9 @@ export default function Header() {
       className={cn(
         "fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-6 md:px-14 py-4 md:py-6 transition-all duration-500",
         (scrolled || isOpen)
-          ? "bg-black/30 backdrop-blur-xl border-b border-sand/10 py-3 md:py-4 shadow-xl"
+          ? isLandingPage 
+            ? "bg-white/80 backdrop-blur-xl border-b border-navy/10 py-3 md:py-4 shadow-xl"
+            : "bg-black/30 backdrop-blur-xl border-b border-sand/10 py-3 md:py-4 shadow-xl"
           : "bg-transparent"
       )}
     >
@@ -85,10 +90,16 @@ export default function Header() {
           <Link
             key={link.label}
             href={link.href}
-            className="group relative text-sm text-sand/80 font-medium tracking-wide transition-colors duration-300 hover:text-sand"
+            className={cn(
+              "group relative text-sm font-medium tracking-wide transition-colors duration-300",
+              (scrolled && isLandingPage) ? "text-navy/80 hover:text-navy" : "text-sand/80 hover:text-sand"
+            )}
           >
             {link.label}
-            <span className="absolute left-1/2 -bottom-1 h-[1.5px] w-0 -translate-x-1/2 bg-sand transition-all duration-300 group-hover:w-full"></span>
+            <span className={cn(
+              "absolute left-1/2 -bottom-1 h-[1.5px] w-0 -translate-x-1/2 transition-all duration-300 group-hover:w-full",
+              (scrolled && isLandingPage) ? "bg-navy" : "bg-sand"
+            )}></span>
           </Link>
         ))}
       </nav>
@@ -96,7 +107,10 @@ export default function Header() {
       {/* Logo (Center) */}
       <Link
         href="/"
-        className="absolute left-1/2 -translate-x-1/2 font-serif italic text-[24px] md:text-[32px] text-sand tracking-tight drop-shadow-lg"
+        className={cn(
+          "absolute left-1/2 -translate-x-1/2 font-serif italic text-[24px] md:text-[32px] tracking-tight drop-shadow-lg transition-colors duration-500",
+          (scrolled && isLandingPage) ? "text-navy" : "text-sand"
+        )}
       >
         Nomad<span className="text-[#C5632D]">Go</span>
       </Link>
@@ -105,7 +119,12 @@ export default function Header() {
       <div className="flex items-center gap-3 md:gap-5">
         <Link
           href="/signin"
-          className="hidden sm:block px-5 py-2.5 rounded-full border border-sand/20 text-[13px] text-sand/85 font-medium backdrop-blur-md hover:bg-sand/10 hover:border-sand/35 transition-all"
+          className={cn(
+            "hidden sm:block px-5 py-2.5 rounded-full border text-[13px] font-medium backdrop-blur-md transition-all",
+            (scrolled && isLandingPage) 
+              ? "border-navy/20 text-navy/85 hover:bg-navy/5 hover:border-navy/35"
+              : "border-sand/20 text-sand/85 hover:bg-sand/10 hover:border-sand/35"
+          )}
         >
           LogIn
         </Link>
@@ -143,7 +162,7 @@ export default function Header() {
                   <Link
                     href={link.href}
                     onClick={() => setIsOpen(false)}
-                    className="text-2xl text-sand/90 font-serif italic tracking-wide hover:text-[#C5632D] transition-colors"
+                    className="text-2xl text-sand/90 font-bold tracking-wide hover:text-[#C5632D] transition-colors"
                   >
                     {link.label}
                   </Link>

@@ -3,8 +3,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
 import { MapPin, ArrowRight, Share, X, Languages, Sun, Building2, DollarSign, CircleChevronUp, Sparkle, ArrowDownToDot, Compass } from 'lucide-react';
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+
 import MapWrapper from "@/app/components/itinerary/map-wrapper";
 import ExportPdfButton from "@/app/components/itinerary/export-pdf-button";
 import { DayOpener, EditorialActivityScene } from "@/app/components/itinerary/cinematic-scenes";
@@ -213,7 +212,7 @@ function KnowBeforeYouGo({ data }: { data: ItineraryData }) {
               transition={{ delay: i * 0.08, duration: 0.6 }}
               className="flex items-start gap-5 group/tip"
             >
-              <span className="text-[2rem] font-serif italic text-zinc-800 leading-none mt-[-4px] group-hover/tip:text-orange-400/50 transition-colors duration-500 select-none">
+              <span className="text-[2rem] font-sans italic text-zinc-800 leading-none mt-[-4px] group-hover/tip:text-orange-400/50 transition-colors duration-500 select-none">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <p className="text-[14px] text-zinc-400 leading-relaxed pt-1 border-l border-white/5 pl-5 group-hover/tip:border-orange-400/30 transition-colors duration-500">
@@ -430,7 +429,7 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
             <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 bg-gradient-to-r from-amber-400/20 to-orange-500/20 blur-xl" />
 
             <div className="relative w-12 h-12 rounded-full bg-gradient-to-br from-amber-500/20 to-orange-600/10 flex items-center justify-center border border-amber-400/30 shadow-[0_0_25px_rgba(245,158,11,0.2)] group-hover:shadow-[0_0_35px_rgba(245,158,11,0.4)] transition-all duration-500">
-              <span className="text-xl font-serif font-light text-amber-200 tracking-tighter">
+              <span className="text-xl font-sans font-light text-amber-200 tracking-tighter">
                 <AnimatedCounter to={itinerary.days} />
               </span>
             </div>
@@ -447,7 +446,7 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
               initial={{ opacity: 0, y: 35 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-              className="text-7xl md:text-9xl lg:text-[9rem] xl:text-[11rem] font-serif font-medium text-white leading-[0.85] tracking-[-0.02em] drop-shadow-2xl mb-6 relative"
+              className="text-7xl md:text-9xl lg:text-[9rem] xl:text-[11rem] font-sans font-medium text-white leading-[0.85] tracking-[-0.02em] drop-shadow-2xl mb-6 relative"
             >
               {itinerary.destination.split(",")[0]}
               {/* Elegant underline that appears on hover */}
@@ -547,7 +546,7 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
                           Epilogue
                         </span>
 
-                        <h3 className="text-5xl md:text-7xl font-serif text-white leading-[1.1] tracking-tight mb-6">
+                        <h3 className="text-5xl md:text-7xl font-sans text-white leading-[1.1] tracking-tight mb-6">
                           Your story is<br />ready to begin.
                         </h3>
 
@@ -572,12 +571,6 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
             <div className="sticky top-0 h-screen">
               <div className="w-full h-full bg-zinc-950 overflow-hidden relative">
                 <MapWrapper days={data.days} activeActivityIndex={activeActivityIndex} flatActivities={flatActivities} />
-                <div className="absolute top-8 right-8 z-30">
-                  <div className="flex items-center gap-2 px-4 py-2 bg-zinc-900/80 backdrop-blur-2xl border border-zinc-800/80 rounded-2xl text-white/50 text-[9px] font-black uppercase tracking-[0.25em]">
-                    <Compass className="w-3 h-3" />
-                    Interactive Map
-                  </div>
-                </div>
               </div>
             </div>
           </div>

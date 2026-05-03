@@ -151,7 +151,7 @@ export default function CreditsPage() {
         <motion.h1
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="font-serif text-4xl font-semibold tracking-tight text-foreground"
+          className="font-sans text-4xl font-semibold tracking-tight text-foreground"
         >
           Credits
         </motion.h1>

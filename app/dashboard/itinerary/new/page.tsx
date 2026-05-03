@@ -135,7 +135,7 @@ export default function NewItineraryPage() {
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col gap-2"
         >
-          <h1 className="text-5xl md:text-6xl font-serif font-semibold tracking-tight text-foreground leading-tight">
+          <h1 className="text-5xl md:text-6xl font-sans font-semibold tracking-tight text-foreground leading-tight">
             Plan a new <span className="text-terracotta">Journey.</span>
           </h1>
         </motion.div>

@@ -49,7 +49,7 @@ export default async function DashboardPage() {
       <header className="space-y-4">
         <div className="flex flex-col gap-1">
 
-          <h1 className="text-4xl md:text-5xl font-serif font-light tracking-tight text-foreground leading-[1.1]">
+          <h1 className="text-4xl md:text-5xl font-sans font-light tracking-tight text-foreground leading-[1.1]">
             Welcome{" "}
             <span className="text-terracotta">{userName}</span>
           </h1>

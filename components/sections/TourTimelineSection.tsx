@@ -90,8 +90,8 @@ function PhotoStack({ photos, delay = 0 }: { photos: PhotoItem[]; delay?: number
 
 export default function TourTimelineSection() {
   return (
-    <div className="bg-[#060606] px-6 md:px-[8vw] relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-sand/10 to-transparent" />
+    <div className="bg-[#FEFEFF] px-6 md:px-[8vw] relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-navy/10 to-transparent" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-terracotta/[0.04] rounded-full blur-[180px] pointer-events-none" />
 
       <div className="max-w-[1200px] mx-auto relative z-10">
@@ -107,10 +107,10 @@ export default function TourTimelineSection() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1, duration: 0.7 }}
-              className="text-sand/55 text-[13px] md:text-[14px] leading-[1.85] font-sans"
+              className="text-navy/55 text-[13px] md:text-[14px] leading-[1.85] font-sans"
             >
               {TOUR_TEXT_TOP}{" "}
-              <span className="font-medium" style={{ color: "#D4A76A" }}>
+              <span className="font-medium" style={{ color: "#C4632C" }}>
                 {TOUR_TEXT_TOP_HIGHLIGHT}
               </span>
             </motion.p>
@@ -120,10 +120,10 @@ export default function TourTimelineSection() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2, duration: 0.7 }}
-              className="text-sand/55 text-[13px] md:text-[14px] leading-[1.85] font-sans"
+              className="text-navy/55 text-[13px] md:text-[14px] leading-[1.85] font-sans"
             >
               {TOUR_TEXT_BOTTOM}{" "}
-              <span className="font-medium" style={{ color: "#D4A76A" }}>
+              <span className="font-medium" style={{ color: "#C4632C" }}>
                 {TOUR_TEXT_BOTTOM_HIGHLIGHT}
               </span>
             </motion.p>
@@ -138,12 +138,12 @@ export default function TourTimelineSection() {
               whileInView={{ scaleY: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 1, ease: "easeOut" }}
-              className="absolute hidden md:block w-px bg-sand/20 origin-top"
+              className="absolute hidden md:block w-px bg-navy/20 origin-top"
               style={{ left: "calc(40% + 7px)", top: "28px", bottom: "28px" }}
             />
 
             {/* Vertical connecting line (mobile) */}
-            <div className="absolute md:hidden left-[11px] top-2 bottom-2 w-px bg-sand/20" />
+            <div className="absolute md:hidden left-[11px] top-2 bottom-2 w-px bg-navy/20" />
 
             {/* ── Stops ── */}
             <div>
@@ -173,10 +173,10 @@ export default function TourTimelineSection() {
                           transition={{ delay: 0.15 + idx * 0.13, duration: 0.5 }}
                           className="text-right flex-shrink-0"
                         >
-                          <p className="text-sand/40 text-[9px] tracking-[0.18em] uppercase font-bold mb-[3px]">
+                          <p className="text-navy/40 text-[9px] tracking-[0.18em] uppercase font-bold mb-[3px]">
                             {stop.days}
                           </p>
-                          <h3 className="text-sand font-bold text-[22px] leading-none tracking-tight">
+                          <h3 className="text-navy font-bold text-[22px] leading-none tracking-tight">
                             {stop.city}
                           </h3>
                         </motion.div>
@@ -193,7 +193,7 @@ export default function TourTimelineSection() {
                           type: "spring",
                           stiffness: 280,
                         }}
-                        className="w-[14px] h-[14px] rounded-full bg-sand/90 ring-[4px] ring-sand/15 flex-shrink-0 z-10"
+                        className="w-[14px] h-[14px] rounded-full bg-navy/90 ring-[4px] ring-navy/15 flex-shrink-0 z-10"
                       />
 
                       {/* Right zone: photos */}
@@ -212,11 +212,11 @@ export default function TourTimelineSection() {
                       transition={{ delay: idx * 0.12, duration: 0.6 }}
                       className="relative md:hidden pl-9 pb-10 last:pb-0"
                     >
-                      <div className="absolute left-[5px] top-[4px] w-3 h-3 rounded-full bg-sand/90 ring-[3px] ring-sand/20 z-10" />
-                      <p className="text-sand/40 text-[9px] tracking-[0.15em] uppercase font-bold mb-[3px]">
+                      <div className="absolute left-[5px] top-[4px] w-3 h-3 rounded-full bg-navy/90 ring-[3px] ring-navy/20 z-10" />
+                      <p className="text-navy/40 text-[9px] tracking-[0.15em] uppercase font-bold mb-[3px]">
                         {stop.days}
                       </p>
-                      <h3 className="text-sand font-bold text-lg leading-tight mb-3">
+                      <h3 className="text-navy font-bold text-lg leading-tight mb-3">
                         {stop.city}
                       </h3>
                       <div className="flex gap-2 flex-wrap">

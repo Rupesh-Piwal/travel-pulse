@@ -61,21 +61,21 @@ export function DayOpener({ dayInfo, image }: { dayInfo: DayInfo, image: string 
           transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
         >
           <div className="flex flex-col md:flex-row md:items-end gap-2 md:gap-8 mb-6">
-            <span className="text-[100px] md:text-[180px] leading-[0.8] font-serif font-light italic text-white/90 tracking-tighter drop-shadow-2xl mix-blend-overlay">
+            <span className="text-[100px] md:text-[180px] leading-[0.8] font-sans font-light italic text-white/90 tracking-tighter drop-shadow-2xl mix-blend-overlay">
               {String(dayInfo.dayNumber).padStart(2, '0')}
             </span>
             <div className="pb-2 md:pb-8">
               <span className="text-[12px] md:text-[14px] font-black uppercase tracking-[0.4em] text-orange-400 block mb-3">
                 Chapter
               </span>
-              <h2 className="text-3xl md:text-5xl font-serif text-white tracking-tight leading-tight max-w-xl">
+              <h2 className="text-3xl md:text-5xl font-sans text-white tracking-tight leading-tight max-w-xl">
                 {dayInfo.dayTitle}
               </h2>
             </div>
           </div>
           {dayInfo.summary && (
             <div className="max-w-2xl md:ml-12 pl-6 border-l border-orange-500/30">
-              <p className="text-lg md:text-xl font-light text-zinc-300 leading-relaxed italic" style={{ fontFamily: 'var(--font-inter)' }}>
+              <p className="text-lg md:text-xl font-light text-zinc-300 leading-relaxed italic" style={{ fontFamily: 'var(--font-sans)' }}>
                 "{dayInfo.summary}"
               </p>
             </div>
@@ -183,7 +183,7 @@ export function EditorialActivityScene({ activity, index, onInView, align = "lef
               </span>
             </div>
 
-            <h3 className={`text-4xl md:text-5xl lg:text-6xl font-serif text-white mb-6 tracking-tight leading-[1.1] ${align === 'wide' ? 'mx-auto' : ''}`}>
+            <h3 className={`text-4xl md:text-5xl lg:text-6xl font-sans text-white mb-6 tracking-tight leading-[1.1] ${align === 'wide' ? 'mx-auto' : ''}`}>
               {activity.title}
             </h3>
             

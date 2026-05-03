@@ -63,10 +63,10 @@ const DESTINATIONS: FocusRailItem[] = [
 
 export default function DestinationsCarousel() {
   return (
-    <FocusRail 
-      items={DESTINATIONS} 
-      autoPlay={false} 
-      loop={true} 
+    <FocusRail
+      items={DESTINATIONS}
+      autoPlay={false}
+      loop={true}
     />
   );
 }

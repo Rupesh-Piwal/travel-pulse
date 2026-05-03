@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, useMemo } from "react";
 import Image from "next/image";
-import { MapContainer, TileLayer, Marker, Popup, useMap, Polyline } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import * as L from "leaflet";
 import { Clock } from "@phosphor-icons/react";
@@ -33,21 +33,56 @@ const isValidCoord = (val: any): boolean => {
   return Number.isFinite(n) && n !== 0;
 };
 
-const createCustomIcon = (dayNumber: number, isActive: boolean) => {
-  const size = isActive ? 42 : 34;
-  const bg = isActive ? "bg-[#fca5a5]" : "bg-white";
-  const ring = isActive ? "ring-8 ring-[#fca5a5]/20" : "ring-4 ring-white/10";
-  const text = isActive ? "text-zinc-950" : "text-zinc-900";
+const createCustomIcon = (activity: any, isActive: boolean) => {
+  const dayNumber = activity.dayNumber || 1;
+  const imageUrl = activity.image;
+
+  const circle = `<div class="w-11 h-11 rounded-full ${isActive ? 'bg-[#C4632C] text-white ring-4 ring-[#C4632C]/30' : 'bg-white text-navy'} border-2 border-white shadow-lg flex items-center justify-center font-bold text-[14px] relative z-10 transition-all duration-300">
+    ${dayNumber}
+  </div>`;
+
+  if (!isActive) {
+    return L.divIcon({
+      className: "custom-leaflet-marker",
+      html: `<div class="relative transition-all duration-300 hover:scale-105 rounded-full flex justify-center items-center drop-shadow-md">
+        ${circle}
+      </div>`,
+      iconSize: [44, 44],
+      iconAnchor: [22, 22],
+      popupAnchor: [0, -22],
+    });
+  }
+
+  // Active State Card
+  const cardHtml = `
+    <div class="absolute bottom-[54px] left-1/2 -translate-x-1/2 w-[340px] h-[110px] bg-white rounded-[12px] shadow-[0_8px_24px_rgba(0,0,0,0.12)] z-20 flex flex-row border border-navy/10 animate-in fade-in zoom-in duration-300">
+      ${imageUrl ? `<div class="w-[110px] h-full shrink-0 rounded-l-[11px] overflow-hidden bg-gray-100"><img src="${imageUrl}" class="w-full h-full object-cover" alt="" /></div>` : ''}
+      <div class="p-3 flex flex-col justify-center flex-1 overflow-hidden">
+        <h4 class="font-bold text-navy text-[15px] leading-tight truncate mb-1">${activity.title}</h4>
+        
+        <div class="flex items-center text-[13px] text-navy/70 mb-1.5 font-medium">
+          <span class="text-navy mr-1.5 text-[11px]">★</span> 
+          <span>${activity.rating ? activity.rating.toFixed(1) : '4.8'} <span class="mx-1">·</span> ${activity.timeOfDay}</span>
+        </div>
+        
+        <div class="text-[13px] text-navy/50 leading-tight line-clamp-2 font-medium">
+          ${activity.description}
+        </div>
+      </div>
+      <!-- Triangle pointer -->
+      <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white rotate-45 border-r border-b border-navy/10 -z-10 shadow-[2px_2px_4px_rgba(0,0,0,0.05)]"></div>
+    </div>
+  `;
 
   return L.divIcon({
     className: "custom-leaflet-marker",
-    html: `<div style="width: ${size}px; height: ${size}px;" class="flex items-center justify-center rounded-full ${bg} ${ring} border-2 border-zinc-950 ${text} font-black text-[10px] uppercase tracking-tighter shadow-2xl transition-all duration-700 origin-bottom transform hover:scale-110 active:scale-95 group">
-      <div class="absolute inset-0 rounded-full ${isActive ? 'animate-ping opacity-20' : 'opacity-0'} bg-[#fca5a5]"></div>
-      <span class="relative z-10">${dayNumber}</span>
+    html: `<div class="relative flex flex-col items-center justify-end z-[1000] drop-shadow-xl">
+      ${cardHtml}
+      ${circle}
     </div>`,
-    iconSize: [size, size],
-    iconAnchor: [size / 2, size],
-    popupAnchor: [0, -size],
+    iconSize: [44, 44],
+    iconAnchor: [22, 22],
+    popupAnchor: [0, -22],
   });
 };
 
@@ -86,7 +121,7 @@ function BoundUpdater({ bounds }: { bounds: L.LatLngBounds }) {
           hasInitialized.current = true;
         }
       }
-    } catch (e) {}
+    } catch (e) { }
   }, [map, bounds]);
 
   return null;
@@ -115,8 +150,6 @@ export default function ItineraryMap({
     setMounted(true);
   }, []);
 
-  if (!mounted) return <div className="h-full w-full bg-accent/20 animate-pulse rounded-3xl" />;
-
   // Memoize valid activities to prevent re-filtering on every render
   const validActivities = useMemo(() => {
     const list = (flatActivities.length > 0 ? flatActivities : days.flatMap((day) =>
@@ -136,6 +169,8 @@ export default function ItineraryMap({
     };
   }, [validActivities]);
 
+  if (!mounted) return <div className="h-full w-full bg-accent/20 animate-pulse rounded-3xl" />;
+
   return (
     <div className="w-full h-full rounded-2xl lg:rounded-none overflow-hidden relative lg:border-none">
       <MapContainer
@@ -146,9 +181,9 @@ export default function ItineraryMap({
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
         />
-        
+
         {bounds && (
           <BoundUpdater bounds={bounds} />
         )}
@@ -159,47 +194,19 @@ export default function ItineraryMap({
           <Marker
             key={idx}
             position={[Number(activity.lat), Number(activity.lng)]}
-            icon={createCustomIcon(activity.dayNumber || 1, activeActivityIndex === idx)}
-          >
-              <Popup className="premium-popup">
-                <div className="p-1 min-w-[200px]">
-                  {activity.image && (
-                    <div className="w-full h-24 rounded-lg overflow-hidden mb-3 relative">
-                      <Image
-                        src={activity.image}
-                        alt={activity.title}
-                        fill
-                        className="object-cover"
-                        sizes="200px"
-                      />
-                    </div>
-                  )}
-                  <h4 className="font-semibold text-sm mb-1">
-                    {activity.title}
-                  </h4>
-                  <div className="flex items-center gap-3 mb-2">
-                    {activity.rating && (
-                      <div className="flex items-center gap-1 text-[10px] font-bold text-orange-500">
-                        <span className="text-orange-500 text-xs">★</span>
-                        {activity.rating.toFixed(1)}
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <Clock className="w-3 h-3" />
-                    {activity.timeOfDay} (Day {activity.dayNumber})
-                  </div>
-                </div>
-              </Popup>
-          </Marker>
+            icon={createCustomIcon(activity, activeActivityIndex === idx)}
+          />
         ))}
       </MapContainer>
 
-      <style dangerouslySetInnerHTML={{ __html: `
-        .leaflet-popup-content-wrapper { background-color: hsl(var(--card)); color: hsl(var(--card-foreground)); border: 1px solid hsl(var(--border) / 0.5); border-radius: 12px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5); }
-        .leaflet-popup-tip { background-color: hsl(var(--card)); border: 1px solid hsl(var(--border) / 0.5); }
-        .leaflet-popup-close-button { color: hsl(var(--muted-foreground)) !important; }
-        .leaflet-container { font-family: inherit; }
+      <style dangerouslySetInnerHTML={{
+        __html: `
+        .leaflet-popup-content-wrapper { background-color: #ffffff; color: #0F1923; border: 1px solid rgba(15, 25, 35, 0.05); border-radius: 16px; box-shadow: 0 20px 40px -10px rgba(15, 25, 35, 0.1); padding: 0; }
+        .leaflet-popup-content { margin: 12px; }
+        .leaflet-popup-tip { background-color: #ffffff; border: 1px solid rgba(15, 25, 35, 0.05); }
+        .leaflet-popup-close-button { color: #0F1923 !important; opacity: 0.3; }
+        .leaflet-popup-close-button:hover { opacity: 1; }
+        .leaflet-container { font-family: inherit; cursor: crosshair !important; }
         .custom-leaflet-marker { background: transparent; border: none; }
       `}} />
     </div>

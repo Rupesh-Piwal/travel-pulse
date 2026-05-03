@@ -10,7 +10,7 @@ export function DashboardHeader({ title, subtitle, children }: DashboardHeaderPr
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div className="space-y-1">
-        <h1 className="font-serif text-4xl font-semibold tracking-tight text-foreground">
+        <h1 className="font-sans text-4xl font-semibold tracking-tight text-foreground">
           {title}
         </h1>
         {subtitle && (

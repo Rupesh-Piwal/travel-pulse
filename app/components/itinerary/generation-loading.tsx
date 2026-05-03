@@ -144,7 +144,7 @@ export default function GenerationLoading({ itineraryId }: { itineraryId: string
         {/* BOTTOM CONTENT */}
         <div className="flex flex-col items-center text-center space-y-8 w-full max-w-md">
           <div className="space-y-3">
-            <motion.h2 className="text-2xl font-serif tracking-tight text-zinc-100">
+            <motion.h2 className="text-2xl font-sans tracking-tight text-zinc-100">
               Generating Itineraries...
             </motion.h2>
             

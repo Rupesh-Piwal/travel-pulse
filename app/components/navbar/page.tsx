@@ -68,7 +68,7 @@ const Navbar = ({ user }: { user?: UserProp }) => {
       >
         <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between h-16 md:h-20">
           <Link href="/" className="flex items-center gap-2 group">
-            <span className="font-serif text-xl font-semibold text-foreground tracking-tight">
+            <span className="font-sans text-xl font-semibold text-foreground tracking-tight">
               NomadGo
             </span>
           </Link>

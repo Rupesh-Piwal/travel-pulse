@@ -128,7 +128,7 @@ export default function WishlistPage() {
           className="flex items-center justify-between"
         >
           <div>
-            <h1 className="font-serif text-4xl font-semibold tracking-tight text-foreground">
+            <h1 className="font-sans text-4xl font-semibold tracking-tight text-foreground">
               Wishlist
             </h1>
             <p className="text-muted-foreground mt-1">
