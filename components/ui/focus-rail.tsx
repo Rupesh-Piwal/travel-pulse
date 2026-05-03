@@ -152,7 +152,7 @@ export function FocusRail({
       <div className="flex flex-col items-center text-center mx-auto">
 
         {/* EXPLORE — smaller, wider, airy, italic, sexy tension */}
-        <div className="text-[20px] md:text-[32px] font-serif italic leading-none text-terracotta mb-2"
+        <div className="text-[20px] md:text-[32px] font-serif italic leading-none text-terracotta"
         >
           Explore
         </div>
@@ -163,8 +163,8 @@ export function FocusRail({
           viewport={{ once: true }}
           className="flex items-center justify-center my-4 md:my-8"
         >
-          <div className="h-[1px] bg-navy/20 flex-grow max-w-[100px] md:max-w-[200px] mr-4 md:mr-8"></div>
-          <h2 className="text-navy text-[40px] md:text-[64px] font-sans font-medium tracking-tighter leading-[1.1]">
+          {/* <div className="h-[1px] bg-navy/20 flex-grow max-w-[100px] md:max-w-[200px] mr-4 md:mr-8"></div> */}
+          <h2 className="text-navy text-[28px] md:text-[44px] font-sans font-medium tracking-tighter leading-[1.1]">
             Travel beyond ordinary
           </h2>
           <div className="h-[1px] bg-navy/20 flex-grow max-w-[100px] md:max-w-[200px] ml-4 md:ml-8"></div>
@@ -320,7 +320,7 @@ export function FocusRail({
 
             {activeItem.href && (
               <Link
-                href={activeItem.href}
+                href="/dashboard/itinerary/new"
                 className="group flex items-center gap-2 rounded-full bg-navy px-5 py-3 text-sm font-semibold text-white transition-transform hover:scale-105 active:scale-95"
               >
                 Plan

@@ -4,11 +4,11 @@ import { prisma } from '../lib/prisma';
 
 const guides = [
   {
-    slug: 'turkey',
-    destination: 'Turkey',
-    heroImage: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80&w=2000&auto=format&fit=crop',
-    lat: 38.9637,
-    lng: 35.2433,
+    slug: 'maldives',
+    destination: 'Maldives',
+    heroImage: 'https://images.pexels.com/photos/29289155/pexels-photo-29289155.jpeg',
+    lat: 3.2028,
+    lng: 73.2207,
   },
   {
     slug: 'switzerland',
@@ -18,25 +18,25 @@ const guides = [
     lng: 8.2275,
   },
   {
-    slug: 'indonesia',
-    destination: 'Indonesia',
-    heroImage: 'https://images.unsplash.com/photo-1553621042-f6e147245754?q=80&w=2000&auto=format&fit=crop',
-    lat: -0.7893,
-    lng: 113.9213,
+    slug: 'singapore',
+    destination: 'Singapore',
+    heroImage: 'https://images.pexels.com/photos/20768105/pexels-photo-20768105.jpeg',
+    lat: 1.3521,
+    lng: 103.8198,
   },
   {
-    slug: 'thailand',
-    destination: 'Thailand',
-    heroImage: 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?q=80&w=2000&auto=format&fit=crop',
-    lat: 15.8700,
-    lng: 100.9925,
+    slug: 'scotland',
+    destination: 'Scotland',
+    heroImage: 'https://images.unsplash.com/photo-1641038321852-bc96d970e2e5?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    lat: 56.4907,
+    lng: -4.2026,
   },
   {
-    slug: 'vietnam',
-    destination: 'Vietnam',
-    heroImage: 'https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=2000&auto=format&fit=crop',
-    lat: 14.0583,
-    lng: 108.2772,
+    slug: 'rome',
+    destination: 'Rome',
+    heroImage: 'https://images.pexels.com/photos/1797161/pexels-photo-1797161.jpeg',
+    lat: 41.9028,
+    lng: 12.4964,
   },
   {
     slug: 'japan',
@@ -46,18 +46,18 @@ const guides = [
     lng: 138.2529,
   },
   {
-    slug: 'united-states',
-    destination: 'United States',
-    heroImage: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2000&auto=format&fit=crop',
-    lat: 37.0902,
-    lng: -95.7129,
+    slug: 'great-wall-of-china',
+    destination: 'Great Wall of China',
+    heroImage: 'https://images.pexels.com/photos/17615499/pexels-photo-17615499.jpeg',
+    lat: 40.4319,
+    lng: 116.5704,
   },
   {
-    slug: 'panama',
-    destination: 'Panama',
-    heroImage: 'https://images.unsplash.com/photo-1596422846543-74c6e2ca0121?q=80&w=2000&auto=format&fit=crop',
-    lat: 8.5380,
-    lng: -80.7821,
+    slug: 'cambodia',
+    destination: 'Cambodia',
+    heroImage: 'https://images.pexels.com/photos/5278961/pexels-photo-5278961.jpeg',
+    lat: 12.5657,
+    lng: 104.9910,
   }
 ];
 
@@ -74,6 +74,13 @@ async function main() {
       }
     });
   }
+  
+  // Clean up old guides if they exist
+  await prisma.itinerary.deleteMany({
+    where: {
+      id: { in: ['turkey', 'united-states', 'panama', 'indonesia', 'vietnam', 'thailand', 'rio-de-janeiro'] }
+    }
+  });
 
   for (const guide of guides) {
     const itineraryData = {

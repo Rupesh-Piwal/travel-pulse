@@ -6,9 +6,9 @@ import Link from "next/link";
 
 const guides = [
   {
-    name: "Turkey",
-    slug: "turkey",
-    image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80&w=800&auto=format&fit=crop",
+    name: "Maldives",
+    slug: "maldives",
+    image: "https://images.pexels.com/photos/29289155/pexels-photo-29289155.jpeg",
   },
   {
     name: "Switzerland",
@@ -16,34 +16,34 @@ const guides = [
     image: "https://images.unsplash.com/photo-1527668752968-14dc70a27c95?q=80&w=800&auto=format&fit=crop",
   },
   {
-    name: "Indonesia",
-    slug: "indonesia",
-    image: "https://images.unsplash.com/photo-1553621042-f6e147245754?q=80&w=800&auto=format&fit=crop",
+    name: "Singapore",
+    slug: "singapore",
+    image: "https://images.pexels.com/photos/20768105/pexels-photo-20768105.jpeg",
   },
   {
-    name: "Thailand",
-    slug: "thailand",
-    image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?q=80&w=800&auto=format&fit=crop",
+    name: "Scotland",
+    slug: "scotland",
+    image: "https://images.unsplash.com/photo-1641038321852-bc96d970e2e5?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
-    name: "Vietnam",
-    slug: "vietnam",
-    image: "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=800&auto=format&fit=crop",
+    name: "Rome",
+    slug: "rome",
+    image: "https://images.pexels.com/photos/1797161/pexels-photo-1797161.jpeg",
   },
   {
     name: "Japan",
     slug: "japan",
-    image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=800&auto=format&fit=crop",
+    image: "https://images.pexels.com/photos/35066466/pexels-photo-35066466.jpeg",
   },
   {
-    name: "United States",
-    slug: "united-states",
-    image: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=800&auto=format&fit=crop",
+    name: "Great Wall of China",
+    slug: "great-wall-of-china",
+    image: "https://images.pexels.com/photos/17615499/pexels-photo-17615499.jpeg",
   },
   {
-    name: "Panama",
-    slug: "panama",
-    image: "https://images.unsplash.com/photo-1596422846543-74c6e2ca0121?q=80&w=800&auto=format&fit=crop",
+    name: "Cambodia",
+    slug: "cambodia",
+    image: "https://images.pexels.com/photos/5278961/pexels-photo-5278961.jpeg",
   }
 ];
 
@@ -80,7 +80,7 @@ export default function GuidesSection() {
                 transition={{ duration: 0.5, delay: idx * 0.05 }}
                 className="flex flex-col gap-3"
               >
-                <div className="relative w-full aspect-[4/5] rounded-[24px] overflow-hidden bg-gray-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]">
+                <div className="relative w-full aspect-video rounded-[16px] overflow-hidden bg-gray-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]">
                   <Image
                     src={guide.image}
                     alt={guide.name}

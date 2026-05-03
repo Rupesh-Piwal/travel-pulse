@@ -86,11 +86,11 @@ export default function PricingSection() {
   };
 
   return (
-    <section id="pricing" className="bg-[#FEFEFF] py-[160px] px-6 md:px-[8vw]">
+    <section id="pricing" className="bg-[#FEFEFF] py-[30px] md:py-[60px] px-6 md:px-[8vw]">
       <div className="max-w-[1240px] mx-auto">
         <div className="text-center mb-24">
           <div
-            className="text-[20px] md:text-[32px] font-serif italic leading-none text-terracotta mb-2"
+            className="text-[20px] md:text-[32px] font-serif italic leading-none text-terracotta"
           >
             Membership
           </div>
