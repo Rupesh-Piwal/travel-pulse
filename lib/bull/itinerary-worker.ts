@@ -142,12 +142,13 @@ const worker = global.itineraryWorker || new Worker(
   },
   { 
     connection,
-    // --- UPSTASH OPTIMIZATIONS ---
-    lockDuration: 60000,    // 60s locks (reduces lock renewal pings)
-    stalledInterval: 60000, // Check for stalled jobs every 60s instead of 30s
-    maxStalledCount: 1,
-    drainDelay: 10,         // Wait 10s when queue is empty before polling again
-    // -----------------------------
+    // --- EXTREME UPSTASH OPTIMIZATIONS ---
+    // Upstash charges per command. These settings minimize idle Redis traffic.
+    lockDuration: 300000,     // 5 min lock (fewer renewal pings during long AI jobs)
+    stalledInterval: 300000,  // Check for stalled jobs every 5 min instead of 30s
+    maxStalledCount: 2,
+    drainDelay: 300,          // When queue is empty, wait 5 MINUTES before checking again
+    // -------------------------------------
   }
 );
 
