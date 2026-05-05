@@ -12,6 +12,14 @@ export const connection = global.redisConnection || new Redis(REDIS_URL, {
   maxRetriesPerRequest: null, // Required by BullMQ
   enableReadyCheck: false,    // Recommended for serverless/Upstash
   tls: REDIS_URL.startsWith("rediss://") ? {} : undefined,
+  // Reducing reconnection noise
+  reconnectOnError: (err) => {
+    const targetError = "READONLY";
+    if (err.message.includes(targetError)) {
+      return true;
+    }
+    return false;
+  },
 });
 
 if (process.env.NODE_ENV !== "production") {

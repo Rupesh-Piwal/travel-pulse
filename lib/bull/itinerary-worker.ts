@@ -11,7 +11,12 @@ export const ITINERARY_QUEUE_NAME = "itinerary-generation";
 // Initialize the limiter with a concurrency of 5
 const limit = pLimit(5);
 
-const worker = new Worker(
+// Singleton Pattern for Next.js HMR to prevent worker leaks
+declare global {
+  var itineraryWorker: Worker | undefined;
+}
+
+const worker = global.itineraryWorker || new Worker(
   ITINERARY_QUEUE_NAME,
   async (job: Job) => {
     const { itineraryId } = job.data;
@@ -135,8 +140,20 @@ const worker = new Worker(
       throw error;
     }
   },
-  { connection }
+  { 
+    connection,
+    // --- UPSTASH OPTIMIZATIONS ---
+    lockDuration: 60000,    // 60s locks (reduces lock renewal pings)
+    stalledInterval: 60000, // Check for stalled jobs every 60s instead of 30s
+    maxStalledCount: 1,
+    drainDelay: 10,         // Wait 10s when queue is empty before polling again
+    // -----------------------------
+  }
 );
+
+if (process.env.NODE_ENV !== "production") {
+  global.itineraryWorker = worker;
+}
 
 worker.on("completed", (job) => {
   console.log(`✅ Job ${job.id} completed`);
