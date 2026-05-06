@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { DashboardHeader } from "@/components/dashboard/page-header";
+import { cn } from "@/lib/utils";
 
 interface Itinerary {
   id: string;
@@ -35,20 +35,11 @@ interface HistoryClientProps {
   initialItineraries: Itinerary[];
 }
 
-const VIBE_COLORS: Record<string, { bg: string; text: string }> = {
-  ADVENTURE: { bg: "bg-red-500/10", text: "text-red-500" },
-  CULTURAL: { bg: "bg-purple-500/10", text: "text-purple-500" },
-  RELAXATION: { bg: "bg-teal-500/10", text: "text-teal-500" },
-  ROMANTIC: { bg: "bg-pink-500/10", text: "text-pink-500" },
-  PARTY: { bg: "bg-yellow-500/10", text: "text-yellow-500" },
-  FOODIE: { bg: "bg-orange-500/10", text: "text-orange-500" },
-};
-
 const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
-  DONE: { label: "Ready", color: "bg-emerald-500" },
-  QUEUED: { label: "Queued", color: "bg-yellow-500" },
-  PROCESSING: { label: "Generating", color: "bg-blue-500 animate-pulse" },
-  FAILED: { label: "Failed", color: "bg-red-500" },
+  DONE: { label: "Ready", color: "text-[#C4632C] border-[#C4632C]" },
+  QUEUED: { label: "Queued", color: " text-amber-500 border-amber-500" },
+  PROCESSING: { label: "Generating", color: "text-[#C4632C] border-[#C4632C] animate-pulse" },
+  FAILED: { label: "Failed", color: "text-red-500 border-red-500" },
 };
 
 function formatRelativeDate(date: Date): string {
@@ -84,227 +75,169 @@ export default function HistoryClient({ initialItineraries }: HistoryClientProps
   });
 
   return (
-    <div className="max-w-5xl space-y-10">
-      <DashboardHeader 
-        title="Trip History" 
-        subtitle="Every adventure you've planned, all in one place."
-      >
-        <Link href="/dashboard/itinerary/new">
-          <Button className="bg-orange-600 hover:bg-orange-700 text-white rounded-2xl px-6 h-12 gap-2 shadow-lg shadow-orange-950/20 font-bold transition-transform active:scale-95">
-            <Airplane className="w-4 h-4" />
-            Plan New Trip
-          </Button>
-        </Link>
-      </DashboardHeader>
+    <div className="flex flex-col h-[calc(100vh-8rem)] w-full max-w-[900px] mx-auto px-4 lg:px-0 overflow-hidden">
 
-      {/* Stats Bar */}
-      <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="grid grid-cols-2 sm:grid-cols-4 gap-4"
-      >
-        <Card className="bg-card/40 backdrop-blur-sm border-border/50 p-5 rounded-[2rem]">
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">
-            Total Trips
+      {/* Static Top Section */}
+      <div className="flex-none pt-2">
+        {/* Header Section */}
+        <header className="mb-6 text-center md:text-left">
+          <h1 className="text-3xl lg:text-4xl font-serif text-zinc-900 tracking-tight leading-tight">
+            Trip History
+          </h1>
+          <p className="text-zinc-500 text-sm mt-1.5 font-medium">
+            Every adventure you've planned, all in one place.
           </p>
-          <p className="text-3xl font-black">{initialItineraries.length}</p>
-        </Card>
-        <Card className="bg-card/40 backdrop-blur-sm border-border/50 p-5 rounded-[2rem]">
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">
-            Destinations
-          </p>
-          <p className="text-3xl font-black">
-            {new Set(initialItineraries.map((i) => i.destination)).size}
-          </p>
-        </Card>
-        <Card className="bg-card/40 backdrop-blur-sm border-border/50 p-5 rounded-[2rem]">
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">
-            Total Days
-          </p>
-          <p className="text-3xl font-black">
-            {initialItineraries.reduce((sum, i) => sum + i.days, 0)}
-          </p>
-        </Card>
-        <Card className="bg-card/40 backdrop-blur-sm border-border/50 p-5 rounded-[2rem]">
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">
-            Vibes Explored
-          </p>
-          <p className="text-3xl font-black">{vibes.length}</p>
-        </Card>
-      </motion.div>
+        </header>
 
-      {/* Search + Filter Bar */}
-      <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.15 }}
-        className="flex flex-col sm:flex-row gap-4"
-      >
-        <div className="relative flex-1">
-          <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="Search destinations..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-12 pl-11 pr-4 rounded-2xl bg-accent/30 border border-border/50 text-sm font-medium placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500/50 transition-all"
-          />
-        </div>
-        <div className="flex gap-2 flex-wrap">
-          <Button
-            variant={filterVibe === null ? "default" : "outline"}
-            onClick={() => setFilterVibe(null)}
-            className={`rounded-2xl h-12 px-4 text-xs font-bold uppercase tracking-wider transition-all ${
-              filterVibe === null
-                ? "bg-foreground text-background"
-                : "border-border/50"
-            }`}
-          >
-            <Funnel className="w-3.5 h-3.5 mr-1.5" />
-            All
-          </Button>
-          {vibes.map((vibe) => {
-            const colors = VIBE_COLORS[vibe] || {
-              bg: "bg-accent",
-              text: "text-foreground",
-            };
-            return (
+        {/* Stats Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6"
+        >
+          {[
+            { label: "Total Trips", value: initialItineraries.length },
+            { label: "Destinations", value: new Set(initialItineraries.map((i) => i.destination)).size },
+            { label: "Total Days", value: initialItineraries.reduce((sum, i) => sum + i.days, 0) },
+            { label: "Vibes", value: vibes.length },
+          ].map((stat, i) => (
+            <div key={i} className="bg-white/60 backdrop-blur-xl border border-zinc-200/60 rounded-[16px] p-4 shadow-sm">
+              <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">{stat.label}</p>
+              <p className="text-2xl font-semibold text-zinc-900 tracking-tight">{stat.value}</p>
+            </div>
+          ))}
+        </motion.div>
+
+        {/* Filter Bar */}
+        <div className="flex flex-col md:flex-row gap-4 mb-6">
+          <div className="relative flex-1">
+            <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+            <input
+              type="text"
+              placeholder="Search destinations..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full h-11 pl-11 pr-4 rounded-[14px] bg-white border border-zinc-200/80 text-sm font-medium placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#C4632C]/10 focus:border-[#C4632C]/30 transition-all shadow-sm"
+            />
+          </div>
+          <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+            <Button
+              variant="ghost"
+              onClick={() => setFilterVibe(null)}
+              className={cn(
+                "h-11 px-4 rounded-[14px] text-xs font-bold uppercase tracking-widest transition-all",
+                filterVibe === null
+                  ? "bg-zinc-900 text-white shadow-sm"
+                  : "bg-white border border-zinc-200/80 text-zinc-500 hover:bg-zinc-50"
+              )}
+            >
+              All
+            </Button>
+            {vibes.map((vibe) => (
               <Button
                 key={vibe}
-                variant="outline"
-                onClick={() =>
-                  setFilterVibe((prev) => (prev === vibe ? null : vibe))
-                }
-                className={`rounded-2xl h-12 px-4 text-xs font-bold uppercase tracking-wider border-border/50 transition-all ${
+                variant="ghost"
+                onClick={() => setFilterVibe((prev) => (prev === vibe ? null : vibe))}
+                className={cn(
+                  "h-11 px-4 rounded-[14px] text-xs font-semibold uppercase tracking-widest transition-all",
                   filterVibe === vibe
-                    ? `${colors.bg} ${colors.text} border-current`
-                    : ""
-                }`}
+                    ? "bg-gradient-to-r from-[#C4632C] to-[#D47037] text-white shadow-sm"
+                    : "bg-white border border-zinc-200/80 text-zinc-500 hover:bg-zinc-50"
+                )}
               >
                 {vibe}
               </Button>
-            );
-          })}
+            ))}
+          </div>
         </div>
-      </motion.div>
+      </div>
 
-      {/* Itinerary List */}
-      {filtered.length === 0 ? (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-        >
-          <Card className="border-dashed border-2 border-border/50 bg-accent/5 p-16 flex flex-col items-center justify-center text-center gap-6 rounded-[2rem]">
-            <div className="w-20 h-20 rounded-3xl bg-orange-600/10 flex items-center justify-center">
-              <Globe className="w-10 h-10 text-orange-500" />
-            </div>
-            <div className="space-y-2 max-w-sm">
-              <h3 className="text-2xl font-bold tracking-tight">
-                {searchQuery || filterVibe
-                  ? "No matching trips"
-                  : "No trips yet"}
-              </h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                {searchQuery || filterVibe
-                  ? "Try adjusting your search or filters."
-                  : "Plan your first adventure and it will appear here."}
-              </p>
-            </div>
-            {!searchQuery && !filterVibe && (
-              <Link href="/dashboard/itinerary/new">
-                <Button className="bg-orange-600 hover:bg-orange-700 text-white rounded-2xl px-8 h-12 gap-2 shadow-lg shadow-orange-950/20 font-bold">
-                  <Airplane className="w-4 h-4" />
-                  Plan Your First Trip
-                </Button>
-              </Link>
-            )}
-          </Card>
-        </motion.div>
-      ) : (
+      {/* Scrollable Itinerary List */}
+      <div className="flex-1 overflow-y-auto no-scrollbar pb-10">
         <div className="space-y-4">
           <AnimatePresence mode="popLayout">
-            {filtered.map((item, idx) => {
-              const status =
-                STATUS_CONFIG[item.status] || STATUS_CONFIG.DONE;
-              const vibeColors = VIBE_COLORS[item.vibe] || {
-                bg: "bg-accent",
-                text: "text-foreground",
-              };
-
-              return (
-                <motion.div
-                  key={item.id}
-                  layout
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                  transition={{
-                    delay: idx * 0.04,
-                    type: "spring",
-                    stiffness: 200,
-                    damping: 20,
-                  }}
-                >
-                  <Link href={`/dashboard/itinerary/${item.id}`}>
-                    <Card className="group border-border/50 bg-card/40 backdrop-blur-sm rounded-[2rem] p-6 hover:border-orange-500/30 hover:shadow-[0_20px_50px_-15px_rgba(234,88,12,0.12)] transition-all duration-300 cursor-pointer">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div className="flex items-center gap-5">
-                          <div className="w-14 h-14 rounded-2xl bg-orange-600/10 flex items-center justify-center shrink-0">
-                            <MapPin className="w-6 h-6 text-orange-500" />
-                          </div>
-                          <div className="space-y-1.5">
-                            <div className="flex items-center gap-3">
-                              <h3 className="text-lg font-bold tracking-tight group-hover:text-orange-500 transition-colors">
-                                {item.destination}
-                              </h3>
-                              <div className="flex items-center gap-1.5">
-                                <div
-                                  className={`w-2 h-2 rounded-full ${status.color}`}
-                                />
-                                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+            {filtered.length === 0 ? (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-white/80 backdrop-blur-2xl border-2 border-dashed border-zinc-200 rounded-3xl p-16 flex flex-col items-center text-center"
+              >
+                <div className="w-16 h-16 rounded-2xl bg-zinc-50 flex items-center justify-center mb-4">
+                  <Globe className="w-8 h-8 text-zinc-300" />
+                </div>
+                <h3 className="text-xl font-serif text-zinc-900 mb-1">No trips found</h3>
+                <p className="text-zinc-500 text-sm max-w-[240px]">
+                  {searchQuery || filterVibe ? "Try adjusting your filters." : "Plan your first adventure today."}
+                </p>
+                {!searchQuery && !filterVibe && (
+                  <Link href="/dashboard/itinerary/new" className="mt-6">
+                    <Button className="bg-gradient-to-r from-[#C4632C] to-[#D47037] text-white rounded-[14px] px-6 h-11 font-bold text-xs uppercase tracking-widest shadow-sm">
+                      Plan New Trip
+                    </Button>
+                  </Link>
+                )}
+              </motion.div>
+            ) : (
+              filtered.map((item, idx) => {
+                const status = STATUS_CONFIG[item.status] || STATUS_CONFIG.DONE;
+                return (
+                  <motion.div
+                    key={item.id}
+                    layout
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.98 }}
+                    transition={{ delay: idx * 0.03 }}
+                  >
+                    <Link href={`/dashboard/itinerary/${item.id}`}>
+                      <div className="group bg-white/80 backdrop-blur-2xl border border-zinc-200/60 rounded-[20px] p-5 hover:border-[#C4632C]/30 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all cursor-pointer">
+                        <div className="flex items-center justify-between gap-4">
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-[14px] bg-zinc-50 flex items-center justify-center group-hover:bg-[#C4632C]/5 transition-colors">
+                              <MapPin weight="fill" className="w-5 h-5 text-zinc-400 group-hover:text-[#C4632C] transition-colors" />
+                            </div>
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-2.5">
+                                <h3 className="text-[15px] font-semibold text-zinc-900 tracking-tight">{item.destination}</h3>
+                                <div className={cn("px-2 py-0.5 rounded-md border text-[9px] font-semibold uppercase tracking-widest shadow-sm", status.color)}>
                                   {status.label}
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-3 text-[11px] text-zinc-400 font-semibold uppercase tracking-widest">
+                                <span className="flex items-center gap-1">
+                                  <CalendarBlank className="w-3 h-3" />
+                                  {item.days} Days
+                                </span>
+                                <span className="text-zinc-200">•</span>
+                                <span className="flex items-center gap-1 text-[#C4632C]">
+                                  <Sparkle weight="fill" className="w-3 h-3" />
+                                  {item.vibe}
+                                </span>
+                                <span className="text-zinc-200">•</span>
+                                <span className="flex items-center gap-1">
+                                  <Clock className="w-3 h-3" />
+                                  {formatRelativeDate(new Date(item.createdAt))}
                                 </span>
                               </div>
                             </div>
-                            <div className="flex items-center gap-4 text-xs text-muted-foreground font-medium">
-                              <span className="flex items-center gap-1.5">
-                                <CalendarBlank className="w-3 h-3" />
-                                {item.days} days
-                              </span>
-                              <Badge
-                                className={`${vibeColors.bg} ${vibeColors.text} border-none text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5`}
-                              >
-                                <Sparkle className="w-2.5 h-2.5 mr-1" />
-                                {item.vibe}
-                              </Badge>
-                              <span className="flex items-center gap-1.5">
-                                <Clock className="w-3 h-3" />
-                                {formatRelativeDate(new Date(item.createdAt))}
-                              </span>
-                            </div>
+                          </div>
+
+                          <div className="hidden sm:flex items-center gap-2 text-[#C4632C] font-bold text-[10px] uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
+                            <span>View trip</span>
+                            <ArrowRight weight="bold" className="w-3 h-3" />
                           </div>
                         </div>
-
-                        <div className="flex items-center gap-3">
-                          <Button
-                            variant="ghost"
-                            className="rounded-2xl gap-2 text-muted-foreground group-hover:text-orange-500 group-hover:bg-orange-500/10 transition-all px-5 h-10 font-bold text-xs uppercase tracking-wider"
-                          >
-                            <Eye className="w-3.5 h-3.5" />
-                            View
-                            <ArrowRight className="w-3.5 h-3.5 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
-                          </Button>
-                        </div>
                       </div>
-                    </Card>
-                  </Link>
-                </motion.div>
-              );
-            })}
+                    </Link>
+                  </motion.div>
+                );
+              })
+            )}
           </AnimatePresence>
         </div>
-      )}
+      </div>
+
     </div>
   );
 }
+

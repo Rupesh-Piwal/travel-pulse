@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { handleLogout } from "@/app/actions/auth";
-import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
+
 import { useCredits } from "@/hooks/useCredits";
 
 interface UserProp {
@@ -105,7 +105,7 @@ const Navbar = ({ user }: { user?: UserProp }) => {
 
             {mounted && user ? (
               <div className="flex items-center gap-4">
-                <AnimatedThemeToggler />
+
                 <DropdownMenu>
                   <DropdownMenuTrigger className="flex items-center gap-2 hover:opacity-80 transition-opacity outline-none cursor-pointer">
                     <Avatar className="w-9 h-9 border-2 border-primary/20 pointer-events-none">
@@ -154,7 +154,7 @@ const Navbar = ({ user }: { user?: UserProp }) => {
               </div>
             ) : mounted && !user ? (
               <div className="flex items-center gap-4">
-                <AnimatedThemeToggler />
+
                 <Link
                   href="/login"
                   className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"

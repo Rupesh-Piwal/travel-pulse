@@ -36,7 +36,7 @@ export function DashboardSidebar() {
       <SidebarHeader className="p-6">
         <Link href="/" className="flex items-center gap-2 group">
           <span className="font-sans text-xl font-semibold text-foreground tracking-tight cursor-pointer">
-            NomadGo
+            Nomad<span className="text-[#C4632C]">Go</span>
           </span>
         </Link>
       </SidebarHeader>
@@ -51,7 +51,7 @@ export function DashboardSidebar() {
                   render={<Link href={link.href} />}
                   isActive={isActive}
                   className={cn(
-                    "flex items-center gap-3 px-4 py-6 rounded-xl text-sm font-medium transition-all duration-200",
+                    "flex items-center gap-3 px-4 py-6 rounded-[16px] text-sm font-medium transition-all duration-200",
                     isActive
                       ? "bg-accent text-accent-foreground shadow-sm"
                       : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
@@ -69,10 +69,10 @@ export function DashboardSidebar() {
       <SidebarFooter className="p-4 mt-auto">
         <Link href="/dashboard/itinerary/new">
           <Button
-            className="w-full bg-black hover:bg-zinc-800 text-white rounded-xl py-6 flex items-center justify-start gap-3 shadow-lg transition-all border-none"
+            className="w-full bg-gradient-to-r from-[#C4632C] to-[#D47037] hover:opacity-95 text-white rounded-[14px] py-6 flex items-center justify-start gap-3 shadow-sm transition-all border-none"
           >
-            <Plus className="w-5 h-5 text-amber-400" />
-            <span className="font-medium">Plan New Trip</span>
+            <Plus className="w-5 h-5 text-orange-100" />
+            <span className="font-medium text-[15px]">Plan New Trip</span>
           </Button>
         </Link>
       </SidebarFooter>

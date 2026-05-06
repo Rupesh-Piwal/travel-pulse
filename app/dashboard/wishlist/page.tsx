@@ -27,22 +27,21 @@ interface WishlistItem {
   createdAt: string;
 }
 
-
 const WishlistSkeleton = () => (
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
     {[1, 2, 3, 4, 5, 6].map((i) => (
-      <Card key={i} className="group relative overflow-hidden rounded-[2.5rem] border border-border/50 bg-card/40 backdrop-blur-sm p-0 flex flex-col gap-0">
-        <div className="relative h-64 overflow-hidden">
+      <Card key={i} className="group relative overflow-hidden rounded-[20px] border border-zinc-200/60 bg-white/60 backdrop-blur-xl p-0 flex flex-col gap-0 shadow-sm">
+        <div className="relative h-56 overflow-hidden">
           <Skeleton className="h-full w-full rounded-none" />
         </div>
-        <div className="p-6 flex items-center justify-between">
+        <div className="p-5 flex items-center justify-between">
           <div className="space-y-2 flex-1">
-            <Skeleton className="h-4 w-32" />
-            <Skeleton className="h-3 w-20" />
+            <Skeleton className="h-4 w-32 rounded-md" />
+            <Skeleton className="h-3 w-20 rounded-md" />
           </div>
           <div className="flex gap-2">
-            <Skeleton className="h-11 w-32 rounded-2xl" />
-            <Skeleton className="h-11 w-11 rounded-2xl" />
+            <Skeleton className="h-10 w-28 rounded-[12px]" />
+            <Skeleton className="h-10 w-10 rounded-[12px]" />
           </div>
         </div>
       </Card>
@@ -116,190 +115,185 @@ export default function WishlistPage() {
     }
   };
 
-
-
   return (
-    <div className="max-w-5xl space-y-10">
-      {/* Page Header */}
-      <header className="space-y-1">
+    <div className="flex flex-col h-[calc(100vh-8rem)] w-full max-w-[1000px] mx-auto px-4 lg:px-0 overflow-hidden">
+      {/* Static Top Section */}
+      <div className="flex-none pt-2 mb-6 lg:mb-8">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-between"
+          className="flex flex-col md:flex-row md:items-center justify-between gap-4"
         >
-          <div>
-            <h1 className="font-sans text-4xl font-semibold tracking-tight text-foreground">
+          <header className="text-left">
+            <h1 className="text-3xl lg:text-4xl font-serif text-zinc-900 tracking-tight leading-tight">
               Wishlist
             </h1>
-            <p className="text-muted-foreground mt-1">
-              Pin your dream destinations. Plan them when you&apos;re ready.
+            <p className="text-zinc-500 text-sm mt-1.5 font-medium">
+              Pin your dream destinations. Plan them when you're ready.
             </p>
-          </div>
+          </header>
           <Button
             onClick={() => setShowAddModal(true)}
-            className="bg-orange-600 hover:bg-orange-700 text-white rounded-2xl px-6 h-12 gap-2 shadow-lg shadow-orange-950/20 font-bold transition-transform active:scale-95"
+            className="bg-gradient-to-r from-[#C4632C] to-[#D47037] hover:opacity-95 text-white rounded-[14px] px-6 h-11 font-bold text-xs uppercase tracking-widest shadow-sm transition-transform active:scale-95"
           >
-            <Plus className="w-4 h-4" />
+            <Plus weight="bold" className="w-3.5 h-3.5 mr-2 text-orange-100" />
             Add Destination
           </Button>
         </motion.div>
-      </header>
+      </div>
 
-      {/* Wishlist Grid */}
-      {loading ? (
-        <WishlistSkeleton />
-      ) : items.length === 0 ? (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.1 }}
-        >
-          <Card className="relative overflow-hidden border-dashed border-2 border-border/50 bg-accent/5 p-16 flex flex-col items-center justify-center text-center gap-6">
-            <div className="w-20 h-20 rounded-3xl bg-orange-600/10 flex items-center justify-center">
-              <Globe className="w-10 h-10 text-orange-500" />
+      {/* Scrollable Wishlist Grid */}
+      <div className="flex-1 overflow-y-auto no-scrollbar pb-10">
+        {loading ? (
+          <WishlistSkeleton />
+        ) : items.length === 0 ? (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-white/80 backdrop-blur-2xl border-2 border-dashed border-zinc-200 rounded-3xl p-16 flex flex-col items-center justify-center text-center h-[50vh] min-h-[400px]"
+          >
+            <div className="w-16 h-16 rounded-2xl bg-zinc-50 flex items-center justify-center mb-4">
+              <Globe className="w-8 h-8 text-zinc-300" />
             </div>
-            <div className="space-y-2 max-w-sm">
-              <h3 className="text-2xl font-bold tracking-tight">Your bucket list awaits</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Start curating your dream destinations. When inspiration strikes, you&apos;ll have a beautiful collection ready to plan from.
+            <div className="space-y-1.5 max-w-sm">
+              <h3 className="text-xl font-serif text-zinc-900">Your bucket list awaits</h3>
+              <p className="text-zinc-500 text-sm leading-relaxed">
+                Start curating your dream destinations. When inspiration strikes, you'll have a beautiful collection ready to plan from.
               </p>
             </div>
             <Button
               onClick={() => setShowAddModal(true)}
-              className="bg-orange-600 hover:bg-orange-700 text-white rounded-2xl px-8 h-12 gap-2 shadow-lg shadow-orange-950/20 font-bold"
+              className="mt-6 bg-gradient-to-r from-[#C4632C] to-[#D47037] text-white rounded-[14px] px-6 h-11 font-bold text-xs uppercase tracking-widest shadow-sm"
             >
-              <Plus className="w-4 h-4" />
-              Add Your First Destination
+              <Plus weight="bold" className="w-3.5 h-3.5 mr-2" />
+              Pin First Destination
             </Button>
-            <div className="absolute -right-20 -bottom-20 w-64 h-64 bg-orange-500/5 rounded-full blur-3xl pointer-events-none" />
-          </Card>
-        </motion.div>
-      ) : (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.15 }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          <AnimatePresence mode="popLayout">
-            {items.map((item, idx) => (
-              <motion.div
-                key={item.id}
-                layout
-                initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9, y: -10 }}
-                transition={{ delay: idx * 0.05, type: "spring", stiffness: 200, damping: 20 }}
-              >
-                <Card className="group relative overflow-hidden rounded-[2.5rem] border border-border/50 bg-card/20 backdrop-blur-md hover:border-orange-500/30 transition-all duration-500 hover:shadow-[0_30px_60px_-15px_rgba(234,88,12,0.2)] cursor-default p-0 flex flex-col gap-0">
-                  {/* Image Container */}
-                  <div className="relative h-64 overflow-hidden">
-                    <img
-                      src={item.photoUrl}
-                      alt={item.destination}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+          </motion.div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.15 }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            <AnimatePresence mode="popLayout">
+              {items.map((item, idx) => (
+                <motion.div
+                  key={item.id}
+                  layout
+                  initial={{ opacity: 0, y: 20, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                  transition={{ delay: idx * 0.05, type: "spring", stiffness: 200, damping: 20 }}
+                >
+                  <Card className="group relative overflow-hidden rounded-[20px] border border-zinc-200/60 bg-white/80 backdrop-blur-2xl hover:border-[#C4632C]/30 transition-all duration-500 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] cursor-default p-0 flex flex-col gap-0 shadow-sm">
+                    {/* Image Container */}
+                    <div className="relative h-56 overflow-hidden bg-zinc-100">
+                      <img
+                        src={item.photoUrl}
+                        alt={item.destination}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
 
-                    {/* Destination Info Overlaid on Image */}
-                    <div className="absolute bottom-6 left-6 right-6">
-                      <div className="flex flex-col gap-1">
-
-                        <h3 className="text-2xl font-bold text-white tracking-tight leading-tight drop-shadow-2xl">
+                      {/* Destination Info Overlaid on Image */}
+                      <div className="absolute bottom-5 left-5 right-5">
+                        <h3 className="text-xl font-bold text-white tracking-tight leading-tight drop-shadow-md">
                           {item.destination}
                         </h3>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Clean Footer */}
-                  <div className="p-6 flex items-center justify-between bg-white/[0.02]">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-2xl bg-orange-500/10 flex items-center justify-center border border-orange-500/10">
-                        <MapPin className="w-5 h-5 text-orange-500" weight="fill" />
+                    {/* Clean Footer */}
+                    <div className="p-5 flex items-center justify-between bg-white">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-[12px] bg-zinc-50 flex items-center justify-center">
+                          <MapPin className="w-5 h-5 text-zinc-400" weight="fill" />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">Status</span>
+                          <span className="text-xs font-bold text-zinc-900 tracking-tight">Ready to Plan</span>
+                        </div>
                       </div>
-                      <div className="flex flex-col">
-                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Status</span>
-                        <span className="text-xs font-bold text-foreground">Ready to Plan</span>
-                      </div>
-                    </div>
 
-                    <div className="flex items-center gap-2">
-                      <Link href="/dashboard/itinerary/new">
+                      <div className="flex items-center gap-2">
+                        <Link href={`/dashboard/itinerary/new?dest=${encodeURIComponent(item.destination)}`}>
+                          <Button
+                            size="sm"
+                            className="bg-zinc-900 hover:bg-black text-white rounded-[12px] px-4 h-10 text-[11px] font-bold uppercase tracking-widest gap-1.5 shadow-sm transition-all"
+                          >
+                            <Airplane className="w-3.5 h-3.5" weight="fill" />
+                            Plan
+                          </Button>
+                        </Link>
                         <Button
                           size="sm"
-                          className="bg-orange-600 hover:bg-orange-700 text-white rounded-2xl px-6 h-11 text-xs font-bold gap-2 shadow-lg shadow-orange-900/20 transition-all hover:-translate-y-0.5 active:translate-y-0"
+                          variant="ghost"
+                          onClick={() => handleDelete(item.id, item.destination)}
+                          disabled={deletingId === item.id}
+                          className="rounded-[12px] h-10 w-10 p-0 text-zinc-400 hover:text-red-500 hover:bg-red-50 transition-all"
                         >
-                          <Airplane className="w-4 h-4" weight="bold" />
-                          Plan Trip
+                          {deletingId === item.id ? (
+                            <CircleNotch className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <Trash className="w-4 h-4" weight="fill" />
+                          )}
                         </Button>
-                      </Link>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handleDelete(item.id, item.destination)}
-                        disabled={deletingId === item.id}
-                        className="rounded-2xl h-11 w-11 p-0 text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10 transition-all"
-                      >
-                        {deletingId === item.id ? (
-                          <CircleNotch className="w-4 h-4 animate-spin" />
-                        ) : (
-                          <Trash className="w-4 h-4" weight="bold" />
-                        )}
-                      </Button>
+                      </div>
                     </div>
-                  </div>
-                </Card>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
-      )}
+                  </Card>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        )}
+      </div>
 
-      {/* Add Destination Modal / Overlay */}
+      {/* Add Destination Modal */}
       <AnimatePresence>
         {showAddModal && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-900/40 backdrop-blur-sm"
             onClick={() => setShowAddModal(false)}
           >
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              className="bg-card border border-border/80 rounded-[2.5rem] w-full max-w-2xl max-h-[85vh] overflow-hidden shadow-2xl"
+              className="bg-white/95 backdrop-blur-2xl border border-zinc-200 rounded-[24px] w-full max-w-xl max-h-[85vh] overflow-hidden shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Modal Header */}
-              <div className="p-8 pb-0">
-                <div className="flex items-center justify-between mb-6">
+              <div className="p-6 pb-0">
+                <div className="flex items-center justify-between mb-5">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-orange-600/10 flex items-center justify-center">
-                      <Sparkle className="w-5 h-5 text-orange-500" />
+                    <div className="w-10 h-10 rounded-[12px] bg-[#C4632C]/10 flex items-center justify-center">
+                      <Sparkle className="w-5 h-5 text-[#C4632C]" weight="fill" />
                     </div>
                     <div>
-                      <h2 className="text-xl font-bold tracking-tight">Add to Wishlist</h2>
-                      <p className="text-xs text-muted-foreground">Discover your next adventure</p>
+                      <h2 className="text-lg font-bold text-zinc-900 tracking-tight">Add to Wishlist</h2>
+                      <p className="text-[11px] font-semibold text-zinc-400 uppercase tracking-widest mt-0.5">Discover your next adventure</p>
                     </div>
                   </div>
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setShowAddModal(false)}
-                    className="rounded-xl h-9 w-9 p-0 text-muted-foreground hover:text-foreground"
+                    className="rounded-full h-8 w-8 p-0 text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100"
                   >
-                    <X className="w-4 h-4" />
+                    <X className="w-4 h-4" weight="bold" />
                   </Button>
                 </div>
               </div>
 
-              <div className="px-8 pb-8 overflow-y-auto max-h-[55vh]">
+              <div className="px-6 pb-6 overflow-y-auto max-h-[55vh] no-scrollbar">
                 <div className="space-y-6">
-                  <div className="bg-accent/20 p-1.5 rounded-[2rem] border border-border/50">
+                  <div className="bg-zinc-50/50 p-1.5 rounded-[16px] border border-zinc-200/80">
                     <LocationInput
                       onSelect={(location) => {
                         handleAdd({
@@ -313,18 +307,18 @@ export default function WishlistPage() {
                   </div>
 
                   {addingDest && (
-                    <div className="flex items-center justify-center gap-3 py-10">
-                      <CircleNotch className="w-5 h-5 animate-spin text-orange-500" />
-                      <p className="text-sm font-medium text-muted-foreground">
-                        Adding <span className="text-foreground font-bold">{addingDest}</span> to your collection...
+                    <div className="flex items-center justify-center gap-3 py-8">
+                      <CircleNotch className="w-5 h-5 animate-spin text-[#C4632C]" weight="bold" />
+                      <p className="text-sm font-medium text-zinc-500">
+                        Adding <span className="text-zinc-900 font-bold">{addingDest}</span> to your collection...
                       </p>
                     </div>
                   )}
 
                   {!addingDest && (
-                    <div className="flex flex-col items-center justify-center py-16 text-center">
-                      <Globe className="w-12 h-12 text-orange-500/20 mb-4" />
-                      <p className="text-muted-foreground text-sm max-w-xs leading-relaxed">
+                    <div className="flex flex-col items-center justify-center py-10 text-center">
+                      <Globe className="w-12 h-12 text-zinc-200 mb-3" weight="fill" />
+                      <p className="text-zinc-500 text-sm max-w-xs font-medium">
                         Search for any city, country or landmark to pin it to your dream board.
                       </p>
                     </div>

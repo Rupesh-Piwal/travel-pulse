@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition, useEffect } from "react";
+import { useTransition } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkle,
@@ -13,9 +13,6 @@ import {
   Heart as HeartIcon,
   Camera,
   Lightning,
-  MapPin,
-  Calendar,
-  Globe,
 } from "@phosphor-icons/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -113,18 +110,19 @@ export default function NewItineraryPage() {
       type="submit"
       disabled={isPending}
       className={cn(
-        "h-12 w-full bg-black hover:bg-zinc-800 text-white rounded-xl font-medium shadow-lg transition-all active:scale-[0.98] disabled:opacity-70 border-none",
+        "h-12 w-full bg-gradient-to-r from-[#C4632C] to-[#D47037] hover:opacity-95 text-white rounded-[14px] font-medium shadow-sm transition-all active:scale-[0.98] disabled:opacity-70 border-none group relative overflow-hidden",
         className
       )}
     >
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[100%] group-hover:animate-[shimmer_1.5s_infinite]" />
       {isPending ? (
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 relative z-10">
           <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
           <span>Crafting...</span>
         </div>
       ) : (
-        <div className="flex items-center gap-2">
-          <Sparkle weight="fill" className="w-4 h-4 text-amber-400" />
+        <div className="flex items-center gap-2 relative z-10">
+          <Sparkle weight="fill" className="w-4 h-4 text-orange-100" />
           <span>Generate Itinerary</span>
         </div>
       )}
@@ -132,147 +130,160 @@ export default function NewItineraryPage() {
   );
 
   return (
-    <div className="min-h-full bg-gray-50/50">
-      <div className="md:max-w-[800px] mx-auto px-4 lg:px-0">
-        <header className="mb-8 text-left lg:text-center">
-          <h1 className="text-2xl lg:text-3xl font-semibold tracking-tight text-zinc-900">
-            Plan a new Journey
+    <div className="flex flex-col min-h-[calc(100vh-7rem)] lg:h-[calc(100vh-8rem)] w-full max-w-[760px] mx-auto px-4 lg:px-0">
+      <div className="flex-1 flex flex-col justify-center py-6 lg:py-0">
+
+        {/* Hero Section */}
+        <header className="mb-6 lg:mb-8 text-center md:text-left">
+          <h1 className="text-3xl lg:text-4xl font-serif text-zinc-900 tracking-tight leading-tight">
+            Plan a new journey
           </h1>
-          <p className="text-zinc-500 text-sm mt-2">
-            Fill in the details to craft your perfect travel story.
+          <p className="text-zinc-500 text-sm mt-1.5 font-medium">
+            Let AI craft your perfect travel story in seconds.
           </p>
         </header>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 lg:p-8 space-y-8">
+        {/* Premium Form Card */}
+        <form onSubmit={handleSubmit(onSubmit)} className="w-full">
+          <div className="bg-white/80 backdrop-blur-2xl rounded-[16px] border border-zinc-200/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6 lg:p-8 relative">
 
-            {/* Section 1: Destination */}
-            <div className="space-y-3">
-              <Label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
-                Destination
-              </Label>
-              <div className="relative">
-                <LocationInput
-                  defaultValue={watch("destination")}
-                  onSelect={(loc) => {
-                    const fullName = loc.isFeatured
-                      ? `${loc.name}, ${loc.country}`
-                      : `${loc.name}${loc.city ? `, ${loc.city}` : ""}, ${loc.country}`;
-                    setValue("destination", fullName, { shouldValidate: true });
-                  }}
-                  disabled={isPending}
-                  className="h-12 rounded-xl border-gray-200 focus:ring-black/5"
-                  dropdownClassName="w-full bg-white border border-gray-200 shadow-xl rounded-xl mt-2 overflow-hidden z-50"
-                />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-7">
+
+              {/* Row 1: Destination (Full Width) */}
+              <div className="md:col-span-2 space-y-2.5">
+                <Label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 pl-1">
+                  Where to?
+                </Label>
+                <div className="relative">
+                  <LocationInput
+                    defaultValue={watch("destination")}
+                    onSelect={(loc) => {
+                      const fullName = loc.isFeatured
+                        ? `${loc.name}, ${loc.country}`
+                        : `${loc.name}${loc.city ? `, ${loc.city}` : ""}, ${loc.country}`;
+                      setValue("destination", fullName, { shouldValidate: true });
+                    }}
+                    disabled={isPending}
+                    className="h-12 rounded-[14px] border-zinc-200/80 bg-zinc-50/50 hover:bg-white focus:bg-white shadow-sm transition-colors text-sm font-medium"
+                    dropdownClassName="w-full bg-white border border-zinc-200 shadow-xl rounded-2xl mt-2 overflow-hidden z-50"
+                  />
+                </div>
+                <AnimatePresence>
+                  {errors.destination && (
+                    <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="text-xs text-red-500 font-medium pl-1">
+                      {errors.destination.message}
+                    </motion.p>
+                  )}
+                </AnimatePresence>
               </div>
-              <AnimatePresence>
-                {errors.destination && (
-                  <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs text-red-500 mt-1">
-                    {errors.destination.message}
-                  </motion.p>
-                )}
-              </AnimatePresence>
-            </div>
 
-            {/* Section 2: Days Stepper */}
-            <div className="space-y-3">
-              <Label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
-                Duration
-              </Label>
-              <div className="flex items-center justify-between h-12 bg-gray-50/50 border border-gray-100 rounded-xl px-2 w-full sm:w-48">
-                <button
-                  type="button"
-                  disabled={duration <= 1 || isPending}
-                  onClick={() => setValue("duration", Math.max(1, duration - 1))}
-                  className="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-gray-200 shadow-sm hover:bg-gray-50 disabled:opacity-30 transition-all"
-                >
-                  <Minus weight="bold" className="w-3 h-3" />
-                </button>
-                <span className="text-sm font-semibold text-zinc-900 tabular-nums">
-                  {duration} {duration === 1 ? 'Day' : 'Days'}
-                </span>
-                <button
-                  type="button"
-                  disabled={duration >= 3 || isPending}
-                  onClick={() => setValue("duration", Math.min(3, duration + 1))}
-                  className="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-gray-200 shadow-sm hover:bg-gray-50 disabled:opacity-30 transition-all"
-                >
-                  <Plus weight="bold" className="w-3 h-3" />
-                </button>
-              </div>
-            </div>
-
-            {/* Section 3: Vibe Selection */}
-            <div className="space-y-4">
-              <Label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
-                Trip Vibe
-              </Label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {vibes.map((v) => (
+              {/* Row 2: Duration */}
+              <div className="space-y-2.5">
+                <Label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 pl-1">
+                  Duration
+                </Label>
+                <div className="flex items-center justify-between h-12 bg-zinc-50/50 border border-zinc-200/80 rounded-[14px] px-1.5 w-full shadow-sm">
                   <button
-                    key={v.label}
                     type="button"
-                    onClick={() => setValue("vibe", v.label as any)}
-                    className={cn(
-                      "flex items-center gap-2 px-4 py-3 rounded-xl border text-left transition-all duration-200",
-                      selectedVibe === v.label
-                        ? "bg-zinc-900 border-zinc-900 text-white shadow-md ring-2 ring-black/5"
-                        : "bg-white border-gray-200 text-zinc-600 hover:border-zinc-300 hover:bg-gray-50"
-                    )}
+                    disabled={duration <= 1 || isPending}
+                    onClick={() => setValue("duration", Math.max(1, duration - 1))}
+                    className="w-9 h-9 flex items-center justify-center rounded-[10px] bg-white border border-zinc-200/80 shadow-sm hover:border-zinc-300 disabled:opacity-40 transition-all text-zinc-600 active:scale-95"
                   >
-                    <v.icon className={cn("w-4 h-4", selectedVibe === v.label ? "text-amber-400" : "text-zinc-400")} />
-                    <span className="text-xs font-medium">{v.label}</span>
+                    <Minus weight="bold" className="w-3.5 h-3.5" />
                   </button>
-                ))}
+                  <span className="text-sm font-bold text-zinc-900 tabular-nums tracking-tight">
+                    {duration} {duration === 1 ? 'Day' : 'Days'}
+                  </span>
+                  <button
+                    type="button"
+                    disabled={duration >= 3 || isPending}
+                    onClick={() => setValue("duration", Math.min(3, duration + 1))}
+                    className="w-9 h-9 flex items-center justify-center rounded-[10px] bg-white border border-zinc-200/80 shadow-sm hover:border-zinc-300 disabled:opacity-40 transition-all text-zinc-600 active:scale-95"
+                  >
+                    <Plus weight="bold" className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
-            </div>
 
-            {/* Section 4: Budget Level */}
-            <div className="space-y-6">
-              <Label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
-                Budget Level
-              </Label>
-              <div className="px-2">
-                <Slider
-                  min={0}
-                  max={2}
-                  step={1}
-                  value={[budgets.findIndex((b) => b.label === selectedBudget)]}
-                  onValueChange={(vals) => setValue("budget", budgets[vals[0]].label as any)}
-                  className="[&_[data-slot=slider-range]]:bg-zinc-900 [&_[data-slot=slider-thumb]]:border-zinc-900"
-                />
-                <div className="mt-4 flex w-full items-center justify-between text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
-                  {budgets.map((b) => (
-                    <span key={b.label} className={cn("transition-colors", selectedBudget === b.label ? "text-zinc-900" : "")}>
-                      {b.label}
-                    </span>
+              {/* Row 2: Budget */}
+              <div className="space-y-2.5 flex flex-col justify-center">
+                <div className="flex items-center justify-between pl-1">
+                  <Label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+                    Budget
+                  </Label>
+                  <span className="text-[11px] font-bold text-[#C4632C] bg-[#C4632C]/10 px-2 py-0.5 rounded-md">
+                    {selectedBudget}
+                  </span>
+                </div>
+                <div className="h-12 flex items-center px-2">
+                  <Slider
+                    min={0}
+                    max={2}
+                    step={1}
+                    value={[budgets.findIndex((b) => b.label === selectedBudget)]}
+                    onValueChange={(vals) => setValue("budget", budgets[vals[0]].label as any)}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+
+              {/* Row 3: Vibes (Full Width) */}
+              <div className="md:col-span-2 space-y-2.5">
+                <Label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 pl-1">
+                  Travel Vibe
+                </Label>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                  {vibes.map((v) => (
+                    <button
+                      key={v.label}
+                      type="button"
+                      onClick={() => setValue("vibe", v.label as any)}
+                      className={cn(
+                        "flex items-center gap-2.5 px-4 h-12 rounded-[14px] border text-left transition-all duration-200 group focus:outline-none",
+                        selectedVibe === v.label
+                          ? "bg-gradient-to-r from-[#C4632C] to-[#D47037] border-transparent text-white shadow-sm"
+                          : "bg-white border-zinc-200/80 text-zinc-600 hover:border-zinc-300 hover:bg-zinc-50 hover:shadow-sm"
+                      )}
+                    >
+                      <v.icon
+                        weight={selectedVibe === v.label ? "fill" : "regular"}
+                        className={cn("w-4 h-4 transition-colors", selectedVibe === v.label ? "text-orange-100" : "text-zinc-400 group-hover:text-zinc-600")}
+                      />
+                      <span className={cn("text-[13px] font-medium tracking-tight", selectedVibe === v.label ? "font-semibold" : "")}>
+                        {v.label}
+                      </span>
+                    </button>
                   ))}
                 </div>
               </div>
+
             </div>
 
-            {/* Desktop CTA */}
-            <div className="hidden lg:block pt-4">
-              <SubmitButton />
-              {/* <div className="mt-4 flex justify-center items-center gap-2 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
-                <Lightning weight="fill" className="w-3 h-3 text-amber-400" />
+            {/* Desktop CTA (Inside Card Bottom) */}
+            <div className="hidden lg:flex items-center justify-between mt-8 pt-6 border-t border-zinc-100">
+              <div className="flex items-center gap-2 text-[10px] font-bold text-zinc-400 uppercase tracking-widest px-1">
+                <Lightning weight="fill" className="w-3.5 h-3.5 text-[#C4632C]" />
                 <span>{credits ?? "—"} Credits Available</span>
-              </div> */}
+              </div>
+              <div className="w-[200px]">
+                <SubmitButton />
+              </div>
             </div>
 
           </div>
         </form>
 
         {/* Mobile Sticky CTA */}
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 pb-8 z-50 shadow-[0_-8px_30px_rgb(0,0,0,0.04)]">
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-zinc-200/60 p-4 pb-8 z-50 shadow-[0_-8px_30px_rgb(0,0,0,0.04)]">
           <div className="max-w-[640px] mx-auto flex flex-col gap-3">
-            <div className="flex justify-center items-center gap-2 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
-              <Lightning weight="fill" className="w-3 h-3 text-amber-400" />
+            <div className="flex justify-center items-center gap-1.5 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
+              <Lightning weight="fill" className="w-3.5 h-3.5 text-[#C4632C]" />
               <span>{credits ?? "—"} Credits Available</span>
             </div>
             <SubmitButton />
           </div>
         </div>
+
       </div>
     </div>
   );

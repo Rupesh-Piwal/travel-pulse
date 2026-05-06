@@ -211,7 +211,7 @@ export default function LocationInput({ defaultValue = "", onSelect, disabled, d
                 <button
                   key={`result-${i}`}
                   type="button"
-                  className="w-full text-left px-5 py-4 hover:bg-navy/5 rounded-2xl transition-all duration-200 flex items-center gap-4 group/row"
+                  className="w-full text-left px-5 py-4 hover:bg-navy/5 rounded-[16px] transition-all duration-200 flex items-center gap-4 group/row"
                   onClick={() => handleSelect(s)}
                 >
                   <div className="w-11 h-11 rounded-xl bg-navy/5 flex items-center justify-center shrink-0 group-hover/row:bg-navy/10 group-hover/row:scale-110 transition-all border border-navy/5 shadow-sm text-lg">
