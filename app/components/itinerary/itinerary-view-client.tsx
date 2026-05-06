@@ -8,6 +8,12 @@ import MapWrapper from "@/app/components/itinerary/map-wrapper";
 import ExportPdfButton from "@/app/components/itinerary/export-pdf-button";
 import TripSummary from "@/app/components/itinerary/trip-summary";
 
+// Mobile Components
+import MobileHero from "./mobile/MobileHero";
+import FloatingMapButton from "./mobile/FloatingMapButton";
+import MapBottomSheet from "./mobile/MapBottomSheet";
+import DayCard from "./mobile/DayCard";
+
 // ─── Interfaces ────────────────────────────────────────────────
 
 interface TravelFromPrevious {
@@ -423,6 +429,7 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
   const [activeActivity, setActiveActivity] = useState<Activity | null>(null);
   const [activeActivityIndex, setActiveActivityIndex] = useState<number | null>(null);
   const [activeScrollDay, setActiveScrollDay] = useState<number | null>(null);
+  const [isMobileMapOpen, setIsMobileMapOpen] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const flatActivities = useMemo(() => {
@@ -471,8 +478,8 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
       {/* ─── Sticky Day Nav ─── */}
       <StickyDayNav days={data.days} activeScrollDay={activeScrollDay} />
 
-      {/* ══════════════ HERO SECTION — SPLIT LAYOUT ══════════════ */}
-      <section className="w-full bg-white border-b border-zinc-100">
+      {/* ══════════════ HERO SECTION — DESKTOP ══════════════ */}
+      <section className="hidden lg:block w-full bg-white border-b border-zinc-100">
         <div className="flex flex-col lg:flex-row min-h-[100vh]">
           {/* LEFT: Text Content */}
           <div className="relative w-full lg:w-[35%] flex flex-col justify-center px-8 md:px-16 lg:px-20 py-16">
@@ -562,20 +569,39 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
         </div>
       </section>
 
+      {/* ══════════════ HERO SECTION — MOBILE ══════════════ */}
+      <div className="block lg:hidden">
+        <MobileHero
+          destination={itinerary.destination}
+          days={itinerary.days}
+          heroImage={heroImage}
+          data={data}
+        />
+      </div>
+
       {/* ══════════════ CONTENT + MAP SPLIT ══════════════ */}
       <div className="flex-1 w-full relative">
         <div className="flex flex-col lg:flex-row w-full">
 
           {/* LEFT: Scrollable Content */}
-          <div className="w-full lg:w-[60%] xl:w-[65%] px-6 md:px-12 lg:pl-20 lg:pr-16 py-16">
+          <div className="w-full lg:w-[60%] xl:w-[65%] px-6 md:px-12 lg:pl-20 lg:pr-16 py-12 lg:py-16">
 
             <EssentialIntel data={data} />
             <WhereToStay stays={data.suggestedStays} destination={itinerary.destination} />
 
-            {/* ── Day Sections ── */}
-            {data.days.map((day) => (
-              <DaySection key={day.day} day={day} onActivityInView={handleActivityInView} />
-            ))}
+            {/* ── Day Sections (Desktop) ── */}
+            <div className="hidden lg:block">
+              {data.days.map((day) => (
+                <DaySection key={day.day} day={day} onActivityInView={handleActivityInView} />
+              ))}
+            </div>
+
+            {/* ── Day Sections (Mobile) ── */}
+            <div className="block lg:hidden mt-8">
+              {data.days.map((day) => (
+                <DayCard key={day.day} day={day} />
+              ))}
+            </div>
 
             {/* ── Epilogue ── */}
             <motion.div
@@ -607,6 +633,21 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Mobile Map Bottom Sheet */}
+      <div className="block lg:hidden">
+        <FloatingMapButton
+          isVisible={!isMobileMapOpen}
+          onClick={() => setIsMobileMapOpen(true)}
+        />
+        <MapBottomSheet
+          isOpen={isMobileMapOpen}
+          onClose={() => setIsMobileMapOpen(false)}
+          days={data.days}
+          flatActivities={flatActivities}
+          activeActivityIndex={activeActivityIndex}
+        />
       </div>
     </div>
   );
