@@ -46,6 +46,12 @@ export async function POST(
 
     let browser;
     try {
+      // Check if user already disconnected before we even start the heavy lifting
+      if (req.signal.aborted) {
+        console.log("PDF request aborted by user before launch.");
+        return new Response("Aborted", { status: 499 });
+      }
+
       if (process.env.NODE_ENV === "development") {
         // Local environment: use standard puppeteer
         const puppeteer = require("puppeteer");
@@ -95,8 +101,13 @@ export async function POST(
 
       // Navigate and wait for network to be idle
       console.log(`Puppeteer navigating to: ${targetUrl}`);
+      
+      if (req.signal.aborted) throw new Error("AbortError");
+
       // Increased timeout to 90s and using networkidle2 which is more resilient to lingering analytics/assets
       await page.goto(targetUrl, { waitUntil: ["networkidle2", "load"], timeout: 90000 });
+
+      if (req.signal.aborted) throw new Error("AbortError");
 
       // Check if we were redirected to login
       const currentUrl = page.url();
@@ -119,6 +130,8 @@ export async function POST(
       await new Promise(resolve => setTimeout(resolve, 1500));
 
       // Generate the PDF
+      if (req.signal.aborted) throw new Error("AbortError");
+      
       const pdfBuffer = await page.pdf({
         format: "A4",
         printBackground: true,
@@ -136,8 +149,14 @@ export async function POST(
         },
       });
 
-    } catch (error) {
+    } catch (error: any) {
       if (browser) await browser.close();
+      
+      if (error.message === "AbortError" || req.signal.aborted) {
+        console.log("PDF Generation stopped: User closed the tab or aborted the request.");
+        return new Response("Request Aborted", { status: 499 });
+      }
+
       console.error("Puppeteer Error:", error);
       return NextResponse.json({ error: "Failed to generate PDF" }, { status: 500 });
     }
