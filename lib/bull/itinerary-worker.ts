@@ -1,9 +1,11 @@
+import "./env";
+
 import { Worker, Job } from "bullmq";
 import pLimit from "p-limit";
 import { connection } from "./connection";
 import { prisma } from "../prisma";
 import { generateItinerary as runGenerator } from "../itinerary/generateItinerary";
-import { fetchPexelsImage } from "../pexels";
+import { enrichItineraryWithImages } from "../../services/media/enrich-itinerary.service";
 import { ItineraryStatus } from "@prisma/client";
 
 export const ITINERARY_QUEUE_NAME = "itinerary-generation";
@@ -56,64 +58,30 @@ const worker = global.itineraryWorker || new Worker(
       // 3. IMAGE ENRICHMENT
       console.log(`📸 Starting Image Enrichment...`);
       try {
-        const destImage = await fetchPexelsImage(itinerary.destination, "landscape");
-        (generatedData as any).heroImage = destImage;
+        const enrichedData = await enrichItineraryWithImages(generatedData, itinerary.destination);
 
-        // Background update of destination table
-        await prisma.destination.upsert({
-          where: { name: itinerary.destination },
-          update: { image: destImage },
-          create: {
-            name: itinerary.destination,
-            image: destImage,
-            description: `Exploring the wonders of ${itinerary.destination}`,
-            lat: (generatedData as any).lat,
-            lng: (generatedData as any).lng,
-            tags: [],
-          },
-        });
+        // Update destination table with hero image if available
+        if (enrichedData.heroImage?.url) {
+          await prisma.destination.upsert({
+            where: { name: itinerary.destination },
+            update: { image: enrichedData.heroImage.url },
+            create: {
+              name: itinerary.destination,
+              image: enrichedData.heroImage.url,
+              description: `Exploring the wonders of ${itinerary.destination}`,
+              lat: enrichedData.lat,
+              lng: enrichedData.lng,
+              tags: [],
+            },
+          });
+        }
 
-        // ⭐ INCREMENTAL UPDATE 2: Save hero image
+        // ⭐ INCREMENTAL UPDATE 2: Save enriched itinerary
         await prisma.itinerary.update({
           where: { id: itineraryId },
-          data: { data: generatedData as any },
+          data: { data: enrichedData as any },
         });
 
-        // Activity images with concurrency limiting (max 5 at a time)
-        await Promise.all(
-          generatedData.days.flatMap((day: any) =>
-            day.activities.map((activity: any) =>
-              limit(async () => {
-                if (!activity.image) {
-                  // SMARTER SEARCH: If it's a meal/restaurant, search for the cuisine/vibe 
-                  // instead of the specific name which Unsplash won't have.
-                  let searchQuery = `${activity.title} ${itinerary.destination}`;
-
-                  if (activity.category === "RESTAURANT" || activity.mealType !== "NONE") {
-                    const cuisine = (activity as any).cuisine || "";
-                    searchQuery = `${cuisine} food restaurant ${itinerary.destination}`;
-                  }
-
-                  console.log(`🖼️ Fetching image for: ${activity.title} (Query: ${searchQuery})`);
-                  activity.image = await fetchPexelsImage(
-                    searchQuery,
-                    "square",
-                    itinerary.destination
-                  );
-
-                  // ⭐ INCREMENTAL UPDATE 3: Save activity image
-                  await prisma.itinerary.update({
-                    where: { id: itineraryId },
-                    data: { data: generatedData as any },
-                  });
-
-                  // Add a small delay to "drip-feed" the UI updates
-                  await new Promise(resolve => setTimeout(resolve, 800));
-                }
-              })
-            )
-          )
-        );
       } catch (imgError) {
         console.error("❌ Image enrichment failed:", imgError);
       }

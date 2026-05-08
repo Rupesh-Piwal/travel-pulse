@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 interface Activity {
   title: string;
   description: string;
-  image: string | null;
+  image: any | null;
   lat: number;
   lng: number;
   timeOfDay: "Morning" | "Afternoon" | "Evening";
@@ -113,7 +113,7 @@ export default async function PrintItineraryPage({ params }: { params: Promise<{
               <div className="mb-20">
                 <div className="relative w-full aspect-[21/9] overflow-hidden mb-6">
                   <img
-                    src={day.activities[0].image}
+                    src={typeof day.activities[0].image === 'string' ? day.activities[0].image : day.activities[0].image?.url}
                     className="w-full h-full object-cover grayscale-[10%]"
                     alt={day.activities[0].title}
                   />
@@ -181,7 +181,7 @@ export default async function PrintItineraryPage({ params }: { params: Promise<{
                       {activity.image ? (
                         <div className="relative group">
                           <img
-                            src={activity.image}
+                            src={typeof activity.image === 'string' ? activity.image : activity.image?.url}
                             alt={activity.title}
                             className="w-full aspect-[4/3] object-cover grayscale-[15%] brightness-[0.98] transition-all duration-700"
                           />
@@ -189,7 +189,7 @@ export default async function PrintItineraryPage({ params }: { params: Promise<{
                           {actIndex % 2 === 0 && (
                             <div className="absolute -bottom-14 -left-14 w-2/3 border-[10px] border-[#FBF9F4] shadow-2xl hidden md:block">
                               <img
-                                src={activity.image}
+                                src={typeof activity.image === 'string' ? activity.image : activity.image?.url}
                                 className="w-full aspect-video object-cover grayscale brightness-[0.9]"
                                 alt="detail"
                               />
@@ -198,7 +198,7 @@ export default async function PrintItineraryPage({ params }: { params: Promise<{
                           {actIndex % 2 === 1 && (
                             <div className="absolute -top-14 -right-14 w-1/2 border-[10px] border-[#FBF9F4] shadow-2xl hidden md:block">
                               <img
-                                src={activity.image}
+                                src={typeof activity.image === 'string' ? activity.image : activity.image?.url}
                                 className="w-full aspect-square object-cover grayscale-[50%] brightness-[0.8]"
                                 alt="detail"
                               />

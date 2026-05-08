@@ -13,7 +13,7 @@ interface TravelFromPrevious {
 interface Activity {
   title: string;
   description: string;
-  image: string | null;
+  image: any | null;
   lat: number;
   lng: number;
   timeOfDay: "Morning" | "Lunchtime" | "Afternoon" | "Evening";

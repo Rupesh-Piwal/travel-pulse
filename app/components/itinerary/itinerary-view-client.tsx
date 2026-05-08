@@ -26,7 +26,7 @@ interface TravelFromPrevious {
 interface Activity {
   title: string;
   description: string;
-  image: string | null;
+  image: any | null;
   lat: number;
   lng: number;
   timeOfDay: "Morning" | "Lunchtime" | "Afternoon" | "Evening";
@@ -293,7 +293,7 @@ function DaySection({ day, onActivityInView }: { day: Day; onActivityInView: (ac
             <div key={idx} className="group">
               <div className="aspect-video rounded-[16px] overflow-hidden bg-zinc-100 relative">
                 <img
-                  src={activity.image!}
+                  src={typeof activity.image === 'string' ? activity.image : activity.image?.url}
                   alt={activity.title}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   loading="lazy"

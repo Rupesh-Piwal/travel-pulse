@@ -13,7 +13,7 @@ interface TravelFromPrevious {
 interface Activity {
   title: string;
   description: string;
-  image: string | null;
+  image: any | null;
   lat: number;
   lng: number;
   timeOfDay: "Morning" | "Afternoon" | "Evening";
@@ -44,7 +44,7 @@ interface SuggestedStay {
 
 interface ItineraryData {
   destination: string;
-  heroImage?: string;
+  heroImage?: any;
   estimatedTotalExpense?: string;
   estimatedCostINR?: { min: number; max: number };
   placesCount?: number;
@@ -95,7 +95,7 @@ export default async function ItineraryViewPage({ params }: { params: Promise<{ 
   });
 
   const data = itinerary.data as unknown as ItineraryData;
-  const heroImage = data.heroImage || destination?.image || "https://images.unsplash.com/photo-1488085061387-422e29b40080?q=80&w=2000&auto=format&fit=crop";
+  const resolvedHeroImage = (typeof data.heroImage === 'string' ? data.heroImage : data.heroImage?.url) || destination?.image || "https://images.unsplash.com/photo-1488085061387-422e29b40080?q=80&w=2000&auto=format&fit=crop";
 
   return (
     <ItineraryViewClient
@@ -107,7 +107,7 @@ export default async function ItineraryViewPage({ params }: { params: Promise<{ 
         days: itinerary.days,
       }}
       data={data}
-      heroImage={heroImage}
+      heroImage={resolvedHeroImage}
     />
   );
 }

@@ -190,6 +190,7 @@ model Itinerary {
 
   user User @relation(fields: [userId], references: [id])
   pdfExports PdfExport[]
+  imageCredits ImageCredit[]
 
   @@index([userId])
   @@index([status])
@@ -338,4 +339,52 @@ model Payment {
   user User @relation(fields: [userId], references: [id])
 
   @@index([userId])
+}
+
+//////////////////////
+// MEDIA ENRICHMENT
+//////////////////////
+
+model ImageAsset {
+  id           String   @id @default(cuid())
+  source       String   // "wikimedia" | "pexels"
+  originalUrl  String?
+  cachedUrl    String?
+  width        Int?
+  height       Int?
+  author       String?
+  attribution  String?
+  license      String?
+  sourcePage   String?
+  destination  String?
+  tags         String[]
+  qualityScore Float?
+  hash         String   @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  mappings     DestinationImageMapping[]
+  credits      ImageCredit[]
+}
+
+model DestinationImageMapping {
+  id          String   @id @default(cuid())
+  destination String   @unique
+  heroImageId String?
+  imageIds    String[] // List of associated image IDs
+  createdAt   DateTime @default(now())
+
+  heroImage   ImageAsset? @relation(fields: [heroImageId], references: [id])
+}
+
+model ImageCredit {
+  id              String   @id @default(cuid())
+  tripId          String
+  imageId         String
+  attributionText String
+
+  image           ImageAsset @relation(fields: [imageId], references: [id])
+  itinerary       Itinerary  @relation(fields: [tripId], references: [id])
+
+  @@index([tripId])
 }

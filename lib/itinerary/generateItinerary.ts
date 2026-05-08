@@ -20,7 +20,17 @@ const travelFromPreviousSchema = z.object({
 const activitySchema = z.object({
   title: z.string().describe("The name of the activity or location"),
   description: z.string().describe("A rich, engaging description of what to do there"),
-  image: z.string().nullable().describe("URL to an image of the location"),
+  image: z.object({
+    url: z.string(),
+    source: z.enum(["wikimedia", "pexels", "unsplash", "system"]),
+    originalUrl: z.string().optional(),
+    author: z.string().optional(),
+    attribution: z.string().optional(),
+    license: z.string().optional(),
+    width: z.number().optional(),
+    height: z.number().optional(),
+    cachedPath: z.string().optional(),
+  }).nullable().describe("Image object. Leave as null during AI generation."),
   lat: z.number().describe("Latitude coordinate"),
   lng: z.number().describe("Longitude coordinate"),
   timeOfDay: z.enum(["Morning", "Lunchtime", "Afternoon", "Evening"]).describe("The best time of day for this activity"),
@@ -68,6 +78,17 @@ const itinerarySchema = z.object({
   language: z.string().describe("Primary language spoken at the destination"),
   suggestedStays: z.array(suggestedStaySchema).describe("3-4 recommended places to stay matching the user's budget"),
   days: z.array(daySchema),
+  heroImage: z.object({
+    url: z.string(),
+    source: z.enum(["wikimedia", "pexels", "unsplash", "system"]),
+    originalUrl: z.string().optional(),
+    author: z.string().optional(),
+    attribution: z.string().optional(),
+    license: z.string().optional(),
+    width: z.number().optional(),
+    height: z.number().optional(),
+    cachedPath: z.string().optional(),
+  }).nullable().optional(),
 });
 
 export async function generateItinerary({
