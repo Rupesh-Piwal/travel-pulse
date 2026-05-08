@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 import { DownloadSimple, CircleNotch } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -15,8 +16,14 @@ interface ExportPdfButtonProps {
 export default function ExportPdfButton({ itineraryId, destination }: ExportPdfButtonProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const { fetchCredits } = useCredits();
+  const { data: session } = useSession();
 
   const handleExport = async () => {
+    if (!session) {
+      toast.error("Please sign in to download the editorial PDF");
+      return;
+    }
+
     try {
       setIsGenerating(true);
       // Removed the toast.info since we now have a beautiful overlay
