@@ -6,7 +6,7 @@ import puppeteerCore from "puppeteer-core";
 import chromium from "@sparticuz/chromium";
 
 // Tell Next.js that this API route is dynamic and may take some time
-export const maxDuration = 60; // 60 seconds is Vercel hobby maximum, but valid only on Pro if larger. 60 is max for hobby
+export const maxDuration = 120; 
 export const dynamic = 'force-dynamic';
 
 export async function POST(
@@ -95,7 +95,8 @@ export async function POST(
 
       // Navigate and wait for network to be idle
       console.log(`Puppeteer navigating to: ${targetUrl}`);
-      await page.goto(targetUrl, { waitUntil: ["networkidle0", "load"], timeout: 30000 });
+      // Increased timeout to 90s and using networkidle2 which is more resilient to lingering analytics/assets
+      await page.goto(targetUrl, { waitUntil: ["networkidle2", "load"], timeout: 90000 });
 
       // Check if we were redirected to login
       const currentUrl = page.url();
@@ -109,7 +110,7 @@ export async function POST(
 
       // Wait for the main heading to ensure content has loaded
       try {
-        await page.waitForSelector('h1', { timeout: 10000 });
+        await page.waitForSelector('h1', { timeout: 20000 });
       } catch (e) {
         console.warn("Heading <h1> not found within timeout. Page content might be different than expected.");
       }

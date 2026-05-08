@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 const instrument = Instrument_Serif({
   subsets: ["latin"],
   weight: "400",
-  style: "italic",
+  style: ["normal", "italic"],
   variable: "--font-serif",
   display: "swap",
 });

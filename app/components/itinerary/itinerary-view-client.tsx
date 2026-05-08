@@ -548,7 +548,7 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.5 }}
             >
-              <ExportPdfButton itineraryId={itinerary.id} />
+              <ExportPdfButton itineraryId={itinerary.id} destination={itinerary.destination} />
             </motion.div>
           </div>
 
@@ -620,7 +620,7 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
               <p className="text-zinc-500 text-base leading-relaxed max-w-md mx-auto mb-8">
                 Download this curated experience for offline access. Every moment has been carefully crafted.
               </p>
-              <ExportPdfButton itineraryId={itinerary.id} />
+              <ExportPdfButton itineraryId={itinerary.id} destination={itinerary.destination} />
             </motion.div>
           </div>
 
