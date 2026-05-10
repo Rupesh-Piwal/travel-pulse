@@ -33,7 +33,7 @@ const isValidCoord = (val: any): boolean => {
 
 const createCustomIcon = (activity: any, isActive: boolean) => {
   const dayNumber = activity.dayNumber || 1;
-  const imageUrl = activity.image;
+  const imageUrl = typeof activity.image === 'string' ? activity.image : activity.image?.url;
 
   const circle = `<div class="w-11 h-11 rounded-full ${isActive ? 'bg-[#C4632C] text-white ring-4 ring-[#C4632C]/30' : 'bg-white text-navy'} border-2 border-white shadow-lg flex items-center justify-center font-bold text-[14px] relative z-10 transition-all duration-300">
     ${dayNumber}
