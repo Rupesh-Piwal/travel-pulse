@@ -107,11 +107,18 @@ export default function GenerationLoading({ itineraryId }: { itineraryId: string
 
         if (data.data) {
           const images: string[] = [];
-          if (data.data.heroImage) images.push(data.data.heroImage);
+          
+          // Helper to extract URL safely
+          const getUrl = (img: any) => typeof img === "string" ? img : img?.url;
+
+          const heroUrl = getUrl(data.data.heroImage);
+          if (heroUrl) images.push(heroUrl);
+
           data.data.days?.forEach((day: any) => {
             day.activities?.forEach((activity: any) => {
-              if (activity.image && !images.includes(activity.image)) {
-                images.push(activity.image);
+              const url = getUrl(activity.image);
+              if (url && !images.includes(url)) {
+                images.push(url);
               }
             });
           });
