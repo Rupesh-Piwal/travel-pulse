@@ -34,11 +34,11 @@ export async function resolveImage(
   const isFood = ["RESTAURANT", "CAFE", "FOOD"].includes(category.toUpperCase());
 
   // 1. Source Selection
-  if (isLandmark) {
-    asset = await fetchWikimediaImage(query, "landmark");
-  }
+  // Priority: Wikimedia for all images (Landmarks, Food, etc.)
+  asset = await fetchWikimediaImage(query, isLandmark ? "landmark" : "destination");
 
-  // Fallback to Pexels if Wikimedia fails or it's not a landmark
+  // Fallback to Pexels (Commented out as per user request)
+  /*
   if (!asset) {
     // If it's a restaurant, searching for specific names usually fails on Pexels.
     // We should search for generic high-quality food/restaurant imagery instead of destination-specific ones.
@@ -46,6 +46,7 @@ export async function resolveImage(
     let fallback = isFood ? `fine dining food` : destination;
     asset = await fetchPexelsImage(pexelsQuery, "landscape", fallback);
   }
+  */
 
   if (!asset) return null;
 
