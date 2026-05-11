@@ -25,7 +25,11 @@ export async function fetchWikimediaImage(
     searchUrl.searchParams.append("iiprop", "url|extmetadata|size");
     searchUrl.searchParams.append("format", "json");
 
-    const res = await fetch(searchUrl.toString());
+    const res = await fetch(searchUrl.toString(), {
+      headers: {
+        "User-Agent": "NomadGo/1.0 (https://nomadgo.example.com; contact@example.com)"
+      }
+    });
     const data = await res.json();
 
     const pages = data.query?.pages;

@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, DeleteObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s3";
 
 const accountId = process.env.R2_ACCOUNT_ID;
 const accessKeyId = process.env.R2_ACCESS_KEY_ID;
@@ -56,5 +56,27 @@ export async function deleteImageFromR2(fileName: string): Promise<void> {
   } catch (error) {
     console.error("Error deleting from R2:", error);
     throw new Error("Failed to delete image from R2");
+  }
+}
+
+export async function checkFileExists(fileName: string): Promise<string | null> {
+  if (!accountId || !accessKeyId || !secretAccessKey || !bucketName) {
+    return null;
+  }
+
+  const command = new HeadObjectCommand({
+    Bucket: bucketName,
+    Key: fileName,
+  });
+
+  try {
+    await s3Client.send(command);
+    return `${publicUrl}/${fileName}`;
+  } catch (error: any) {
+    if (error.name === "NotFound" || error.$metadata?.httpStatusCode === 404) {
+      return null;
+    }
+    console.error("Error checking R2 file existence:", error);
+    return null;
   }
 }

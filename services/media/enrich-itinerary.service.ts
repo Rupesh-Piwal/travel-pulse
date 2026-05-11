@@ -1,20 +1,30 @@
 import { fetchWikimediaImage } from "./wikimedia.service";
 import { fetchPexelsImage } from "./pexels.service";
 import { ImageAssetData } from "./types";
-import { uploadImageToR2 } from "./r2.service";
+import { uploadImageToR2, checkFileExists } from "./r2.service";
 import crypto from "crypto";
+import pLimit from "p-limit";
 
 async function fetchAndCacheImage(
   url: string,
   fileName: string
 ): Promise<string | null> {
   try {
+    // 1. Check if already exists in R2
+    const existingUrl = await checkFileExists(fileName);
+    if (existingUrl) {
+      console.log(`⚡ Using cached R2 image: ${fileName}`);
+      return existingUrl;
+    }
+
+    // 2. Fetch from source
+    console.log(`📥 Fetching image from source: ${url}`);
     const res = await fetch(url);
     if (!res.ok) return null;
     const arrayBuffer = await res.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    
-    // Upload to R2
+
+    // 3. Upload to R2
     const r2Url = await uploadImageToR2(buffer, fileName, res.headers.get("content-type") || "image/jpeg");
     return r2Url || url; // Fallback to original URL if R2 fails
   } catch (error) {
@@ -30,23 +40,40 @@ export async function resolveImage(
 ): Promise<ImageAssetData | null> {
   let asset: ImageAssetData | null = null;
 
-  const isLandmark = ["LANDMARK", "MUSEUM", "MONUMENT"].includes(category.toUpperCase());
-  const isFood = ["RESTAURANT", "CAFE", "FOOD"].includes(category.toUpperCase());
+  const categoryUpper = category.toUpperCase();
+  const queryLower = query.toLowerCase();
+
+  // Enhanced detection
+  const isLandmark = ["LANDMARK", "MUSEUM", "MONUMENT", "ATTRACTION"].includes(categoryUpper);
+  const isFood = ["RESTAURANT", "CAFE", "FOOD", "DINING", "MEAL"].includes(categoryUpper) || 
+                 queryLower.includes("restaurant") || 
+                 queryLower.includes("cafe") || 
+                 queryLower.includes("bistro") || 
+                 queryLower.includes("eatery");
 
   // 1. Source Selection
-  // Priority: Wikimedia for all images (Landmarks, Food, etc.)
-  asset = await fetchWikimediaImage(query, isLandmark ? "landmark" : "destination");
+  if (isLandmark) {
+    asset = await fetchWikimediaImage(query, "landmark");
+  }
 
-  // Fallback to Pexels (Commented out as per user request)
-  /*
+  // Fallback to Pexels if Wikimedia fails or it's not a landmark
   if (!asset) {
-    // If it's a restaurant, searching for specific names usually fails on Pexels.
-    // We should search for generic high-quality food/restaurant imagery instead of destination-specific ones.
-    let pexelsQuery = isFood ? `aesthetic restaurant interior food` : `${query} ${destination}`;
-    let fallback = isFood ? `fine dining food` : destination;
+    let pexelsQuery = "";
+    let fallback = destination;
+
+    if (isFood) {
+      // For food, specific names like "Mango Restaurant" often return the fruit.
+      // We use the destination + category for high-quality "vibe" imagery.
+      const foodType = queryLower.includes("cafe") ? "cafe" : "restaurant";
+      pexelsQuery = `${destination} ${foodType} interior food`;
+      fallback = `aesthetic ${foodType} food`;
+    } else {
+      pexelsQuery = `${query} ${destination}`;
+    }
+
     asset = await fetchPexelsImage(pexelsQuery, "landscape", fallback);
   }
-  */
+
 
   if (!asset) return null;
 
@@ -64,27 +91,62 @@ export async function resolveImage(
 }
 
 export async function enrichItineraryWithImages(itineraryData: any, destination: string) {
-  // Enrich Hero Image
+  const limit = pLimit(5); // Process 5 images at a time
+  const cache = new Map<string, ImageAssetData>();
+
+  // Helper to resolve with local per-run cache
+  const resolveWithCache = async (q: string, cat: string, dest: string) => {
+    const cacheKey = `${q}-${cat}`.toLowerCase();
+    if (cache.has(cacheKey)) return cache.get(cacheKey);
+    
+    try {
+      const result = await resolveImage(q, cat, dest);
+      if (result) cache.set(cacheKey, result);
+      return result;
+    } catch (e) {
+      console.error(`Error resolving image for ${q}:`, e);
+      return null;
+    }
+  };
+
+  // 1. Enrich Hero Image
   if (!itineraryData.heroImage) {
-    const heroAsset = await resolveImage(destination, "LANDMARK", destination);
-    if (heroAsset) {
-      itineraryData.heroImage = heroAsset;
+    try {
+      const heroAsset = await resolveWithCache(destination, "LANDMARK", destination);
+      if (heroAsset) {
+        itineraryData.heroImage = heroAsset;
+      }
+    } catch (e) {
+      console.error("Hero image enrichment failed:", e);
     }
   }
 
-  // Enrich Activities sequentially to avoid rate limits initially
+  // 2. Prepare all activities for parallel processing
+  const tasks = [];
   for (const day of itineraryData.days) {
     for (const activity of day.activities) {
       if (!activity.image) {
-        const query = activity.title;
-        const category = activity.category || (activity.mealType !== "NONE" ? "RESTAURANT" : "ACTIVITY");
-        
-        const asset = await resolveImage(query, category, destination);
-        if (asset) {
-          activity.image = asset;
-        }
+        tasks.push(limit(async () => {
+          try {
+            const query = activity.title;
+            const category = activity.category || (activity.mealType !== "NONE" ? "RESTAURANT" : "ACTIVITY");
+
+            const asset = await resolveWithCache(query, category, destination);
+            if (asset) {
+              activity.image = asset;
+            }
+          } catch (e) {
+            console.error(`Activity image enrichment failed for ${activity.title}:`, e);
+          }
+        }));
       }
     }
+  }
+
+  // 3. Run parallel tasks
+  if (tasks.length > 0) {
+    console.log(`🚀 Processing ${tasks.length} images in parallel...`);
+    await Promise.allSettled(tasks); // Use allSettled to ensure we don't fail if one fails
   }
 
   return itineraryData;

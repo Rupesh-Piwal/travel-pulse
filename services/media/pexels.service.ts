@@ -46,7 +46,9 @@ export async function fetchPexelsImage(
       
       if (photos.length === 0) return null;
 
-      const photo = photos[0];
+      // Randomly pick one of the top results for variety
+      const randomIndex = Math.floor(Math.random() * Math.min(photos.length, 5));
+      const photo = photos[randomIndex];
       const url = photo.src.large2x || photo.src.original;
 
       return {

@@ -32,7 +32,7 @@ export default function ImageCarousel({ activities }: ImageCarouselProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: loadedImages[idx] ? 1 : 0 }}
               transition={{ duration: 0.5 }}
-              src={typeof activity.image === 'string' ? activity.image : activity.image?.url}
+              src={typeof activity.image === 'string' ? activity.image : (activity.image?.cachedPath || activity.image?.url)}
               alt={activity.title}
               onLoad={() => setLoadedImages((prev) => ({ ...prev, [idx]: true }))}
               className="w-full h-full object-cover aspect-video"

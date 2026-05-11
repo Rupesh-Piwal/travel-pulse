@@ -251,6 +251,47 @@ function EssentialIntel({ data }: { data: ItineraryData }) {
   );
 }
 
+// ─── Desktop Image Carousel ───────────────────────────────────
+
+function DesktopImageCarousel({ images }: { images: Activity[] }) {
+  return (
+    <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-8 -mx-1 px-1 mt-4">
+      {images.map((activity, idx) => (
+        <div key={idx} className="w-[300px] md:w-[400px] snap-start shrink-0 group cursor-pointer">
+          <div className="aspect-[16/10] rounded-[24px] overflow-hidden bg-zinc-100 relative shadow-sm border border-zinc-200/50">
+            <img
+              src={typeof activity.image === 'string' ? activity.image : (activity.image?.cachedPath || activity.image?.url)}
+              alt={activity.title}
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              loading="lazy"
+            />
+            {/* Glassmorphic Caption Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-6 transform translate-y-4 group-hover:translate-y-0">
+              <div className="flex items-center gap-2 mb-2">
+                {activity.rating && (
+                  <div className="flex items-center gap-1 bg-white/20 backdrop-blur-md px-2 py-0.5 rounded-full border border-white/20">
+                    <Star className="w-3 h-3 text-white fill-white" />
+                    <span className="text-[10px] font-bold text-white">{activity.rating.toFixed(1)}</span>
+                  </div>
+                )}
+                <span className="text-[10px] font-bold text-white/70 uppercase tracking-widest">{activity.category || 'Spot'}</span>
+              </div>
+              <h4 className="text-white font-serif text-xl leading-tight truncate">{activity.title}</h4>
+            </div>
+          </div>
+          {/* Subtle Label Below */}
+          <div className="mt-4 group-hover:translate-x-1 transition-transform duration-300">
+            <h4 className="text-sm font-semibold text-zinc-900 truncate">{activity.title}</h4>
+            <p className="text-[11px] text-zinc-400 font-medium uppercase tracking-wider mt-1">{activity.timeOfDay}</p>
+          </div>
+        </div>
+      ))}
+      {/* Empty space at end for better scrolling feel */}
+      <div className="w-20 shrink-0" />
+    </div>
+  );
+}
+
 // ─── Day Editorial Section ─────────────────────────────────────
 
 function DaySection({ day, onActivityInView }: { day: Day; onActivityInView: (activity: Activity) => void }) {
@@ -286,37 +327,9 @@ function DaySection({ day, onActivityInView }: { day: Day; onActivityInView: (ac
         <h2 className="text-2xl font-sans text-zinc-900 tracking-tight">Day {day.day}</h2>
       </div>
 
-      {/* Activity Image Grid (top 2 images) */}
+      {/* Activity Image Carousel (all images) */}
       {activityImages.length > 0 && (
-        <div className={`grid ${activityImages.length === 1 ? 'grid-cols-1' : 'grid-cols-2'} gap-4 mb-6`}>
-          {activityImages.slice(0, 2).map((activity, idx) => (
-            <div key={idx} className="group">
-              <div className="aspect-video rounded-[16px] overflow-hidden bg-zinc-100 relative">
-                <img
-                  src={typeof activity.image === 'string' ? activity.image : activity.image?.url}
-                  alt={activity.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  loading="lazy"
-                />
-              </div>
-              {/* Caption */}
-              <div className="mt-2.5 px-1">
-                <h4 className="text-sm font-semibold text-zinc-900 truncate">{activity.title}</h4>
-                <div className="flex items-center gap-3 mt-1">
-                  {activity.rating && (
-                    <div className="flex items-center gap-1">
-                      <Star className="w-3.5 h-3.5 text-[#C4632C] fill-orange-700/30" />
-                      <span className="text-xs font-semibold text-zinc-700">{activity.rating.toFixed(1)}</span>
-                    </div>
-                  )}
-                  {activity.category && (
-                    <span className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">{activity.category}</span>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+        <DesktopImageCarousel images={activityImages} />
       )}
 
       {/* Day Summary */}
