@@ -25,8 +25,8 @@ export const pdfWorker = new Worker(
 
       // 2. Launch Browser (Handles Local vs Prod)
       if (process.env.NODE_ENV === "development") {
-        const puppeteer = require("puppeteer");
-        browser = await puppeteer.launch({
+        const { default: puppeteer } = await import("puppeteer");
+        browser = await (puppeteer as any).launch({
           headless: true,
           args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-web-security"],
         });

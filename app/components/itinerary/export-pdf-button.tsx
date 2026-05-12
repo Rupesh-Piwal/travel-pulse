@@ -14,7 +14,10 @@ interface ExportPdfButtonProps {
 }
 
 export default function ExportPdfButton({ itineraryId, destination }: ExportPdfButtonProps) {
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(false);
+  const [status, setStatus] = useState<"generating" | "completed" | "failed">("generating");
+  const [downloadUrl, setDownloadUrl] = useState<string | undefined>(undefined);
+  
   const { fetchCredits } = useCredits();
   const { data: session } = useSession();
 
@@ -25,7 +28,9 @@ export default function ExportPdfButton({ itineraryId, destination }: ExportPdfB
     }
 
     try {
-      setIsGenerating(true);
+      setStatus("generating");
+      setShowOverlay(true);
+      setDownloadUrl(undefined);
       
       // 1. Trigger the background job
       const response = await fetch(`/api/itinerary/${itineraryId}/pdf`, {
@@ -60,36 +65,34 @@ export default function ExportPdfButton({ itineraryId, destination }: ExportPdfB
       };
 
       const finalUrl = await pollStatus();
-
-      // 3. Download the file
-      const a = document.createElement("a");
-      a.href = finalUrl;
-      const fileName = destination ? `${destination.split(',')[0]}-Editorial.pdf` : `NomadGo-Editorial-${itineraryId.slice(0, 8)}.pdf`;
-      a.download = fileName;
-      a.target = "_blank"; // Open in new tab just in case it's a direct link
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-
+      
+      setDownloadUrl(finalUrl);
+      setStatus("completed");
       toast.success("PDF generated successfully!");
       fetchCredits();
 
     } catch (error: any) {
       console.error("Export error:", error);
+      setStatus("failed");
       toast.error(error.message || "An error occurred during PDF generation.");
-    } finally {
-      setIsGenerating(false);
     }
   };
 
   return (
     <>
-      <DownloadOverlay isVisible={isGenerating} destination={destination} />
+      <DownloadOverlay 
+        isVisible={showOverlay} 
+        status={status}
+        destination={destination} 
+        url={downloadUrl}
+        onClose={() => setShowOverlay(false)}
+        onRetry={handleExport}
+      />
       
       <Button
         variant="ghost"
         onClick={handleExport}
-        disabled={isGenerating}
+        disabled={showOverlay && status === "generating"}
         className="
           relative overflow-hidden
           h-12 px-8 
@@ -119,12 +122,12 @@ export default function ExportPdfButton({ itineraryId, destination }: ExportPdfB
 
         {/* content */}
         <span className="relative z-10 flex items-center gap-2.5">
-          {isGenerating ? (
+          {showOverlay && status === "generating" ? (
             <CircleNotch className="w-4 h-4 animate-spin" />
           ) : (
             <DownloadSimple className="w-4 h-4" />
           )}
-          {isGenerating ? "Assembling..." : "Download PDF"}
+          {showOverlay && status === "generating" ? "Assembling..." : "Download PDF"}
         </span>
       </Button>
     </>
