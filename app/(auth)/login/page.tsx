@@ -4,48 +4,18 @@ import { signIn } from "@/auth";
 export const metadata: Metadata = {
   title: "Sign in — NomadGo",
   description:
-    "Sign in to NomadGo and start planning your next adventure with AI-powered itineraries.",
+    "Sign in to your NomadGo account to continue planning your next adventure.",
 };
 
 export default function LoginPage() {
   return (
-    <div className="flex flex-col gap-8">
-      {/* Mobile-only logo */}
-      <div className="flex items-center gap-3 lg:hidden">
-        <div className="flex size-10 items-center justify-center rounded-xl bg-primary">
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M12 2L2 7l10 5 10-5-10-5Z" fill="white" opacity="0.9" />
-            <path
-              d="M2 17l10 5 10-5"
-              stroke="white"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              opacity="0.7"
-            />
-            <path
-              d="M2 12l10 5 10-5"
-              stroke="white"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              opacity="0.8"
-            />
-          </svg>
-        </div>
-        <span className="text-xl font-semibold tracking-tight">NomadGo</span>
-      </div>
-
+    <div className="flex flex-col gap-10 text-center lg:text-left">
       {/* Header */}
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Welcome back</h1>
-        <p className="text-muted-foreground">
+      <div className="space-y-3">
+        <h1 className="font-serif text-4xl lg:text-5xl tracking-tight text-white">
+          Welcome Back
+        </h1>
+        <p className="text-white/60 text-sm lg:text-base max-w-[280px] lg:max-w-none mx-auto lg:mx-0">
           Sign in to your account to continue planning your next adventure.
         </p>
       </div>
@@ -60,7 +30,7 @@ export default function LoginPage() {
         <button
           type="submit"
           id="google-sign-in-btn"
-          className="group relative flex h-12 w-full items-center justify-center gap-3 rounded-xl border border-border bg-card px-6 text-sm font-medium text-card-foreground shadow-sm transition-all duration-200 hover:bg-accent hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.98]"
+          className="group relative flex h-14 w-full items-center justify-center gap-3 rounded-full border border-white/20 bg-white/5 px-8 text-base font-medium text-white backdrop-blur-md transition-all duration-300 hover:bg-white/10 hover:border-white/40 active:scale-[0.98]"
         >
           {/* Google Icon */}
           <svg
@@ -69,6 +39,7 @@ export default function LoginPage() {
             viewBox="0 0 24 24"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            className="transition-transform duration-300 group-hover:scale-110"
           >
             <path
               d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1Z"
@@ -91,66 +62,14 @@ export default function LoginPage() {
         </button>
       </form>
 
-      {/* Divider */}
-      <div className="relative flex items-center">
-        <div className="flex-1 border-t border-border" />
-        <span className="mx-4 text-xs uppercase tracking-wider text-muted-foreground">
-          or
-        </span>
-        <div className="flex-1 border-t border-border" />
-      </div>
-
-      {/* Email sign-in form (visual only — placeholder for future expansion) */}
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <label
-            htmlFor="email"
-            className="text-sm font-medium leading-none text-foreground"
-          >
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"
-            placeholder="you@example.com"
-            disabled
-            className="flex h-11 w-full rounded-xl border border-border bg-card px-4 text-sm text-foreground shadow-sm transition-colors placeholder:text-muted-foreground/60 focus-visible:border-ring focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-          />
-        </div>
-        <div className="space-y-2">
-          <label
-            htmlFor="password"
-            className="text-sm font-medium leading-none text-foreground"
-          >
-            Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            placeholder="••••••••"
-            disabled
-            className="flex h-11 w-full rounded-xl border border-border bg-card px-4 text-sm text-foreground shadow-sm transition-colors placeholder:text-muted-foreground/60 focus-visible:border-ring focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-          />
-        </div>
-        <button
-          disabled
-          className="flex h-11 w-full items-center justify-center rounded-xl bg-primary px-6 text-sm font-medium text-primary-foreground opacity-50 cursor-not-allowed transition-all"
-        >
-          Sign in with Email
-          <span className="ml-2 rounded-md bg-primary-foreground/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider">
-            Soon
-          </span>
-        </button>
-      </div>
-
       {/* Footer */}
-      <p className="text-center text-xs text-muted-foreground">
+      <p className="text-xs text-white/30">
         By signing in, you agree to our{" "}
-        <a href="#" className="underline underline-offset-4 hover:text-foreground transition-colors">
+        <a href="#" className="underline underline-offset-4 hover:text-white transition-colors">
           Terms of Service
         </a>{" "}
         and{" "}
-        <a href="#" className="underline underline-offset-4 hover:text-foreground transition-colors">
+        <a href="#" className="underline underline-offset-4 hover:text-white transition-colors">
           Privacy Policy
         </a>
         .
@@ -158,3 +77,4 @@ export default function LoginPage() {
     </div>
   );
 }
+
