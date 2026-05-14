@@ -35,6 +35,7 @@ interface Day {
 
 interface ItineraryData {
   destination: string;
+  heroImage?: any;
   days: Day[];
   bestTimeToVisit?: string;
   travelTips?: string[];
@@ -145,9 +146,7 @@ function PageFooter({ destination }: { destination: string }) {
   );
 }
 
-function CoverPage({ destination, days, data }: { destination: string; days: Day[]; data: ItineraryData }) {
-  const heroActivity = days[0]?.activities?.find(a => a.image);
-  const heroImage = heroActivity ? (typeof heroActivity.image === 'string' ? heroActivity.image : (heroActivity.image as any)?.url) : null;
+function CoverPage({ destination, days, data, heroImage }: { destination: string; days: Day[]; data: ItineraryData; heroImage: string | null }) {
   const cityName = destination.split(",")[0].trim();
 
   return (
@@ -758,6 +757,12 @@ export default async function PrintItineraryPage({ params }: { params: Promise<{
   const data = itinerary.data as unknown as ItineraryData;
   const destination = itinerary.destination;
 
+  const destinationRecord = await prisma.destination.findUnique({
+    where: { name: destination }
+  });
+
+  const resolvedHeroImage = (typeof data.heroImage === 'string' ? data.heroImage : data.heroImage?.url) || destinationRecord?.image || "https://images.unsplash.com/photo-1488085061387-422e29b40080?q=80&w=2000&auto=format&fit=crop";
+
   return (
     <div style={{
       fontFamily: sansFont,
@@ -798,7 +803,7 @@ export default async function PrintItineraryPage({ params }: { params: Promise<{
       `}} />
 
       {/* ═══ COVER PAGE ═══ */}
-      <CoverPage destination={destination} days={data.days} data={data} />
+      <CoverPage destination={destination} days={data.days} data={data} heroImage={resolvedHeroImage} />
 
       {/* ═══ DAY PAGES ═══ */}
       {data.days.map((day, dayIndex) => (
