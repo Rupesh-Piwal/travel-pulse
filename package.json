@@ -28,6 +28,7 @@
     "@sparticuz/chromium": "^147.0.0",
     "@sparticuz/chromium-min": "^148.0.0",
     "@supabase/supabase-js": "^2.101.1",
+    "@vercel/analytics": "^2.0.1",
     "ai": "^6.0.158",
     "bullmq": "^5.74.1",
     "class-variance-authority": "^0.7.1",

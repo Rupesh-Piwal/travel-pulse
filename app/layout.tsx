@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Schibsted_Grotesk, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { Analytics } from "@vercel/analytics/next"
 
 const instrument = Instrument_Serif({
   subsets: ["latin"],
@@ -47,6 +48,7 @@ export default function RootLayout({
         <Providers>
           {children}
           <Toaster position="top-center" richColors />
+          <Analytics />
         </Providers>
       </body>
     </html>
