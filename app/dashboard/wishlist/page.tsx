@@ -17,6 +17,7 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import Link from "next/link";
+import Image from "next/image";
 import LocationInput from "@/app/components/itinerary/location-input";
 
 interface WishlistItem {
@@ -190,10 +191,12 @@ export default function WishlistPage() {
                   <Card className="group relative overflow-hidden rounded-[20px] border border-zinc-200/60 bg-white/80 backdrop-blur-2xl hover:border-[#C4632C]/30 transition-all duration-500 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] cursor-default p-0 flex flex-col gap-0 shadow-sm">
                     {/* Image Container */}
                     <div className="relative h-56 overflow-hidden bg-zinc-100">
-                      <img
+                      <Image
                         src={item.photoUrl}
                         alt={item.destination}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
 

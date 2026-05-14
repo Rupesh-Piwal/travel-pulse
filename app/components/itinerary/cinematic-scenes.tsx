@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Clock, Star, MapPin, Navigation, Utensils, Ticket, Sparkles } from "lucide-react";
@@ -44,7 +45,14 @@ export function DayOpener({ dayInfo, image }: { dayInfo: DayInfo, image: string 
       {/* Background Image */}
       <motion.div style={{ y, scale }} className="absolute inset-0 w-full h-full">
         {image ? (
-          <img src={image} alt={`Day ${dayInfo.dayNumber}`} className="w-full h-full object-cover" />
+          <Image
+            src={image}
+            alt={`Day ${dayInfo.dayNumber}`}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
         ) : (
           <div className="w-full h-full bg-zinc-900" />
         )}
@@ -164,7 +172,13 @@ export function EditorialActivityScene({ activity, index, onInView, align = "lef
           {/* Image */}
           <div className={`w-full ${align === 'wide' ? 'aspect-[21/9] md:h-[500px]' : 'md:w-1/2 aspect-[4/5]'} rounded-[1.5rem] overflow-hidden relative shadow-2xl group-hover:shadow-orange-500/5 transition-shadow duration-700`}>
             {activity.image ? (
-              <img src={activity.image} alt={activity.title} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+              <Image
+                src={activity.image}
+                alt={activity.title}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="object-cover transition-transform duration-1000 group-hover:scale-105"
+              />
             ) : (
               <div className="w-full h-full bg-zinc-900" />
             )}

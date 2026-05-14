@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Star, Lightbulb } from "lucide-react";
 
@@ -62,10 +63,12 @@ export default function HeroActivityCard({ activity }: { activity: Activity }) {
       {/* Background Image Layer */}
       {activity.image ? (
         <>
-          <img
+          <Image
             src={activity.image}
             alt={activity.title}
-            className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover/hero:scale-[1.03] transition-transform duration-1000 ease-out"
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="absolute inset-0 object-cover opacity-90 group-hover/hero:scale-[1.03] transition-transform duration-1000 ease-out"
           />
           {/* Deep gradient overlay for perfect legibility */}
           <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/70 to-transparent" />

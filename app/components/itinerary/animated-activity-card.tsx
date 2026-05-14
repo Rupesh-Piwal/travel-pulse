@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Clock, MapPin, Star, Lightbulb } from "lucide-react";
 
@@ -66,10 +67,12 @@ export default function AnimatedActivityCard({ activity, index }: ActivityProps)
       {/* Background Image Layer */}
       {activity.image ? (
         <>
-          <img
+          <Image
             src={activity.image}
             alt={activity.title}
-            className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover/act:scale-105 transition-transform duration-700 ease-out"
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="absolute inset-0 object-cover opacity-90 group-hover/act:scale-105 transition-transform duration-700 ease-out"
           />
           {/* Deep gradient overlay for text contrast */}
           <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-transparent" />

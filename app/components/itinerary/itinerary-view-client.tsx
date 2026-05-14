@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, Languages, Sun, ArrowRight, Download } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 import MapWrapper from "@/app/components/itinerary/map-wrapper";
 import ExportPdfButton from "@/app/components/itinerary/export-pdf-button";
@@ -259,11 +260,12 @@ function DesktopImageCarousel({ images }: { images: Activity[] }) {
       {images.map((activity, idx) => (
         <div key={idx} className="w-[300px] md:w-[400px] snap-start shrink-0 group cursor-pointer">
           <div className="aspect-[16/10] rounded-[24px] overflow-hidden bg-zinc-100 relative shadow-sm border border-zinc-200/50">
-            <img
+            <Image
               src={typeof activity.image === 'string' ? activity.image : (activity.image?.cachedPath || activity.image?.url)}
               alt={activity.title}
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              loading="lazy"
+              fill
+              sizes="(max-width: 768px) 300px, 400px"
+              className="object-cover transition-transform duration-700 group-hover:scale-110"
             />
             {/* Glassmorphic Caption Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-6 transform translate-y-4 group-hover:translate-y-0">
@@ -630,10 +632,13 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
             transition={{ delay: 0.2, duration: 1, ease: [0.16, 1, 0.3, 1] }}
             className="w-full lg:w-[65%] min-h-[400px] lg:min-h-0 relative overflow-hidden"
           >
-            <img
+            <Image
               src={heroImage}
               alt={itinerary.destination}
-              className="w-full h-full object-cover"
+              fill
+              priority
+              sizes="(max-width: 1024px) 100vw, 65vw"
+              className="object-cover"
             />
 
           </motion.div>

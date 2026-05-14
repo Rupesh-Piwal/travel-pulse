@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import MobileTripSummary from "./MobileTripSummary";
 
@@ -20,10 +20,13 @@ export default function MobileHero({ destination, days, heroImage, data }: Mobil
   return (
     <section className="relative w-full h-[45vh] overflow-hidden rounded-b-[32px]">
       {/* Hero Image */}
-      <img
+      <Image
         src={heroImage}
         alt={destination}
-        className="absolute inset-0 w-full h-full object-cover"
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover"
       />
       
       {/* Dark Overlay with Gradient */}
