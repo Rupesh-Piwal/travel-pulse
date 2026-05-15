@@ -1,27 +1,17 @@
-import "./env";
-
 import { Worker, Job } from "bullmq";
-import pLimit from "p-limit";
-import { connection } from "./connection";
-import { prisma } from "../prisma";
-import { generateItinerary as runGenerator } from "../itinerary/generateItinerary";
-import { enrichItineraryWithImages } from "../../services/media/enrich-itinerary.service";
+import { connection } from "../core/connection";
+import { prisma } from "../../prisma";
+import { generateItinerary as runGenerator } from "../../itinerary/generateItinerary";
+import { enrichItineraryWithImages } from "../../../services/media/enrich-itinerary.service";
 import { ItineraryStatus } from "@prisma/client";
-import http from "http";
-import "./pdf-worker";
-
-
-export const ITINERARY_QUEUE_NAME = "itinerary-generation";
-
-// Initialize the limiter with a concurrency of 5
-const limit = pLimit(5);
+import { ITINERARY_QUEUE_NAME } from "../queues/itinerary";
 
 // Singleton Pattern for Next.js HMR to prevent worker leaks
 declare global {
   var itineraryWorker: Worker | undefined;
 }
 
-const worker = global.itineraryWorker || new Worker(
+export const itineraryWorker = global.itineraryWorker || new Worker(
   ITINERARY_QUEUE_NAME,
   async (job: Job) => {
     const { itineraryId } = job.data;
@@ -94,7 +84,7 @@ const worker = global.itineraryWorker || new Worker(
         where: { id: itineraryId },
         data: {
           status: ItineraryStatus.DONE,
-          data: generatedData as any,
+          data: (itinerary.data as any) || (generatedData as any), // Fallback to generated if enrichment failed
           lastUsedAt: new Date(),
         },
       });
@@ -114,36 +104,24 @@ const worker = global.itineraryWorker || new Worker(
   { 
     connection,
     // --- EXTREME UPSTASH OPTIMIZATIONS ---
-    // Upstash charges per command. These settings minimize idle Redis traffic.
-    lockDuration: 300000,     // 5 min lock (fewer renewal pings during long AI jobs)
-    stalledInterval: 300000,  // Check for stalled jobs every 5 min instead of 30s
+    lockDuration: 300000,
+    stalledInterval: 300000,
     maxStalledCount: 2,
-    drainDelay: 300,          // When queue is empty, wait 5 MINUTES before checking again
+    drainDelay: 300,
     // -------------------------------------
   }
 );
 
 if (process.env.NODE_ENV !== "production") {
-  global.itineraryWorker = worker;
+  global.itineraryWorker = itineraryWorker;
 }
 
-worker.on("completed", (job) => {
-  console.log(`✅ Job ${job.id} completed`);
+itineraryWorker.on("completed", (job) => {
+  console.log(`✅ Itinerary Job ${job.id} completed`);
 });
 
-worker.on("failed", (job, err) => {
-  console.log(`❌ Job ${job?.id} failed with ${err.message}`);
+itineraryWorker.on("failed", (job, err) => {
+  console.log(`❌ Itinerary Job ${job?.id} failed with ${err.message}`);
 });
 
-console.log("🚀 Itinerary Worker is running...");
-
-// Railway Health Check Server
-const PORT = process.env.PORT || 3001;
-http.createServer((req, res) => {
-  res.writeHead(200);
-  res.end("Worker is alive");
-}).listen(PORT, () => {
-  console.log(`📡 Health check server running on port ${PORT}`);
-});
-
-export default worker;
+export default itineraryWorker;

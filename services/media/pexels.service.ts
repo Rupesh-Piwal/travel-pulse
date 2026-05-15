@@ -1,5 +1,5 @@
 import { ImageAssetData } from "./types";
-import { connection } from "@/lib/bull/connection";
+import { connection } from "@/lib/jobs";
 
 const CURATED_FALLBACKS = [
   "https://images.pexels.com/photos/210186/pexels-photo-210186.jpeg?auto=compress&cs=tinysrgb&w=1200", // Mountains/Lake

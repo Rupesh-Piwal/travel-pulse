@@ -5,13 +5,11 @@ import type { TierKey } from "@/lib/stripe";
 
 export async function POST(req: Request) {
   try {
-    // 1. Validate user session
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // 2. Parse and validate the tier
     const body = await req.json();
     const tier = body.tier as string;
 
@@ -24,10 +22,8 @@ export async function POST(req: Request) {
 
     const tierConfig = CREDIT_TIERS[tier as TierKey];
 
-    // 3. Get or create a Stripe Customer
     const customerId = await getOrCreateStripeCustomer(session.user.id);
 
-    // 4. Create a Stripe Checkout Session
     const origin = req.headers.get("origin") || "http://localhost:3000";
 
     const checkoutSession = await stripe.checkout.sessions.create({

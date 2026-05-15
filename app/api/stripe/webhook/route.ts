@@ -6,17 +6,10 @@ import Stripe from "stripe";
 
 export const dynamic = 'force-dynamic';
 
-/**
- * Stripe Webhook Handler
- *
- * IMPORTANT: This route reads the raw body for signature verification.
- * Next.js App Router handles this correctly as long as we use req.text().
- */
 export async function POST(req: Request) {
   let event: Stripe.Event;
 
   try {
-    // 1. Read raw body for signature verification
     const body = await req.text();
     const signature = req.headers.get("stripe-signature");
 
@@ -28,7 +21,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // 2. Verify the event came from Stripe
     event = stripe.webhooks.constructEvent(
       body,
       signature,
@@ -43,7 +35,6 @@ export async function POST(req: Request) {
     );
   }
 
-  // 3. Handle the event
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
 
@@ -60,7 +51,6 @@ export async function POST(req: Request) {
     }
 
     try {
-      // 4. Idempotency check — skip if already processed
       const existingPayment = await prisma.payment.findUnique({
         where: { stripeSessionId: session.id },
       });
@@ -94,7 +84,6 @@ export async function POST(req: Request) {
         },
       });
 
-      // 6. Add credits to the user's balance
       await addCredits(userId, credits, session.id);
 
       console.log(

@@ -1,5 +1,5 @@
 import { Queue } from "bullmq";
-import { connection } from "./connection";
+import { connection } from "../core/connection";
 
 export const ITINERARY_QUEUE_NAME = "itinerary-generation";
 

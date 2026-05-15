@@ -1,6 +1,6 @@
 import { prisma } from "../prisma";
 import { deductCredits, refundCredits } from "../credits";
-import { addItineraryJob } from "../bull/itinerary-queue";
+import { addItineraryJob } from "../jobs";
 import { Vibe, Budget, ItineraryStatus } from "@prisma/client";
 
 interface InitiateGenerationParams {

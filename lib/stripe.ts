@@ -1,12 +1,10 @@
 import Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
 
-// ─── Stripe SDK Instance ────────────────────────────────────────────
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   typescript: true,
 });
 
-// ─── Credit Tier Configuration (single source of truth) ─────────────
 export const CREDIT_TIERS = {
   voyager: { name: "Voyager Credits Pack", price: 500, credits: 30 },
   pathfinder: { name: "Pathfinder Credits Pack", price: 2000, credits: 100 },
@@ -15,10 +13,6 @@ export const CREDIT_TIERS = {
 
 export type TierKey = keyof typeof CREDIT_TIERS;
 
-/**
- * Get or create a Stripe Customer for a given user.
- * Stores the stripeCustomerId on the User record for future use.
- */
 export async function getOrCreateStripeCustomer(
   userId: string
 ): Promise<string> {

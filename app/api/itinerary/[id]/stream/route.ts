@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { connection } from "@/lib/bull/connection";
+import { connection } from "@/lib/jobs";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";

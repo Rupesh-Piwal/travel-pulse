@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { deductCredits } from "@/lib/credits";
 import { prisma } from "@/lib/prisma";
-import { pdfQueue } from "@/lib/bull/pdf-queue";
+import { addPdfJob } from "@/lib/jobs";
 
 export async function POST(
   req: Request,
@@ -61,7 +61,7 @@ export async function POST(
     const baseUrl = `${protocol}://${host}`;
 
     // 6. Queue Job
-    await pdfQueue.add(`pdf-export-${pdfExport.id}`, {
+    await addPdfJob({
       itineraryId,
       userId: session.user.id,
       pdfExportId: pdfExport.id,

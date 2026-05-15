@@ -1,14 +1,5 @@
-/**
- * Pexels Image Utility
- * 
- * To use this, get a free API Key from https://www.pexels.com/api/
- * and add it to your .env as PEXELS_API_KEY.
- * Pexels is more precise for landmarks and specific locations than Unsplash.
- */
+import { connection } from "@/lib/jobs";
 
-import { connection } from "@/lib/bull/connection";
-
-// Reuse your curated premium fallbacks for the "Luxury" aesthetic
 const CURATED_FALLBACKS = [
   "https://images.pexels.com/photos/210186/pexels-photo-210186.jpeg?auto=compress&cs=tinysrgb&w=1200", // Mountains/Lake
   "https://images.pexels.com/photos/262978/pexels-photo-262978.jpeg?auto=compress&cs=tinysrgb&w=1200", // High-end Food

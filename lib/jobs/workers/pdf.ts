@@ -1,12 +1,17 @@
 import { Worker, Job } from "bullmq";
-import { connection } from "./connection";
-import { PDF_QUEUE_NAME, PdfJobData } from "./pdf-queue";
-import { prisma } from "../prisma";
+import { connection } from "../core/connection";
+import { PDF_QUEUE_NAME, PdfJobData } from "../queues/pdf";
+import { prisma } from "../../prisma";
 import puppeteerCore from "puppeteer-core";
 import chromium from "@sparticuz/chromium-min";
-import { uploadPdfToR2 } from "../../services/media/r2.service";
+import { uploadPdfToR2 } from "../../../services/media/r2.service";
 
-export const pdfWorker = new Worker(
+// Singleton Pattern for Next.js HMR to prevent worker leaks
+declare global {
+  var pdfWorker: Worker | undefined;
+}
+
+export const pdfWorker = global.pdfWorker || new Worker(
   PDF_QUEUE_NAME,
   async (job: Job<PdfJobData>) => {
     const { itineraryId, pdfExportId, baseUrl } = job.data;
@@ -92,5 +97,22 @@ export const pdfWorker = new Worker(
       throw error;
     }
   },
-  { connection, concurrency: 1 } // Process one at a time to save memory
+  { 
+    connection, 
+    concurrency: 1 // Process one at a time to save memory
+  } 
 );
+
+if (process.env.NODE_ENV !== "production") {
+  global.pdfWorker = pdfWorker;
+}
+
+pdfWorker.on("completed", (job) => {
+  console.log(`✅ PDF Job ${job.id} completed`);
+});
+
+pdfWorker.on("failed", (job, err) => {
+  console.log(`❌ PDF Job ${job?.id} failed with ${err.message}`);
+});
+
+export default pdfWorker;

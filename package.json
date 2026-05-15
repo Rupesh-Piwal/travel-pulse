@@ -8,7 +8,7 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
-    "worker": "tsx lib/bull/itinerary-worker.ts",
+    "worker": "tsx lib/jobs/workers/index.ts",
     "seed:guides": "tsx prisma/seed-guides.ts"
   },
   "dependencies": {

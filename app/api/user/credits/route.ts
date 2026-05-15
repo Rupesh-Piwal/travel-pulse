@@ -6,39 +6,38 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   const session = await auth();
+  const userId = session?.user?.id;
 
-  if (!session?.user?.id) {
+  if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Check if user actually exists in the DB (prevents foreign key errors after DB reset)
   const userExists = await prisma.user.findUnique({
-    where: { id: session.user.id },
+    where: { id: userId },
   });
 
   if (!userExists) {
     return NextResponse.json({ error: "USER_NOT_FOUND" }, { status: 401 });
   }
 
-  // 🔥 SELF-HEALING FIX: Use a transaction to ensure atomic creation
   const credit = await prisma.$transaction(async (tx) => {
     let record = await tx.credit.findUnique({
-      where: { userId: session.user.id },
+      where: { userId: userId },
     });
 
     if (!record) {
-      console.log("Auto-creating missing credit for user:", session.user.id);
-      
+      console.log("Auto-creating missing credit for user:", userId);
+
       record = await tx.credit.create({
         data: {
-          userId: session.user.id,
+          userId: userId,
           balance: 5,
         },
       });
 
       await tx.creditTransaction.create({
         data: {
-          userId: session.user.id,
+          userId: userId,
           amount: 5,
           reason: "SIGNUP",
           referenceId: "auto_created_missing_credit",
