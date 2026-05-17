@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
-import { addCredits } from "@/lib/credits";
 import Stripe from "stripe";
 
 export const dynamic = 'force-dynamic';
@@ -60,31 +59,45 @@ export async function POST(req: Request) {
         return NextResponse.json({ received: true });
       }
 
-      // 5. Create or update Payment record
-      await prisma.payment.upsert({
-        where: { stripeSessionId: session.id },
-        create: {
-          userId,
-          stripeSessionId: session.id,
-          stripePaymentIntentId:
-            typeof session.payment_intent === "string"
-              ? session.payment_intent
-              : session.payment_intent?.id ?? null,
-          amount: session.amount_total ?? 0,
-          credits,
-          tier,
-          status: "completed",
-        },
-        update: {
-          status: "completed",
-          stripePaymentIntentId:
-            typeof session.payment_intent === "string"
-              ? session.payment_intent
-              : session.payment_intent?.id ?? null,
-        },
-      });
+      // 5. Create or update Payment record and add credits atomically
+      await prisma.$transaction(async (tx) => {
+        await tx.payment.upsert({
+          where: { stripeSessionId: session.id },
+          create: {
+            userId,
+            stripeSessionId: session.id,
+            stripePaymentIntentId:
+              typeof session.payment_intent === "string"
+                ? session.payment_intent
+                : session.payment_intent?.id ?? null,
+            amount: session.amount_total ?? 0,
+            credits,
+            tier,
+            status: "completed",
+          },
+          update: {
+            status: "completed",
+            stripePaymentIntentId:
+              typeof session.payment_intent === "string"
+                ? session.payment_intent
+                : session.payment_intent?.id ?? null,
+          },
+        });
 
-      await addCredits(userId, credits, session.id);
+        await tx.credit.update({
+          where: { userId },
+          data: { balance: { increment: credits } },
+        });
+
+        await tx.creditTransaction.create({
+          data: {
+            userId,
+            amount: credits,
+            reason: "PURCHASE",
+            referenceId: session.id,
+          },
+        });
+      });
 
       console.log(
         `[WEBHOOK] ✅ Added ${credits} credits to user ${userId} (session: ${session.id})`
