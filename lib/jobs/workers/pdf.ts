@@ -99,7 +99,13 @@ export const pdfWorker = global.pdfWorker || new Worker(
   },
   { 
     connection, 
-    concurrency: 1 // Process one at a time to save memory
+    concurrency: 1, // Process one at a time to save memory
+    // --- EXTREME UPSTASH OPTIMIZATIONS ---
+    lockDuration: 300000,
+    stalledInterval: 300000,
+    maxStalledCount: 2,
+    drainDelay: 3000,
+    // -------------------------------------
   } 
 );
 
